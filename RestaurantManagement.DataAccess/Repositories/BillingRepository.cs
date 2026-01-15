@@ -1,0 +1,29 @@
+﻿using Microsoft.EntityFrameworkCore;
+using RestaurantManagement.DataAccess.Models;
+using RestaurantManagement.DataAccess.Repositories.Interfaces;
+
+namespace RestaurantManagement.DataAccess.Repositories
+{
+    public class BillingRepository : GenericRepository<Bill>, IBillingRepository
+    {
+        public BillingRepository(RestaurantDbContext context) : base(context) { }
+
+        public async Task<Bill?> GetBillDetailsAsync(int billId)
+            => await _context.Bills
+                .Include(b => b.Customer)
+                .Include(b => b.Order)
+                .FirstOrDefaultAsync(b => b.Id == billId);
+
+        public async Task<List<Bill>> GetBillsByCustomerIdAsync(int customerId)
+            => await _context.Bills
+                .Where(b => b.CustomerId == customerId)
+                .OrderByDescending(b => b.GeneratedAt)
+                .ToListAsync();
+
+        public async Task<List<Bill>> GetAllBillsAsync()
+            => await _context.Bills
+                .OrderByDescending(b => b.GeneratedAt)
+                .ToListAsync();
+    }
+
+}

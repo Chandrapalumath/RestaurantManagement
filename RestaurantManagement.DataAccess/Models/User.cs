@@ -1,0 +1,34 @@
+﻿using Microsoft.EntityFrameworkCore;
+using RestaurantManagement.DataAccess.Models.Enums;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace RestaurantManagement.DataAccess.Models
+{
+    [Index(nameof(Email), IsUnique = true)]
+    public class User // Admin, Waiter, Chef
+    {
+        [Key]
+        public int Id { get; set; }
+        [Required]
+        [MaxLength(100)]
+        public string Name { get; set; } = string.Empty;
+        [Required]
+        [MaxLength(10)]
+        public string MobileNumber { get; set; } = string.Empty;
+        [EmailAddress]
+        public string Email { get; set; } = string.Empty;
+        [Required]
+        
+        public string Password { get; set; } = string.Empty;
+        public UserRole Role { get; set; } 
+        public bool IsActive { get; set; } = true;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public ICollection<Order> OrdersTaken { get; set; } = new List<Order>();
+        public ICollection<Bill> BillsGenerated { get; set; } = new List<Bill>();
+    }
+}
