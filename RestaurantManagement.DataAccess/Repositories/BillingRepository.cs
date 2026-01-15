@@ -10,9 +10,12 @@ namespace RestaurantManagement.DataAccess.Repositories
 
         public async Task<Bill?> GetBillDetailsAsync(int billId)
             => await _context.Bills
-                .Include(b => b.Customer)
-                .Include(b => b.Order)
-                .FirstOrDefaultAsync(b => b.Id == billId);
+        .Include(b => b.Customer)
+        .Include(b => b.GeneratedByWaiter)
+        .Include(b => b.Orders)                
+            .ThenInclude(o => o.Items)          
+                .ThenInclude(i => i.MenuItem)    
+        .FirstOrDefaultAsync(b => b.Id == billId);
 
         public async Task<List<Bill>> GetBillsByCustomerIdAsync(int customerId)
             => await _context.Bills
@@ -25,5 +28,4 @@ namespace RestaurantManagement.DataAccess.Repositories
                 .OrderByDescending(b => b.GeneratedAt)
                 .ToListAsync();
     }
-
 }

@@ -21,9 +21,6 @@ namespace RestaurantManagement.DataAccess.Repositories
         public async Task<List<T>> GetAllAsync()
             => await _dbSet.ToListAsync();
 
-        public async Task<List<T>> FindAsync(Expression<Func<T, bool>> predicate)
-            => await _dbSet.Where(predicate).ToListAsync();
-
         public async Task AddAsync(T entity)
             => await _dbSet.AddAsync(entity);
 

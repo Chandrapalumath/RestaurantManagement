@@ -10,8 +10,6 @@ namespace RestaurantManagement.DataAccess.Models
         [Required]
         public int CustomerId { get; set; }
         [Required]
-        public int OrderId { get; set; }
-        [Required]
         public int GeneratedByWaiterId { get; set; }
         public decimal SubTotal { get; set; }
         public decimal DiscountPercent { get; set; }
@@ -27,10 +25,10 @@ namespace RestaurantManagement.DataAccess.Models
         public DateTime GeneratedAt { get; set; } = DateTime.UtcNow;
         [ForeignKey(nameof(CustomerId))]
         public Customer? Customer { get; set; }
-        [ForeignKey(nameof(OrderId))]
-        public Order? Order { get; set; }
         [ForeignKey(nameof(GeneratedByWaiterId))]
         public User? GeneratedByWaiter { get; set; }
+
+        public ICollection<Order> Orders { get; set; } = new List<Order>(); 
     }
 
 }

@@ -10,6 +10,5 @@ namespace RestaurantManagement.Backend.Services.Interfaces
         Task<MenuItemResponseDto> CreateAsync(MenuItemCreateRequestDto dto);
         Task<MenuItemResponseDto> UpdateAsync(int id, MenuItemUpdateRequestDto dto);
         Task DeleteAsync(int id);
-        Task<MenuItemResponseDto> UpdateAvailabilityAsync(int id, bool isAvailable);
     }
 }

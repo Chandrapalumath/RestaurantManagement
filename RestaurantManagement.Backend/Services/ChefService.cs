@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Backend.Services.Interfaces;
+﻿using RestaurantManagement.Backend.Exceptions;
+using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.DataAccess.Models;
 using RestaurantManagement.DataAccess.Models.Enums;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
@@ -24,7 +25,7 @@ namespace RestaurantManagement.Backend.Services
         public async Task<OrderResponseDto> GetOrderDetailsAsync(int orderId)
         {
             var order = await _orderRepo.GetOrderWithItemsAsync(orderId)
-                        ?? throw new Exception("Order not found.");
+                        ?? throw new NotFoundException("Order not found.");
 
             return MapOrderToDto(order);
         }
@@ -32,10 +33,10 @@ namespace RestaurantManagement.Backend.Services
         public async Task<OrderResponseDto> UpdateOrderStatusAsync(int orderId, OrderStatusUpdateRequestDto dto)
         {
             var order = await _orderRepo.GetByIdAsync(orderId)
-                        ?? throw new Exception("Order not found.");
+                        ?? throw new NotFoundException("Order not found.");
 
             if (!Enum.TryParse<OrderStatus>(dto.Status, true, out var newStatus))
-                throw new Exception("Invalid status value.");
+                throw new BadRequestException("Invalid status value.");
 
             order.Status = newStatus;
             order.UpdatedAt = DateTime.UtcNow;
@@ -44,7 +45,7 @@ namespace RestaurantManagement.Backend.Services
             await _orderRepo.SaveChangesAsync();
 
             var updated = await _orderRepo.GetOrderWithItemsAsync(orderId)
-                          ?? throw new Exception("Order updated but could not load details.");
+                          ?? throw new InternalServerErrorException("Order updated but could not load details.");
 
             return MapOrderToDto(updated);
         }

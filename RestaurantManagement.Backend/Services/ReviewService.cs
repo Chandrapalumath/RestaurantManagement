@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Backend.Services.Interfaces;
+﻿using RestaurantManagement.Backend.Exceptions;
+using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.DataAccess.Models;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
 using RestaurantManagement.Dtos.Reviews;
@@ -20,7 +21,7 @@ namespace RestaurantManagement.Backend.Services
         {
             var customer = await _customerRepo.GetByIdAsync(dto.CustomerId);
             if (customer == null)
-                throw new Exception("Customer not found.");
+                throw new NotFoundException("Customer not found.");
 
             var review = new Review
             {
@@ -45,7 +46,7 @@ namespace RestaurantManagement.Backend.Services
         public async Task<ReviewResponseDto> GetByIdAsync(int id)
         {
             var review = await _reviewRepo.GetByIdAsync(id)
-                         ?? throw new Exception("Review not found.");
+                         ?? throw new NotFoundException("Review not found.");
 
             return MapReviewToDto(review);
         }
@@ -68,5 +69,4 @@ namespace RestaurantManagement.Backend.Services
             };
         }
     }
-
 }

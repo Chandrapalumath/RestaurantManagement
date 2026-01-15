@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Backend.Services.Interfaces;
+﻿using RestaurantManagement.Backend.Exceptions;
+using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.DataAccess.Models;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
 using RestaurantManagement.Dtos.Customers;
@@ -48,21 +49,7 @@ namespace RestaurantManagement.Backend.Services
         public async Task<CustomerResponseDto> GetByIdAsync(int id)
         {
             var customer = await _customerRepo.GetByIdAsync(id)
-                           ?? throw new Exception("Customer not found.");
-
-            return new CustomerResponseDto
-            {
-                Id = customer.Id,
-                Name = customer.Name,
-                MobileNumber = customer.MobileNumber,
-                CreatedAt = customer.CreatedAt
-            };
-        }
-
-        public async Task<CustomerResponseDto?> GetByMobileAsync(string mobileNumber)
-        {
-            var customer = await _customerRepo.GetByMobileAsync(mobileNumber);
-            if (customer == null) return null;
+                           ?? throw new NotFoundException("Customer not found.");
 
             return new CustomerResponseDto
             {

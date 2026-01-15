@@ -10,7 +10,6 @@ namespace RestaurantManagement.Dtos.Billing
     {
         public int BillId { get; set; }
         public int CustomerId { get; set; }
-        public int OrderId { get; set; }
 
         public decimal SubTotal { get; set; }
 
@@ -24,5 +23,7 @@ namespace RestaurantManagement.Dtos.Billing
 
         public bool IsPaymentDone { get; set; }
         public DateTime GeneratedAt { get; set; }
+        public List<int> BilledOrderIds { get; set; } = new();
     }
+
 }

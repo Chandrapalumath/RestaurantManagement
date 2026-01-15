@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Backend.Services.Interfaces;
+﻿using RestaurantManagement.Backend.Exceptions;
+using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.DataAccess.Models;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
 using RestaurantManagement.Dtos.Menu;
@@ -29,7 +30,7 @@ namespace RestaurantManagement.Backend.Services
         public async Task<MenuItemResponseDto> GetByIdAsync(int id)
         {
             var item = await _menuRepo.GetByIdAsync(id)
-                       ?? throw new Exception("Menu item not found.");
+                       ?? throw new NotFoundException("Menu item not found.");
 
             return new MenuItemResponseDto
             {
@@ -42,6 +43,11 @@ namespace RestaurantManagement.Backend.Services
 
         public async Task<MenuItemResponseDto> CreateAsync(MenuItemCreateRequestDto dto)
         {
+            var menuItem = _menuRepo.GetByNameAsync(dto.Name);
+            if(menuItem == null)
+            {
+                throw new BadRequestException("Item Already Exists");
+            }
             var entity = new MenuItem
             {
                 Name = dto.Name.Trim(),
@@ -64,7 +70,7 @@ namespace RestaurantManagement.Backend.Services
         public async Task<MenuItemResponseDto> UpdateAsync(int id, MenuItemUpdateRequestDto dto)
         {
             var entity = await _menuRepo.GetByIdAsync(id)
-                         ?? throw new Exception("Menu item not found.");
+                         ?? throw new NotFoundException("Menu item not found.");
             if(dto.Name != null) 
                 entity.Name = dto.Name.Trim();
             if(dto.Price.HasValue)
@@ -81,22 +87,10 @@ namespace RestaurantManagement.Backend.Services
         public async Task DeleteAsync(int id)
         {
             var entity = await _menuRepo.GetByIdAsync(id)
-                         ?? throw new Exception("Menu item not found.");
+                         ?? throw new NotFoundException("Menu item not found.");
 
             _menuRepo.Delete(entity);
             await _menuRepo.SaveChangesAsync();
-        }
-
-        public async Task<MenuItemResponseDto> UpdateAvailabilityAsync(int id, bool isAvailable)
-        {
-            var entity = await _menuRepo.GetByIdAsync(id)
-                         ?? throw new Exception("Menu item not found.");
-
-            entity.IsAvailable = isAvailable;
-            _menuRepo.Update(entity);
-            await _menuRepo.SaveChangesAsync();
-
-            return await GetByIdAsync(id);
         }
     }
 

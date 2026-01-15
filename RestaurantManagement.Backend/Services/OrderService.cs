@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Backend.Services.Interfaces;
+﻿using RestaurantManagement.Backend.Exceptions;
+using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.DataAccess.Models;
 using RestaurantManagement.DataAccess.Models.Enums;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
@@ -26,15 +27,15 @@ namespace RestaurantManagement.Backend.Services
         {
             var customer = await _customerRepo.GetByIdAsync(dto.CustomerId);
             if (customer == null)
-                throw new Exception("Customer not found.");
+                throw new NotFoundException("Customer not found.");
 
             if (dto.Items == null || dto.Items.Count == 0)
-                throw new Exception("Order must contain at least one item.");
+                throw new BadRequestException("Order must contain at least one item.");
 
             foreach (var item in dto.Items)
             {
                 if (item.Quantity <= 0)
-                    throw new Exception("Quantity must be greater than 0.");
+                    throw new BadRequestException("Quantity must be greater than 0.");
             }
 
             var order = new Order
@@ -42,6 +43,7 @@ namespace RestaurantManagement.Backend.Services
                 CustomerId = dto.CustomerId,
                 WaiterId = waiterId,
                 Status = OrderStatus.Pending,
+                IsBilled = false,
                 CreatedAt = DateTime.UtcNow
             };
 
@@ -49,10 +51,10 @@ namespace RestaurantManagement.Backend.Services
             {
                 var menu = await _menuRepo.GetByIdAsync(item.MenuItemId);
                 if (menu == null)
-                    throw new Exception($"Menu item not found: {item.MenuItemId}");
+                    throw new NotFoundException($"Menu item not found: {item.MenuItemId}");
 
                 if (!menu.IsAvailable)
-                    throw new Exception($"Menu item not available: {menu.Name}");
+                    throw new NotFoundException($"Menu item not available: {menu.Name}");
 
                 var unitPrice = menu.Price;
 
@@ -67,15 +69,16 @@ namespace RestaurantManagement.Backend.Services
             await _orderRepo.AddAsync(order);
             await _orderRepo.SaveChangesAsync();
             var saved = await _orderRepo.GetOrderWithItemsAsync(order.Id)
-                        ?? throw new Exception("Order saved but could not load details.");
+                        ?? throw new InternalServerErrorException("Order saved but could not load details.");
 
             return MapOrderToDto(saved);
         }
 
+
         public async Task<OrderResponseDto> GetByIdAsync(int id)
         {
             var order = await _orderRepo.GetOrderWithItemsAsync(id)
-                        ?? throw new Exception("Order not found.");
+                        ?? throw new NotFoundException("Order not found.");
 
             return MapOrderToDto(order);
         }
@@ -85,12 +88,6 @@ namespace RestaurantManagement.Backend.Services
             var list = await _orderRepo.GetOrdersByCustomerIdAsync(customerId);
             return list.Select(MapOrderToDto).ToList();
         }
-
-        //public async Task<List<OrderResponseDto>> GetTodayOrdersAsync()
-        //{
-        //    var list = await _orderRepo.GetTodayOrdersAsync();
-        //    return list.Select(MapOrderToDto).ToList();
-        //}
         private static OrderResponseDto MapOrderToDto(Order order)
         {
             return new OrderResponseDto

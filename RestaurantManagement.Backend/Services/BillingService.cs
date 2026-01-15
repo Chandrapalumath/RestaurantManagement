@@ -1,6 +1,6 @@
-﻿using RestaurantManagement.Backend.Services.Interfaces;
+﻿using RestaurantManagement.Backend.Exceptions;
+using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.DataAccess.Models;
-using RestaurantManagement.DataAccess.Models.Enums;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
 using RestaurantManagement.Dtos.Billing;
 
@@ -19,68 +19,18 @@ namespace RestaurantManagement.Backend.Services
             _settingsRepo = settingsRepo;
         }
 
-        //public async Task<BillResponseDto> GenerateBillAsync(int customerId, int waiterId)
-        //{
-        //    var order = await _orderRepo.GetLatestCompletedOrderByCustomerAsync(customerId);
-        //    if (order == null)
-        //        throw new Exception("No completed order found for this customer.");
-
-        //    var existingBill = await _billingRepo.FindAsync(b => b.OrderId == order.Id);
-        //    if (existingBill.Any())
-        //        throw new Exception("Bill already generated for this order.");
-
-        //    var settings = await _settingsRepo.GetSettingsAsync();
-        //    if (settings == null)
-        //        throw new Exception("Admin settings not configured.");
-
-        //    var subTotal = order.Items.Sum(i => (i.UnitPrice*i.Quantity));
-
-        //    var discountPercent = settings.DiscountPercent;
-        //    var taxPercent = settings.TaxPercent;
-
-        //    var discountAmount = (subTotal * discountPercent) / 100m;
-        //    var taxable = subTotal - discountAmount;
-        //    var taxAmount = (taxable * taxPercent) / 100m;
-        //    var grandTotal = taxable + taxAmount;
-
-        //    var bill = new Bill
-        //    {
-        //        CustomerId = customerId,
-        //        OrderId = order.Id,
-        //        GeneratedByWaiterId = waiterId,
-        //        SubTotal = subTotal,
-        //        DiscountPercent = discountPercent,
-        //        DiscountAmount = discountAmount,
-        //        TaxPercent = taxPercent,
-        //        TaxAmount = taxAmount,
-        //        GrandTotal = grandTotal,
-        //        IsPaymentDone = false,
-        //        GeneratedAt = DateTime.UtcNow
-        //    };
-
-        //    await _billingRepo.AddAsync(bill);
-        //    await _billingRepo.SaveChangesAsync();
-
-        //    return MapBillToDto(bill);
-        //}
-
-        public async Task<BillResponseDto> GenerateBillByOrderIdAsync(int orderId, int waiterId)
+        public async Task<BillResponseDto> GenerateBillAsync(int customerId, int waiterId)
         {
-            var order = await _orderRepo.GetOrderWithItemsAsync(orderId)
-                        ?? throw new Exception("Order not found.");
+            var orders = await _orderRepo.GetCompletedUnbilledOrdersByCustomerAsync(customerId);
 
-            if (order.Status != OrderStatus.Completed)
-                throw new Exception("Only completed orders can be billed.");
-
-            // prevent duplicate bill for same order
-            var existing = await _billingRepo.FindAsync(b => b.OrderId == order.Id);
-            if (existing.Any())
-                throw new Exception("Bill already generated for this order.");
+            if (orders.Count == 0)
+                throw new NotFoundException("No completed unbilled orders found for this customer.");
 
             var settings = await _settingsRepo.GetSettingsAsync()
-                           ?? throw new Exception("Admin settings not configured.");
+                           ?? throw new NotFoundException("Admin settings not configured.");
 
-            var subTotal = order.Items.Sum(i => (i.Quantity * i.UnitPrice));
+            var allItems = orders.SelectMany(o => o.Items).ToList();
+            var subTotal = allItems.Sum(i => (i.Quantity*i.UnitPrice));
 
             var discountPercent = settings.DiscountPercent;
             var taxPercent = settings.TaxPercent;
@@ -92,8 +42,7 @@ namespace RestaurantManagement.Backend.Services
 
             var bill = new Bill
             {
-                CustomerId = order.CustomerId,
-                OrderId = order.Id,
+                CustomerId = customerId,
                 GeneratedByWaiterId = waiterId,
                 SubTotal = subTotal,
                 DiscountPercent = discountPercent,
@@ -108,9 +57,29 @@ namespace RestaurantManagement.Backend.Services
             await _billingRepo.AddAsync(bill);
             await _billingRepo.SaveChangesAsync();
 
-            return MapBillToDto(bill);
-        }
+            foreach (var order in orders)
+            {
+                order.IsBilled = true;
+                order.BillId = bill.Id;
+                _orderRepo.Update(order);
+            }
 
+            await _orderRepo.SaveChangesAsync();
+
+            return new BillResponseDto
+            {
+                BillId = bill.Id,
+                CustomerId = bill.CustomerId,
+                SubTotal = bill.SubTotal,
+                DiscountPercent = bill.DiscountPercent,
+                DiscountAmount = bill.DiscountAmount,
+                TaxPercent = bill.TaxPercent,
+                TaxAmount = bill.TaxAmount,
+                GrandTotal = bill.GrandTotal,
+                IsPaymentDone = bill.IsPaymentDone,
+                GeneratedAt = bill.GeneratedAt
+            };
+        }
 
         public async Task MarkPaymentDoneAsync(int billId, int waiterId)
         {
@@ -118,7 +87,7 @@ namespace RestaurantManagement.Backend.Services
                        ?? throw new Exception("Bill not found.");
 
             if (bill.GeneratedByWaiterId != waiterId)
-                throw new Exception("You can update payment only for your own bill.");
+                throw new BadRequestException("You can update payment only for your own bill.");
 
             bill.IsPaymentDone = true;
             _billingRepo.Update(bill);
@@ -128,10 +97,10 @@ namespace RestaurantManagement.Backend.Services
         public async Task<BillResponseDto> GetBillByIdAsync(int billId, int? waiterId, bool isAdmin)
         {
             var bill = await _billingRepo.GetBillDetailsAsync(billId)
-                       ?? throw new Exception("Bill not found.");
+                       ?? throw new NotFoundException("Bill not found.");
 
             if (!isAdmin && waiterId.HasValue && bill.GeneratedByWaiterId != waiterId.Value)
-                throw new Exception("You can only view bills generated by you.");
+                throw new BadRequestException("You can only view bills generated by you.");
 
             return MapBillToDto(bill);
         }
@@ -158,7 +127,6 @@ namespace RestaurantManagement.Backend.Services
             {
                 BillId = bill.Id,
                 CustomerId = bill.CustomerId,
-                OrderId = bill.OrderId,
                 SubTotal = bill.SubTotal,
                 DiscountPercent = bill.DiscountPercent,
                 DiscountAmount = bill.DiscountAmount,

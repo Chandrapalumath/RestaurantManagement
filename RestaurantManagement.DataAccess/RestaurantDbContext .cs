@@ -20,11 +20,6 @@ namespace RestaurantManagement.DataAccess
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>()
-                .HasIndex(x => x.Email)
-                .IsUnique();
-
-
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Customer)
                 .WithMany(c => c.Orders)
@@ -50,12 +45,6 @@ namespace RestaurantManagement.DataAccess
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Bill>()
-                .HasOne(b => b.Order)
-                .WithOne(o => o.Bill)
-                .HasForeignKey<Bill>(b => b.OrderId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Bill>()
                 .HasOne(b => b.Customer)
                 .WithMany(c => c.Bills)
                 .HasForeignKey(b => b.CustomerId)
@@ -65,6 +54,12 @@ namespace RestaurantManagement.DataAccess
                 .HasOne(b => b.GeneratedByWaiter)
                 .WithMany(u => u.BillsGenerated)
                 .HasForeignKey(b => b.GeneratedByWaiterId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Bill)
+                .WithMany(b => b.Orders)
+                .HasForeignKey(o => o.BillId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Review>()

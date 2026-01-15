@@ -1,5 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
+using RestaurantManagement.Api.Middlewares;
 using RestaurantManagement.Backend.Services;
 using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.DataAccess;
@@ -53,7 +54,7 @@ namespace RestaurantManagement.Api
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
 
             app.MapControllers();
 

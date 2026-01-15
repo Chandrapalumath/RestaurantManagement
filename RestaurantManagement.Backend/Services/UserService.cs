@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Backend.Services.Interfaces;
+﻿using RestaurantManagement.Backend.Exceptions;
+using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.DataAccess.Models;
 using RestaurantManagement.DataAccess.Models.Enums;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
@@ -19,13 +20,13 @@ namespace RestaurantManagement.Backend.Services
         {
             var existing = await _userRepo.GetByEmailAsync(dto.Email.Trim().ToLower());
             if (existing != null)
-                throw new Exception("Email already exists.");
+                throw new BadRequestException("Email already exists.");
 
             if (!Enum.TryParse<UserRole>(dto.Role, true, out var role))
-                throw new Exception("Invalid role.");
+                throw new BadRequestException("Invalid role.");
 
             if (role == UserRole.Admin)
-                throw new Exception("Admin cannot be created here.");
+                throw new BadRequestException("Admin cannot be created here.");
 
             var user = new User
             {
@@ -51,7 +52,6 @@ namespace RestaurantManagement.Backend.Services
             };
         }
 
-
         public async Task<List<UserResponseDto>> GetAllUsersAsync()
         {
             var users = await _userRepo.GetAllAsync();
@@ -69,7 +69,7 @@ namespace RestaurantManagement.Backend.Services
         public async Task<UserResponseDto> GetUserByIdAsync(int id)
         {
             var user = await _userRepo.GetByIdAsync(id)
-                       ?? throw new Exception("User not found.");
+                       ?? throw new NotFoundException("User not found.");
 
             return new UserResponseDto
             {
@@ -85,7 +85,7 @@ namespace RestaurantManagement.Backend.Services
         public async Task<string> UpdateUserAsync(int id, UserUpdateRequestDto dto)
         {
             var user = await _userRepo.GetByIdAsync(id)
-                       ?? throw new Exception("User not found.");
+                       ?? throw new NotFoundException("User not found.");
 
             if (!string.IsNullOrWhiteSpace(dto.FullName))
                 user.Name = dto.FullName.Trim();
@@ -100,10 +100,10 @@ namespace RestaurantManagement.Backend.Services
                 user.IsActive = dto.IsActive.Value;
 
             if (!Enum.TryParse<UserRole>(dto.Role, true, out var role))
-                throw new Exception("Invalid role.");
+                throw new BadRequestException("Invalid role.");
 
             if (role == UserRole.Admin)
-                throw new Exception("Admin cannot be created here.");
+                throw new BadRequestException("Admin cannot be created here.");
 
             _userRepo.Update(user);
             await _userRepo.SaveChangesAsync();

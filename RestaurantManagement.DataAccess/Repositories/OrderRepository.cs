@@ -15,12 +15,15 @@ namespace RestaurantManagement.DataAccess.Repositories
                     .ThenInclude(i => i.MenuItem)
                 .FirstOrDefaultAsync(o => o.Id == orderId);
 
-        public async Task<List<Order>> OrdersByDayAsync(DateTime day)
+        public async Task<List<Order>> GetCompletedUnbilledOrdersByCustomerAsync(int customerId)
         {
             return await _context.Orders
                 .Include(o => o.Items)
-                .Where(o => o.CreatedAt.Date == day)
-                .OrderByDescending(o => o.CreatedAt)
+                    .ThenInclude(i => i.MenuItem)
+                .Where(o => o.CustomerId == customerId
+                            && o.Status == OrderStatus.Completed
+                            && o.IsBilled == false)
+                .OrderBy(o => o.CreatedAt)
                 .ToListAsync();
         }
 
@@ -49,13 +52,5 @@ namespace RestaurantManagement.DataAccess.Repositories
 
             return await query.OrderByDescending(o => o.CreatedAt).ToListAsync();
         }
-
-        public async Task<Order?> GetLatestCompletedOrderByCustomerAsync(int customerId)
-            => await _context.Orders
-                .Include(o => o.Items)
-                    .ThenInclude(i => i.MenuItem)
-                .Where(o => o.CustomerId == customerId && o.Status == OrderStatus.Completed)
-                .OrderByDescending(o => o.CreatedAt)
-                .FirstOrDefaultAsync();
     }
 }

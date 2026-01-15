@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RestaurantManagement.Api.Middlewares;
 using RestaurantManagement.Backend.Services.Interfaces;
+using RestaurantManagement.Dtos.Billing;
 using RestaurantManagement.Dtos.Orders;
 
 namespace RestaurantManagement.Api.Controllers
@@ -14,7 +16,10 @@ namespace RestaurantManagement.Api.Controllers
         {
             _chefService = chefService;
         }
+
         [HttpGet("orders")]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllOrdersForChefAsync([FromQuery] string? status)
         {
             return Ok(await _chefService.GetOrdersAsync(status));
@@ -25,6 +30,10 @@ namespace RestaurantManagement.Api.Controllers
             return Ok(await _chefService.GetOrderDetailsAsync(orderId));
         }
         [HttpPut("orders/{orderId:int}/statusCCHANGEIT")]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateOrderStatusAsync(int orderId, OrderStatusUpdateRequestDto dto)
         {
             return Ok(await _chefService.UpdateOrderStatusAsync(orderId, dto));

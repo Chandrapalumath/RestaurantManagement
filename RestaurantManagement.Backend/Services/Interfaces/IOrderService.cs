@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Dtos.Orders;
+﻿using RestaurantManagement.DataAccess.Models;
+using RestaurantManagement.Dtos.Orders;
 
 namespace RestaurantManagement.Backend.Services.Interfaces
 {
@@ -7,6 +8,5 @@ namespace RestaurantManagement.Backend.Services.Interfaces
         Task<OrderResponseDto> CreateOrderAsync(OrderCreateRequestDto dto, int waiterId);
         Task<OrderResponseDto> GetByIdAsync(int id);
         Task<List<OrderResponseDto>> GetOrdersByCustomerIdAsync(int customerId);
-        //Task<List<OrderResponseDto>> OrdersByDayAsync(DateTime day);
     }
 }

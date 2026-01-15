@@ -16,6 +16,8 @@ namespace RestaurantManagement.DataAccess.Models
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public bool IsBilled { get; set; } = false;
+        public int? BillId { get; set; }
         public DateTime? UpdatedAt { get; set; }
         [ForeignKey(nameof(CustomerId))]
         public Customer? Customer { get; set; }
@@ -24,7 +26,8 @@ namespace RestaurantManagement.DataAccess.Models
 
         public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
 
-        public Bill Bill { get; set; } 
+        [ForeignKey(nameof(BillId))]
+        public Bill? Bill { get; set; }
     }
 
 }

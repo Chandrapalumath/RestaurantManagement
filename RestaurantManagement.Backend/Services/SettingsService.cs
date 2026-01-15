@@ -1,4 +1,5 @@
-﻿using RestaurantManagement.Backend.Services.Interfaces;
+﻿using RestaurantManagement.Backend.Exceptions;
+using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.DataAccess.Models;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
 using RestaurantManagement.Dtos.Settings;
@@ -20,7 +21,7 @@ namespace RestaurantManagement.Backend.Services
         {
             var settings = await _settingsRepo.GetSettingsAsync();
             if (settings == null)
-                throw new Exception("Settings not found.");
+                throw new NotFoundException("Settings not found.");
 
             return new SettingsResponseDto
             {
