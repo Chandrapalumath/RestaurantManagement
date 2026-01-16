@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.DataAccess.Models;
+using RestaurantManagement.DataAccess.Models.Enums;
 
 namespace RestaurantManagement.DataAccess
 {
@@ -73,6 +74,22 @@ namespace RestaurantManagement.DataAccess
                 .WithMany()
                 .HasForeignKey(s => s.UpdatedByAdminId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            var adminId = 1;
+
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    Id = adminId,
+                    Name = "Admin",
+                    Email = "admin@gmail.com",
+                    MobileNumber = "9999999999",
+                    Role = UserRole.Admin,
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow,
+                    Password = BCrypt.Net.BCrypt.HashPassword("Chandrapal@123")
+                }
+            );
         }
     }
 }

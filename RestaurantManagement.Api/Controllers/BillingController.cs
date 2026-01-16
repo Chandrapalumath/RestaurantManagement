@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Api.Middlewares;
 using RestaurantManagement.Backend.Services.Interfaces;
+using RestaurantManagement.Dtos.Billing;
 using System.Security.Claims;
 
 namespace RestaurantManagement.Api.Controllers
 {
-    [Route("api/billing")]
+    [Authorize(Roles = "Waiter,Admin")]
+    [Route("api/bills")]
     [ApiController]
     public class BillingController : Controller
     {
@@ -17,31 +19,34 @@ namespace RestaurantManagement.Api.Controllers
             _billingService = billingService;
         }
 
-        [HttpPost("generate/order/{customerId:int}")]
+        [Authorize(Roles = "Waiter")]
+        [HttpPost("{Id:int}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GenerateBill(int customerId)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GenerateBill(int Id)
         {
             int waiterId = 1;
-            var result = await _billingService.GenerateBillAsync(customerId, waiterId);
+            var result = await _billingService.GenerateBillAsync(Id, waiterId);
             return Ok(result);
         }
 
-        [HttpPut("{billId:int}/payment-done")]
+        [Authorize(Roles = "Waiter")]
+        [HttpPatch("{Id:int}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> MarkPaymentDoneAsync(int billId)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateBill(int Id, BillUpdateRequestDto dto)
         {
-            int waiterId = 1; // hc value change at the time of authorization
-            await _billingService.MarkPaymentDoneAsync(billId, waiterId);
-            return Ok("Payment marked as done.");
+            int waiterId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            await _billingService.UpdateBill(Id, waiterId, dto);
+            return Ok("Updated Successfully");
         }
 
-        [HttpGet("{billId:int}")]
+        [Authorize(Roles = "Waiter,Admin")]
+        [HttpGet("{Id:int}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetBillByIdAsync(int billId)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetBillByIdAsync(int Id)
         {
             int? waiterId = User.IsInRole("Waiter")
             ? int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
@@ -49,14 +54,14 @@ namespace RestaurantManagement.Api.Controllers
 
             bool isAdmin = User.IsInRole("Admin");
 
-            return Ok(await _billingService.GetBillByIdAsync(billId, waiterId, isAdmin));
+            return Ok(await _billingService.GetBillByIdAsync(Id, waiterId, isAdmin));
         }
 
-        [HttpGet("customer/{customerId:int}")]
+        [HttpGet("customer/{Id:int}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetBillsByCustomerIdAsync(int customerId)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetBillsByCustomerIdAsync(int Id)
         {
             int? waiterId = User.IsInRole("Waiter")
             ? int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
@@ -64,13 +69,14 @@ namespace RestaurantManagement.Api.Controllers
 
             bool isAdmin = User.IsInRole("Admin");
 
-            return Ok(await _billingService.GetBillsByCustomerIdAsync(customerId, waiterId, isAdmin));
+            return Ok(await _billingService.GetBillsByCustomerIdAsync(Id, waiterId, isAdmin));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllBillsAsync()
         {
             return Ok(await _billingService.GetAllBillsAsync());

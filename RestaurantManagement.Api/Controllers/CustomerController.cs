@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Api.Middlewares;
 using RestaurantManagement.Backend.Services.Interfaces;
@@ -18,21 +19,26 @@ namespace RestaurantManagement.Api.Controllers
             _customerService = customerService;
         }
 
+        [Authorize(Roles = "Waiter")]
         [HttpPost]
         public async Task<IActionResult> CreateCustomerAsync(CustomerCreateRequestDto dto)
         {
             return Ok(await _customerService.CreateAsync(dto));
         }
+
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id:int}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCustomerByIdAsync(int id)
         {
             return Ok(await _customerService.GetByIdAsync(id)); ;
         }
+
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllCustomersAsync()
         {
             return Ok(await _customerService.GetAllAsync()); ;

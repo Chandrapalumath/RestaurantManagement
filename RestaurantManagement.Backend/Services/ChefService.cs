@@ -30,15 +30,17 @@ namespace RestaurantManagement.Backend.Services
             return MapOrderToDto(order);
         }
 
-        public async Task<OrderResponseDto> UpdateOrderStatusAsync(int orderId, OrderStatusUpdateRequestDto dto)
+        public async Task<OrderResponseDto> UpdateOrderAsync(int orderId, OrderUpdateRequestDto dto)
         {
             var order = await _orderRepo.GetByIdAsync(orderId)
                         ?? throw new NotFoundException("Order not found.");
 
-            if (!Enum.TryParse<OrderStatus>(dto.Status, true, out var newStatus))
-                throw new BadRequestException("Invalid status value.");
-
-            order.Status = newStatus;
+            if(dto.Status != null)
+            {
+                if (!Enum.TryParse<OrderStatus>(dto.Status, true, out var newStatus))
+                    throw new BadRequestException("Invalid status value.");
+                order.Status = newStatus;
+            }
             order.UpdatedAt = DateTime.UtcNow;
 
             _orderRepo.Update(order);

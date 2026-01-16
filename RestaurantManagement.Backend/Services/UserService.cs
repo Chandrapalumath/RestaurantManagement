@@ -25,9 +25,6 @@ namespace RestaurantManagement.Backend.Services
             if (!Enum.TryParse<UserRole>(dto.Role, true, out var role))
                 throw new BadRequestException("Invalid role.");
 
-            if (role == UserRole.Admin)
-                throw new BadRequestException("Admin cannot be created here.");
-
             var user = new User
             {
                 Email = dto.Email.Trim().ToLower(),
@@ -35,7 +32,7 @@ namespace RestaurantManagement.Backend.Services
                 MobileNumber = dto.MobileNumber.Trim(),
                 Role = role,
                 IsActive = true,
-                Password = dto.Password,
+                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password)
             };
 
             await _userRepo.AddAsync(user);

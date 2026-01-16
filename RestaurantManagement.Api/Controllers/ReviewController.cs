@@ -9,6 +9,7 @@ namespace RestaurantManagement.Api.Controllers
 {
     [Route("api/reviews")]
     [ApiController]
+    [Authorize]
     public class ReviewController : Controller
     {
         private readonly IReviewService _reviewService;
@@ -18,36 +19,40 @@ namespace RestaurantManagement.Api.Controllers
             _reviewService = reviewService;
         }
 
+        [Authorize(Roles = "Waiter")]
         [HttpPost]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> CreateReviewAsync(ReviewCreateRequestDto dto)
         {
             return Ok(await _reviewService.CreateAsync(dto));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllReviewsAsync()
         {
             return Ok(await _reviewService.GetAllAsync());
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id:int}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetReviewByIdAsync(int id)
         {
             return Ok(await _reviewService.GetByIdAsync(id));
         }
 
-        [HttpGet("customer/{customerId:int}")]
+        [Authorize(Roles = "Admin")]
+        [HttpGet("customer/{Id:int}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetReviewsByCustomerIdAsync(int customerId)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetReviewsByCustomerIdAsync(int Id)
         {
-            return Ok(await _reviewService.GetByCustomerIdAsync(customerId));
+            return Ok(await _reviewService.GetByCustomerIdAsync(Id));
         }
     }
 }

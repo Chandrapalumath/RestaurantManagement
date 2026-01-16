@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Api.Middlewares;
 using RestaurantManagement.Backend.Services.Interfaces;
-using RestaurantManagement.Dtos.Billing;
 using RestaurantManagement.Dtos.Settings;
 using RestaurantManagement.Dtos.Users;
 
 namespace RestaurantManagement.Api.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/admin")]
     [ApiController]
     public class AdminController : Controller
@@ -21,9 +21,10 @@ namespace RestaurantManagement.Api.Controllers
             _settingsService = settingsService;
         }
 
-        [HttpPost("user")]
+        [HttpPost("users")]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> CreateUserAsync(CreateUserRequestDto dto)
         {
             var result = await _userService.CreateStaffUserAsync(dto);
@@ -38,16 +39,16 @@ namespace RestaurantManagement.Api.Controllers
 
         [HttpGet("users/{id:int}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetUserByIdAsync(int id)
         {
             return Ok(await _userService.GetUserByIdAsync(id));
         }
 
-        [HttpPatch("user/{id:int}")]
+        [HttpPatch("users/{id:int}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> UpdateUserAsync(int id, [FromBody] UserUpdateRequestDto dto)
         {
             var message = await _userService.UpdateUserAsync(id, dto);
@@ -56,7 +57,7 @@ namespace RestaurantManagement.Api.Controllers
 
         [HttpGet("settings")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetSettingsAsync()
         {
             return Ok(await _settingsService.GetSettingsAsync());

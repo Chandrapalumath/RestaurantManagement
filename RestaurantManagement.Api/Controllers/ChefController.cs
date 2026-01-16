@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Api.Middlewares;
 using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.Dtos.Billing;
@@ -6,6 +7,7 @@ using RestaurantManagement.Dtos.Orders;
 
 namespace RestaurantManagement.Api.Controllers
 {
+    [Authorize(Roles = "Chef")]
     [Route("api/chef")]
     [ApiController]
     public class ChefController : Controller
@@ -24,19 +26,14 @@ namespace RestaurantManagement.Api.Controllers
         {
             return Ok(await _chefService.GetOrdersAsync(status));
         }
-        [HttpGet("orders/{orderId:int}")]
-        public async Task<IActionResult> GetOrderDetailsAsync(int orderId)
-        {
-            return Ok(await _chefService.GetOrderDetailsAsync(orderId));
-        }
-        [HttpPut("orders/{orderId:int}/statusCCHANGEIT")]
+        [HttpPatch("orders/{Id:int}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateOrderStatusAsync(int orderId, OrderStatusUpdateRequestDto dto)
+        public async Task<IActionResult> UpdateOrderStatusAsync(int Id, OrderUpdateRequestDto dto)
         {
-            return Ok(await _chefService.UpdateOrderStatusAsync(orderId, dto));
+            return Ok(await _chefService.UpdateOrderAsync(Id, dto));
         }
     }
 }

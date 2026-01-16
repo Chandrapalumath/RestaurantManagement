@@ -2,11 +2,10 @@
 
 namespace RestaurantManagement.Dtos.Orders
 {
-    public class OrderStatusUpdateRequestDto
+    public class OrderUpdateRequestDto
     {
-        [Required]
         [RegularExpression("^(Pending|Preparing|Completed|Served)$",
             ErrorMessage = "Status must be Pending, Preparing, Completed or Served.")]
-        public string Status { get; set; } = "Pending";
+        public string? Status { get; set; } = "Pending";
     }
 }
