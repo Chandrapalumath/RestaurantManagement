@@ -18,7 +18,11 @@ namespace RestaurantManagement.Dtos.Users
         [Required, RegularExpression(@"^\d{10}$", ErrorMessage = "Mobile number must be 10 digits.")]
         public string MobileNumber { get; set; } = string.Empty;
 
-        [Required, MinLength(6), MaxLength(50)]
+        [DataType(DataType.Password)]
+        [Required, MinLength(12), MaxLength(20)]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).*$",
+            ErrorMessage = "Password must contain uppercase, lowercase, number and special character."
+        )]
         public string Password { get; set; } = string.Empty;
 
         [Required]

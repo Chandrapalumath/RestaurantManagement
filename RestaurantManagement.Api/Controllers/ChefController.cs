@@ -7,10 +7,12 @@ using RestaurantManagement.Dtos.Orders;
 
 namespace RestaurantManagement.Api.Controllers
 {
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     [Authorize(Roles = "Chef")]
     [Route("api/chef")]
     [ApiController]
-    public class ChefController : Controller
+    public class ChefController : ControllerBase
     {
         private readonly IChefService _chefService;
 

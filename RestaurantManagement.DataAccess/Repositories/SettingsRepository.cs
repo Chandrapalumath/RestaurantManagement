@@ -9,6 +9,6 @@ namespace RestaurantManagement.DataAccess.Repositories
         public SettingsRepository(RestaurantDbContext context) : base(context) { }
 
         public async Task<RestaurantSettings?> GetSettingsAsync()
-            => await _context.RestaurantSettings.FirstOrDefaultAsync(x => x.Id == 1);
+            => await _context.RestaurantSettings.FirstOrDefaultAsync();
     }
 }

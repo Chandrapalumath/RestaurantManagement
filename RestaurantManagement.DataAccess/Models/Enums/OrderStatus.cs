@@ -10,7 +10,6 @@ namespace RestaurantManagement.DataAccess.Models.Enums
     {
         Pending = 1,
         Preparing = 2,
-        Completed = 3,
-        Served = 4
+        Completed = 3
     }
 }

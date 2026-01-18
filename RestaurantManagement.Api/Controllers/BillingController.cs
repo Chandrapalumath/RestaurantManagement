@@ -7,10 +7,12 @@ using System.Security.Claims;
 
 namespace RestaurantManagement.Api.Controllers
 {
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     [Authorize(Roles = "Waiter,Admin")]
     [Route("api/bills")]
     [ApiController]
-    public class BillingController : Controller
+    public class BillingController : ControllerBase
     {
         private readonly IBillingService _billingService;
 
@@ -20,12 +22,12 @@ namespace RestaurantManagement.Api.Controllers
         }
 
         [Authorize(Roles = "Waiter")]
-        [HttpPost("{Id:int}")]
+        [HttpPost("customer/{Id:int}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GenerateBill(int Id)
         {
-            int waiterId = 1;
+            int waiterId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var result = await _billingService.GenerateBillAsync(Id, waiterId);
             return Ok(result);
         }

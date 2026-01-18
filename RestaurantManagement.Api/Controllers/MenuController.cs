@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Api.Middlewares;
 using RestaurantManagement.Backend.Services.Interfaces;
-using RestaurantManagement.Dtos.Billing;
 using RestaurantManagement.Dtos.Menu;
 
 namespace RestaurantManagement.Api.Controllers
 {
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     [Route("api/menu")]
     [ApiController]
-    public class MenuController : Controller
+    public class MenuController : ControllerBase
     {
         private readonly IMenuService _menuService;
 

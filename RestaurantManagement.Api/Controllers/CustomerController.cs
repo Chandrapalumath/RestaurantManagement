@@ -1,16 +1,16 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Api.Middlewares;
 using RestaurantManagement.Backend.Services.Interfaces;
-using RestaurantManagement.Dtos.Billing;
 using RestaurantManagement.Dtos.Customers;
 
 namespace RestaurantManagement.Api.Controllers
 {
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     [Route("api/customers")]
     [ApiController]
-    public class CustomerController : Controller
+    public class CustomerController : ControllerBase
     {
         private readonly ICustomerService _customerService;
 

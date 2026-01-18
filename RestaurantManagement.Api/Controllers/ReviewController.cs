@@ -7,10 +7,12 @@ using RestaurantManagement.Dtos.Reviews;
 
 namespace RestaurantManagement.Api.Controllers
 {
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     [Route("api/reviews")]
     [ApiController]
     [Authorize]
-    public class ReviewController : Controller
+    public class ReviewController : ControllerBase
     {
         private readonly IReviewService _reviewService;
 

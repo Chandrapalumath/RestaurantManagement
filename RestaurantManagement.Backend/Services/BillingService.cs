@@ -30,6 +30,7 @@ namespace RestaurantManagement.Backend.Services
             var settings = await _settingsRepo.GetSettingsAsync()
                            ?? throw new NotFoundException("Admin settings not configured.");
 
+            var orderIds = orders.Select(x => x.Id).ToList();
             var allItems = orders.SelectMany(o => o.Items).ToList();
             var subTotal = allItems.Sum(i => (i.Quantity*i.UnitPrice));
 
@@ -78,7 +79,7 @@ namespace RestaurantManagement.Backend.Services
                 TaxAmount = bill.TaxAmount,
                 GrandTotal = bill.GrandTotal,
                 IsPaymentDone = bill.IsPaymentDone,
-                GeneratedAt = bill.GeneratedAt
+                GeneratedAt = bill.GeneratedAt 
             };
         }
 

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RestaurantManagement.Api.Middlewares;
@@ -9,6 +10,7 @@ using RestaurantManagement.DataAccess;
 using RestaurantManagement.DataAccess.Repositories;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
 using System.Text;
+using System.Text.Json;
 
 namespace RestaurantManagement.Api
 {
@@ -27,6 +29,12 @@ namespace RestaurantManagement.Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(opt =>
             {
+                opt.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "RestaurantManagement API",
+                    Version = "v1"
+                });
+
                 // JWT Swagger Support
                 opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -48,9 +56,10 @@ namespace RestaurantManagement.Api
                                 Id = "Bearer"
                             }
                         },
-                    Array.Empty<string>()
-                }
+                        Array.Empty<string>()
+                    }
                 });
+                
             });
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -89,6 +98,41 @@ namespace RestaurantManagement.Api
                         ValidAudience = jwtSection["Audience"],
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSection["Key"]!))
                     };
+                    opt.Events = new JwtBearerEvents
+                    {
+                        OnChallenge = async context =>
+                        {
+                            // stop the default behaviour
+                            context.HandleResponse();
+
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            context.Response.ContentType = "application/json";
+
+                            var result = JsonSerializer.Serialize(new
+                            {
+                                success = false,
+                                message = "Please log in and then try to access this resource."
+                            });
+
+                            await context.Response.WriteAsync(result);
+                        },
+
+                        OnForbidden = async context =>
+                        {
+                            // This will trigger when user is logged in but doesn't have access (role etc.)
+                            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                            context.Response.ContentType = "application/json";
+
+                            var result = JsonSerializer.Serialize(new
+                            {
+                                success = false,
+                                message = "You are not allowed to access this resource."
+                            });
+
+                            await context.Response.WriteAsync(result);
+                        }
+                    };
+
                 });
 
             var app = builder.Build();
@@ -97,7 +141,10 @@ namespace RestaurantManagement.Api
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "RestaurantManagement API v1");
+                });
             }
             app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();

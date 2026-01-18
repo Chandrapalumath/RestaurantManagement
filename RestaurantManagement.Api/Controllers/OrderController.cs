@@ -8,10 +8,12 @@ using System.Security.Claims;
 
 namespace RestaurantManagement.Api.Controllers
 {
+    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     [Authorize(Roles = "Waiter")]
     [Route("api/orders")]
     [ApiController]
-    public class OrderController : Controller
+    public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
 

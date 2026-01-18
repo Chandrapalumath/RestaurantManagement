@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RestaurantManagement.Dtos.Billing
+﻿namespace RestaurantManagement.Dtos.Billing
 {
     public class BillResponseDto
     {
@@ -18,6 +12,5 @@ namespace RestaurantManagement.Dtos.Billing
         public decimal GrandTotal { get; set; }
         public bool IsPaymentDone { get; set; }
         public DateTime GeneratedAt { get; set; }
-        public List<int> BilledOrderIds { get; set; } = new();
     }
 }

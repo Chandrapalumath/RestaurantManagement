@@ -66,7 +66,7 @@ namespace RestaurantManagement.Backend.Services
         public async Task<UserResponseDto> GetUserByIdAsync(int id)
         {
             var user = await _userRepo.GetByIdAsync(id)
-                       ?? throw new NotFoundException("User not found.");
+                       ?? throw new NotFoundException("User not found or Invalid ID.");
 
             return new UserResponseDto
             {
