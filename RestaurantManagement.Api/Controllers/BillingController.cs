@@ -10,7 +10,7 @@ namespace RestaurantManagement.Api.Controllers
     [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     [Authorize(Roles = "Waiter,Admin")]
-    [Route("api/bills")]
+    [Route("api/billing")]
     [ApiController]
     public class BillingController : ControllerBase
     {
@@ -22,56 +22,56 @@ namespace RestaurantManagement.Api.Controllers
         }
 
         [Authorize(Roles = "Waiter")]
-        [HttpPost("customer/{Id:int}")]
+        [HttpPost("customer/{id}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GenerateBill(int Id)
+        public async Task<IActionResult> GenerateBill(Guid id)
         {
-            int waiterId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var result = await _billingService.GenerateBillAsync(Id, waiterId);
+            Guid waiterId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var result = await _billingService.GenerateBillAsync(id, waiterId);
             return Ok(result);
         }
 
         [Authorize(Roles = "Waiter")]
-        [HttpPatch("{Id:int}")]
+        [HttpPatch("{id}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateBill(int Id, BillUpdateRequestDto dto)
+        public async Task<IActionResult> UpdateBill(Guid id, BillUpdateRequestDto dto)
         {
-            int waiterId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            await _billingService.UpdateBill(Id, waiterId, dto);
+            Guid waiterId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            await _billingService.UpdateBill(id, waiterId, dto);
             return Ok("Updated Successfully");
         }
 
         [Authorize(Roles = "Waiter,Admin")]
-        [HttpGet("{Id:int}")]
+        [HttpGet("{id:Guid}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetBillByIdAsync(int Id)
+        public async Task<IActionResult> GetBillByIdAsync(Guid id)
         {
-            int? waiterId = User.IsInRole("Waiter")
-            ? int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
+            Guid? waiterId = User.IsInRole("Waiter")
+            ? Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
             : null;
 
             bool isAdmin = User.IsInRole("Admin");
 
-            return Ok(await _billingService.GetBillByIdAsync(Id, waiterId, isAdmin));
+            return Ok(await _billingService.GetBillByIdAsync(id, waiterId, isAdmin));
         }
 
-        [HttpGet("customer/{Id:int}")]
+        [HttpGet("customer/{id:Guid}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetBillsByCustomerIdAsync(int Id)
+        public async Task<IActionResult> GetBillsByCustomerIdAsync(Guid id)
         {
-            int? waiterId = User.IsInRole("Waiter")
-            ? int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
+            Guid? waiterId = User.IsInRole("Waiter")
+            ? Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
             : null;
 
             bool isAdmin = User.IsInRole("Admin");
 
-            return Ok(await _billingService.GetBillsByCustomerIdAsync(Id, waiterId, isAdmin));
+            return Ok(await _billingService.GetBillsByCustomerIdAsync(id, waiterId, isAdmin));
         }
 
         [Authorize(Roles = "Admin")]
@@ -83,6 +83,5 @@ namespace RestaurantManagement.Api.Controllers
         {
             return Ok(await _billingService.GetAllBillsAsync());
         }
-
     }
 }

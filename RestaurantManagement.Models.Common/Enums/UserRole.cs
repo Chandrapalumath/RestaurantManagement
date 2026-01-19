@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RestaurantManagement.DataAccess.Models.Enums
+namespace RestaurantManagement.Models.Common.Enums
 {
     public enum UserRole
     {

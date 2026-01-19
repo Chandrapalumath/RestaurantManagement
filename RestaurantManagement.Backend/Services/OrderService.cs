@@ -1,9 +1,10 @@
-﻿using RestaurantManagement.Backend.Exceptions;
+﻿using Microsoft.EntityFrameworkCore;
+using RestaurantManagement.Backend.Exceptions;
 using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.DataAccess.Models;
-using RestaurantManagement.DataAccess.Models.Enums;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
 using RestaurantManagement.Dtos.Orders;
+using RestaurantManagement.Models.Common.Enums;
 
 namespace RestaurantManagement.Backend.Services
 {
@@ -12,25 +13,26 @@ namespace RestaurantManagement.Backend.Services
         private readonly IOrderRepository _orderRepo;
         private readonly ICustomerRepository _customerRepo;
         private readonly IMenuRepository _menuRepo;
-
+        private readonly IGenericRepository<Table> _tableRepo;
         public OrderService(
             IOrderRepository orderRepo,
             ICustomerRepository customerRepo,
-            IMenuRepository menuRepo)
+            IMenuRepository menuRepo, IGenericRepository<Table> tableRepo)
         {
             _orderRepo = orderRepo;
             _customerRepo = customerRepo;
             _menuRepo = menuRepo;
+            _tableRepo = tableRepo;
         }
 
-        public async Task<OrderResponseDto> CreateOrderAsync(OrderCreateRequestDto dto, int waiterId)
+        public async Task<OrderResponseDto> CreateOrderAsync(OrderCreateRequestDto dto, Guid waiterId)
         {
-            var customer = await _customerRepo.GetByIdAsync(dto.CustomerId);
-            if (customer == null)
-                throw new NotFoundException("Customer not found.");
+            var table = await _tableRepo.GetByIdAsync(dto.TableId);
+            if (table == null) throw new NotFoundException("Table not found");
 
-            if (dto.Items == null || dto.Items.Count == 0)
-                throw new BadRequestException("Order must contain at least one item.");
+            if (table.IsOccupied) throw new BadRequestException("Table is already occupied");
+
+            table.IsOccupied = true;
 
             foreach (var item in dto.Items)
             {
@@ -40,7 +42,8 @@ namespace RestaurantManagement.Backend.Services
 
             var order = new Order
             {
-                CustomerId = dto.CustomerId,
+                Id = Guid.NewGuid(),
+                TableId = table.Id,
                 WaiterId = waiterId,
                 Status = OrderStatus.Pending,
                 IsBilled = false,
@@ -75,7 +78,7 @@ namespace RestaurantManagement.Backend.Services
         }
 
 
-        public async Task<OrderResponseDto> GetByIdAsync(int id)
+        public async Task<OrderResponseDto> GetByIdAsync(Guid id)
         {
             var order = await _orderRepo.GetOrderWithItemsAsync(id)
                         ?? throw new NotFoundException("Order not found.");
@@ -83,7 +86,7 @@ namespace RestaurantManagement.Backend.Services
             return MapOrderToDto(order);
         }
 
-        public async Task<List<OrderResponseDto>> GetOrdersByCustomerIdAsync(int customerId)
+        public async Task<List<OrderResponseDto>> GetOrdersByCustomerIdAsync(Guid customerId)
         {
             var list = await _orderRepo.GetOrdersByCustomerIdAsync(customerId);
             return list.Select(MapOrderToDto).ToList();
@@ -93,7 +96,7 @@ namespace RestaurantManagement.Backend.Services
             return new OrderResponseDto
             {
                 OrderId = order.Id,
-                CustomerId = order.CustomerId,
+                TableId = order.TableId,
                 WaiterId = order.WaiterId,
                 Status = order.Status.ToString(),
                 CreatedAt = order.CreatedAt,
@@ -105,6 +108,32 @@ namespace RestaurantManagement.Backend.Services
                     Quantity = i.Quantity,
                 }).ToList()
             };
+        }
+
+        public async Task<List<OrderResponseDto>> GetOrdersAsync(OrderStatus status)
+        {
+            var list = await _orderRepo.GetOrdersForChefAsync(status);
+            return list.Select(MapOrderToDto).ToList();
+        }
+
+        public async Task<OrderResponseDto> UpdateOrderAsync(Guid orderId, OrderUpdateRequestDto dto)
+        {
+            var order = await _orderRepo.GetByIdAsync(orderId)
+                        ?? throw new NotFoundException("Order not found.");
+
+            if (dto.Status != null)
+            {
+                order.Status = dto.Status.Value;
+            }
+            order.UpdatedAt = DateTime.UtcNow;
+
+            _orderRepo.Update(order);
+            await _orderRepo.SaveChangesAsync();
+
+            var updated = await _orderRepo.GetOrderWithItemsAsync(orderId)
+                          ?? throw new InternalServerErrorException("Order updated but could not load details.");
+
+            return MapOrderToDto(updated);
         }
     }
 }

@@ -9,10 +9,13 @@ namespace RestaurantManagement.Dtos.Customers
 {
     public class CustomerCreateRequestDto
     {
-        [Required, MinLength(2), MaxLength(100)]
+        [Required, MinLength(2), MaxLength(50)]
         public string Name { get; set; } = string.Empty;
 
         [Required, RegularExpression(@"^\d{10}$", ErrorMessage = "Mobile number must be 10 digits.")]
         public string MobileNumber { get; set; } = string.Empty;
+
+        [Required]
+        public Guid TableId { get; set; }
     }
 }

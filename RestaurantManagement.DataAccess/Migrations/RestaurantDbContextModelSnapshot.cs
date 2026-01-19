@@ -24,14 +24,12 @@ namespace RestaurantManagement.DataAccess.Migrations
 
             modelBuilder.Entity("RestaurantManagement.DataAccess.Models.Bill", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("DiscountAmount")
                         .HasColumnType("decimal(18,2)");
@@ -42,8 +40,8 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.Property<DateTime>("GeneratedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("GeneratedByWaiterId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("GeneratedByWaiterId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("GrandTotal")
                         .HasColumnType("decimal(18,2)");
@@ -71,11 +69,9 @@ namespace RestaurantManagement.DataAccess.Migrations
 
             modelBuilder.Entity("RestaurantManagement.DataAccess.Models.Customer", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -100,11 +96,9 @@ namespace RestaurantManagement.DataAccess.Migrations
 
             modelBuilder.Entity("RestaurantManagement.DataAccess.Models.MenuItem", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -130,20 +124,18 @@ namespace RestaurantManagement.DataAccess.Migrations
 
             modelBuilder.Entity("RestaurantManagement.DataAccess.Models.Order", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("BillId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("BillingId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
+                    b.Property<Guid?>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsBilled")
                         .HasColumnType("bit");
@@ -151,17 +143,22 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("TableId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("WaiterId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("WaiterId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BillId");
+                    b.HasIndex("BillingId");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("TableId");
 
                     b.HasIndex("WaiterId");
 
@@ -170,17 +167,15 @@ namespace RestaurantManagement.DataAccess.Migrations
 
             modelBuilder.Entity("RestaurantManagement.DataAccess.Models.OrderItem", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<Guid>("MenuItemId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("MenuItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -199,11 +194,9 @@ namespace RestaurantManagement.DataAccess.Migrations
 
             modelBuilder.Entity("RestaurantManagement.DataAccess.Models.RestaurantSettings", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("DiscountPercent")
                         .HasColumnType("decimal(18,2)");
@@ -214,23 +207,31 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UpdatedByAdminId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("UpdatedByAdminId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("UpdatedByAdminId");
 
                     b.ToTable("RestaurantSettings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("d1856804-0a13-4b47-b1b2-8857a610be9d"),
+                            DiscountPercent = 10m,
+                            TaxPercent = 10m,
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UpdatedByAdminId = new Guid("7c794889-d79a-408e-8cf4-0e4d7164ef65")
+                        });
                 });
 
             modelBuilder.Entity("RestaurantManagement.DataAccess.Models.Review", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Comment")
                         .HasMaxLength(500)
@@ -239,8 +240,8 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Rating")
                         .HasColumnType("int");
@@ -252,13 +253,36 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.ToTable("Reviews");
                 });
 
-            modelBuilder.Entity("RestaurantManagement.DataAccess.Models.User", b =>
+            modelBuilder.Entity("RestaurantManagement.DataAccess.Models.Table", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsOccupied")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Size")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("TableName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tables");
+                });
+
+            modelBuilder.Entity("RestaurantManagement.DataAccess.Models.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -297,13 +321,13 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
-                            CreatedAt = new DateTime(2026, 1, 16, 9, 12, 34, 755, DateTimeKind.Utc).AddTicks(4349),
+                            Id = new Guid("7c794889-d79a-408e-8cf4-0e4d7164ef65"),
+                            CreatedAt = new DateTime(2026, 1, 19, 19, 28, 27, 864, DateTimeKind.Utc).AddTicks(4737),
                             Email = "admin@gmail.com",
                             IsActive = true,
                             MobileNumber = "9999999999",
                             Name = "Admin",
-                            Password = "$2a$11$lzkWRxJP0JpuE0Rbk6wdP.dia5BCzxFr1UoDxB8IrZx6qHcKGhY7a",
+                            Password = "$2a$11$52o8iy6aLShT2l1ttTeNCOFyLrRpIvcywZmuGsWX8mj6.ERBHByOi",
                             Role = 1
                         });
                 });
@@ -331,12 +355,17 @@ namespace RestaurantManagement.DataAccess.Migrations
                 {
                     b.HasOne("RestaurantManagement.DataAccess.Models.Bill", "Bill")
                         .WithMany("Orders")
-                        .HasForeignKey("BillId")
+                        .HasForeignKey("BillingId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("RestaurantManagement.DataAccess.Models.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("RestaurantManagement.DataAccess.Models.Table", "Table")
+                        .WithMany("Orders")
+                        .HasForeignKey("TableId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -349,6 +378,8 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.Navigation("Bill");
 
                     b.Navigation("Customer");
+
+                    b.Navigation("Table");
 
                     b.Navigation("Waiter");
                 });
@@ -416,6 +447,11 @@ namespace RestaurantManagement.DataAccess.Migrations
             modelBuilder.Entity("RestaurantManagement.DataAccess.Models.Order", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("RestaurantManagement.DataAccess.Models.Table", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("RestaurantManagement.DataAccess.Models.User", b =>

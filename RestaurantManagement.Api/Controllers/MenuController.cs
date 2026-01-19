@@ -29,10 +29,10 @@ namespace RestaurantManagement.Api.Controllers
         }
 
         [Authorize]
-        [HttpGet("{id:int}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetMenuItemByIdAsync(int id)
+        public async Task<IActionResult> GetMenuItemByIdAsync(Guid id)
         {
             return Ok(await _menuService.GetByIdAsync(id)); ;
         }
@@ -45,19 +45,19 @@ namespace RestaurantManagement.Api.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPatch("{id:int}")]
+        [HttpPatch("{id}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateMenuItemAsync(int id, MenuItemUpdateRequestDto dto)
+        public async Task<IActionResult> UpdateMenuItemAsync(Guid id, MenuItemUpdateRequestDto dto)
         {
             return Ok(await _menuService.UpdateAsync(id, dto));
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> DeleteMenuItemAsync(int id)
+        public async Task<IActionResult> DeleteMenuItemAsync(Guid id)
         {
             await _menuService.DeleteAsync(id);
             return Ok("Menu item deleted.");

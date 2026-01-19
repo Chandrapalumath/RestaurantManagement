@@ -21,16 +21,16 @@ namespace RestaurantManagement.Api.Controllers
 
         [Authorize(Roles = "Waiter")]
         [HttpPost]
-        public async Task<IActionResult> CreateCustomerAsync(CustomerCreateRequestDto dto)
+        public async Task<IActionResult> CreateCustomerAsync(CustomerCreateRequestDto dto, Guid TableId)
         {
-            return Ok(await _customerService.CreateAsync(dto));
+            return Ok(await _customerService.CreateAsync(dto, TableId));
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpGet("{id:int}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetCustomerByIdAsync(int id)
+        public async Task<IActionResult> GetCustomerByIdAsync(Guid id)
         {
             return Ok(await _customerService.GetByIdAsync(id)); ;
         }

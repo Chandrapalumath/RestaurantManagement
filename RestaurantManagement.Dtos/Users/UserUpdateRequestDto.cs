@@ -1,23 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using RestaurantManagement.Models.Common.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace RestaurantManagement.Dtos.Users
 {
     public class UserUpdateRequestDto
     {
-        [MaxLength(100)]
+        [MinLength(3), MaxLength(50)]
         public string? FullName { get; set; }
 
-        [MaxLength(10)]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Mobile number must be 10 digits.")]
         public string? MobileNumber { get; set; }
 
         [EmailAddress]
-        [MaxLength(150)]
         public string? Email { get; set; }
 
         public bool? IsActive { get; set; }
 
         [Required]
-        [RegularExpression("^(Chef|Waiter)$", ErrorMessage = "Role must be Chef or Waiter.")]
-        public string Role { get; set; } = "Waiter";
+        public UserRole Role { get; set; } 
     }
 }

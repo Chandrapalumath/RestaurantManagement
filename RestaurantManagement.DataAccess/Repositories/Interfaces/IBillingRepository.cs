@@ -4,9 +4,8 @@ namespace RestaurantManagement.DataAccess.Repositories.Interfaces
 {
     public interface IBillingRepository : IGenericRepository<Bill>
     {
-        Task<Bill?> GetBillDetailsAsync(int billId);
-        Task<List<Bill>> GetBillsByCustomerIdAsync(int customerId);
+        Task<Bill?> GetBillDetailsAsync(Guid billId);
+        Task<List<Bill>> GetBillsByCustomerIdAsync(Guid customerId);
         Task<List<Bill>> GetAllBillsAsync();
     }
-
 }

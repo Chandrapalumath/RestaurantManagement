@@ -37,7 +37,7 @@ namespace RestaurantManagement.Backend.Services
 
             if (settings == null)
             {
-                settings = new RestaurantSettings { Id = 1 };
+                settings = new RestaurantSettings { Id = Guid.NewGuid() };
                 await _settingsRepo.AddAsync(settings);
             }
 

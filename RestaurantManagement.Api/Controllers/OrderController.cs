@@ -4,6 +4,7 @@ using RestaurantManagement.Api.Middlewares;
 using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.Dtos.Billing;
 using RestaurantManagement.Dtos.Orders;
+using RestaurantManagement.Models.Common.Enums;
 using System.Security.Claims;
 
 namespace RestaurantManagement.Api.Controllers
@@ -28,25 +29,41 @@ namespace RestaurantManagement.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> CreateOrderAsync(OrderCreateRequestDto dto)
         {
-            int waiterId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)); 
+            Guid waiterId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)); 
             return Ok(await _orderService.CreateOrderAsync(dto, waiterId));
         }
 
         [Authorize(Roles = "Waiter,Chef")]
-        [HttpGet("{Id:int}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetOrderByIdAsync(int Id)
+        public async Task<IActionResult> GetOrderByIdAsync(Guid id)
         {
-            return Ok(await _orderService.GetByIdAsync(Id));
+            return Ok(await _orderService.GetByIdAsync(id));
         }
 
-        [HttpGet("customer/{Id:int}")]
-        public async Task<IActionResult> GetOrdersByCustomerIdAsync(int Id)
+        [HttpGet("customer/{id}")]
+        public async Task<IActionResult> GetOrdersByCustomerIdAsync(Guid id)
         {
-            return Ok(await _orderService.GetOrdersByCustomerIdAsync(Id));
+            return Ok(await _orderService.GetOrdersByCustomerIdAsync(id));
         }
-
+        
+        [HttpGet("status")]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllOrdersForStatusAsync(OrderStatus status)
+        {
+            return Ok(await _orderService.GetOrdersAsync(status));
+        }
+        [HttpPatch("{id}")]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateOrderStatusAsync(Guid id, OrderUpdateRequestDto dto)
+        {
+            return Ok(await _orderService.UpdateOrderAsync(id, dto));
+        }
     }
 }

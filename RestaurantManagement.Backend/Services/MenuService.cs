@@ -27,7 +27,7 @@ namespace RestaurantManagement.Backend.Services
             }).ToList();
         }
 
-        public async Task<MenuItemResponseDto> GetByIdAsync(int id)
+        public async Task<MenuItemResponseDto> GetByIdAsync(Guid id)
         {
             var item = await _menuRepo.GetByIdAsync(id)
                        ?? throw new NotFoundException("Menu item not found.");
@@ -43,13 +43,14 @@ namespace RestaurantManagement.Backend.Services
 
         public async Task<MenuItemResponseDto> CreateAsync(MenuItemCreateRequestDto dto)
         {
-            var menuItem = _menuRepo.GetByNameAsync(dto.Name);
-            if(menuItem == null)
+            var menuItem = await _menuRepo.GetByNameAsync(dto.Name);
+            if(menuItem is not null)
             {
                 throw new BadRequestException("Item Already Exists");
             }
             var entity = new MenuItem
             {
+                Id = Guid.NewGuid(),
                 Name = dto.Name.Trim(),
                 Price = dto.Price,
                 IsAvailable = dto.IsAvailable
@@ -67,7 +68,7 @@ namespace RestaurantManagement.Backend.Services
             };
         }
 
-        public async Task<MenuItemResponseDto> UpdateAsync(int id, MenuItemUpdateRequestDto dto)
+        public async Task<MenuItemResponseDto> UpdateAsync(Guid id, MenuItemUpdateRequestDto dto)
         {
             var entity = await _menuRepo.GetByIdAsync(id)
                          ?? throw new NotFoundException("Menu item not found.");
@@ -84,7 +85,7 @@ namespace RestaurantManagement.Backend.Services
             return await GetByIdAsync(id);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             var entity = await _menuRepo.GetByIdAsync(id)
                          ?? throw new NotFoundException("Menu item not found.");

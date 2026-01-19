@@ -10,7 +10,7 @@ namespace RestaurantManagement.Dtos.Reviews
     public class ReviewCreateRequestDto
     {
         [Required]
-        public int CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
 
         [Range(1, 5, ErrorMessage = "Rating must be between 1 to 5.")]
         public int Rating { get; set; }

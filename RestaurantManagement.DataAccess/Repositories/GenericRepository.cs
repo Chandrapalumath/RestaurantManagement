@@ -15,7 +15,7 @@ namespace RestaurantManagement.DataAccess.Repositories
             _dbSet = context.Set<T>();
         }
 
-        public async Task<T?> GetByIdAsync(int id)
+        public async Task<T?> GetByIdAsync(Guid id)
             => await _dbSet.FindAsync(id);
 
         public async Task<List<T>> GetAllAsync()

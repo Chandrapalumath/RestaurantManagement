@@ -8,7 +8,7 @@ namespace RestaurantManagement.DataAccess.Repositories
     {
         public BillingRepository(RestaurantDbContext context) : base(context) { }
 
-        public async Task<Bill?> GetBillDetailsAsync(int billId)
+        public async Task<Bill?> GetBillDetailsAsync(Guid billId)
             => await _context.Bills
         .Include(b => b.Customer)
         .Include(b => b.GeneratedByWaiter)
@@ -17,7 +17,7 @@ namespace RestaurantManagement.DataAccess.Repositories
                 .ThenInclude(i => i.MenuItem)    
         .FirstOrDefaultAsync(b => b.Id == billId);
 
-        public async Task<List<Bill>> GetBillsByCustomerIdAsync(int customerId)
+        public async Task<List<Bill>> GetBillsByCustomerIdAsync(Guid customerId)
             => await _context.Bills
                 .Where(b => b.CustomerId == customerId)
                 .OrderByDescending(b => b.GeneratedAt)

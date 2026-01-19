@@ -6,9 +6,9 @@ namespace RestaurantManagement.DataAccess.Models
     public class Review
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Required]
-        public int CustomerId { get; set; }
+        public Guid CustomerId { get; set; }
         [Range(1,5)]
         public int Rating { get; set; }
         [MaxLength(500)]

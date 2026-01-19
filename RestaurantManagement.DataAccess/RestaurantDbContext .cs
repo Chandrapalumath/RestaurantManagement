@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.DataAccess.Models;
-using RestaurantManagement.DataAccess.Models.Enums;
+using RestaurantManagement.Models.Common.Enums;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RestaurantManagement.DataAccess
 {
@@ -16,10 +18,17 @@ namespace RestaurantManagement.DataAccess
         public DbSet<Bill> Bills => Set<Bill>();
         public DbSet<Review> Reviews => Set<Review>();
         public DbSet<RestaurantSettings> RestaurantSettings => Set<RestaurantSettings>();
+        public DbSet<Table> Tables => Set<Table>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Order>()
+            .HasOne(o => o.Table)
+            .WithMany(t => t.Orders)
+            .HasForeignKey(o => o.TableId)
+            .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Customer)
@@ -60,7 +69,7 @@ namespace RestaurantManagement.DataAccess
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Bill)
                 .WithMany(b => b.Orders)
-                .HasForeignKey(o => o.BillId)
+                .HasForeignKey(o => o.BillingId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Review>()
@@ -75,7 +84,7 @@ namespace RestaurantManagement.DataAccess
                 .HasForeignKey(s => s.UpdatedByAdminId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            var adminId = 1;
+            var adminId = Guid.NewGuid();
 
             modelBuilder.Entity<User>().HasData(
                 new User
@@ -90,6 +99,17 @@ namespace RestaurantManagement.DataAccess
                     Password = BCrypt.Net.BCrypt.HashPassword("Chandrapal@123")
                 }
             );
-        }
+            Guid Id = Guid.NewGuid();
+            modelBuilder.Entity<RestaurantSettings>().HasData(
+                new RestaurantSettings
+                {
+                    Id = Id,
+                    TaxPercent = 10,
+                    DiscountPercent = 10,
+                    UpdatedAt = new DateTime(2026, 01, 01),
+                    UpdatedByAdminId = adminId
+                }
+            );
+    }
     }
 }

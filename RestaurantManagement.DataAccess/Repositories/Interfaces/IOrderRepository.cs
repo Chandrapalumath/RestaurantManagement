@@ -1,13 +1,14 @@
 ﻿using RestaurantManagement.DataAccess.Models;
+using RestaurantManagement.Models.Common.Enums;
 
 namespace RestaurantManagement.DataAccess.Repositories.Interfaces
 {
     public interface IOrderRepository : IGenericRepository<Order>
     {
-        Task<Order?> GetOrderWithItemsAsync(int orderId);
-        Task<List<Order>> GetOrdersByCustomerIdAsync(int customerId);
-        Task<List<Order>> GetOrdersForChefAsync(string? status);
-        Task<List<Order>> GetCompletedUnbilledOrdersByCustomerAsync(int customerId);
-
+        Task<Order?> GetOrderWithItemsAsync(Guid orderId);
+        Task<List<Order>> GetOrdersByCustomerIdAsync(Guid customerId);
+        Task<List<Order>> GetOrdersForChefAsync(OrderStatus status);
+        Task<List<Order>> GetCompletedUnbilledOrdersByCustomerAsync(Guid customerId);
+        Task<List<Order>> GetNotBilledOrders(Guid TableId);
     }
 }

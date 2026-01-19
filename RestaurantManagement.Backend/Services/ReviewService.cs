@@ -25,6 +25,7 @@ namespace RestaurantManagement.Backend.Services
 
             var review = new Review
             {
+                Id = Guid.NewGuid(),
                 CustomerId = dto.CustomerId,
                 Rating = dto.Rating,
                 Comment = dto.Comment?.Trim(),
@@ -43,7 +44,7 @@ namespace RestaurantManagement.Backend.Services
             return reviews.Select(MapReviewToDto).ToList();
         }
 
-        public async Task<ReviewResponseDto> GetByIdAsync(int id)
+        public async Task<ReviewResponseDto> GetByIdAsync(Guid id)
         {
             var review = await _reviewRepo.GetByIdAsync(id)
                          ?? throw new NotFoundException("Review not found.");
@@ -51,7 +52,7 @@ namespace RestaurantManagement.Backend.Services
             return MapReviewToDto(review);
         }
 
-        public async Task<List<ReviewResponseDto>> GetByCustomerIdAsync(int customerId)
+        public async Task<List<ReviewResponseDto>> GetByCustomerIdAsync(Guid customerId)
         {
             var reviews = await _reviewRepo.GetByCustomerIdAsync(customerId);
             return reviews.Select(MapReviewToDto).ToList();

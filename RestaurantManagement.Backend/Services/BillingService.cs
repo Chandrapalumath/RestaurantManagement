@@ -12,15 +12,17 @@ namespace RestaurantManagement.Backend.Services
         private readonly IOrderRepository _orderRepo;
         private readonly IBillingRepository _billingRepo;
         private readonly ISettingsRepository _settingsRepo;
+        private readonly IGenericRepository<Table> _tableRepo;
 
-        public BillingService(IOrderRepository orderRepo, IBillingRepository billingRepo, ISettingsRepository settingsRepo)
+        public BillingService(IOrderRepository orderRepo, IBillingRepository billingRepo, ISettingsRepository settingsRepo, IGenericRepository<Table> tableRepo)
         {
             _orderRepo = orderRepo;
             _billingRepo = billingRepo;
             _settingsRepo = settingsRepo;
+            _tableRepo = tableRepo;
         }
 
-        public async Task<BillResponseDto> GenerateBillAsync(int customerId, int waiterId)
+        public async Task<BillResponseDto> GenerateBillAsync(Guid customerId, Guid waiterId)
         {
             var orders = await _orderRepo.GetCompletedUnbilledOrdersByCustomerAsync(customerId);
 
@@ -33,7 +35,7 @@ namespace RestaurantManagement.Backend.Services
             var orderIds = orders.Select(x => x.Id).ToList();
             var allItems = orders.SelectMany(o => o.Items).ToList();
             var subTotal = allItems.Sum(i => (i.Quantity*i.UnitPrice));
-
+            var tableId = orders[0].TableId;
             var discountPercent = settings.DiscountPercent;
             var taxPercent = settings.TaxPercent;
 
@@ -44,6 +46,7 @@ namespace RestaurantManagement.Backend.Services
 
             var bill = new Bill
             {
+                Id = Guid.NewGuid(),
                 CustomerId = customerId,
                 GeneratedByWaiterId = waiterId,
                 SubTotal = subTotal,
@@ -62,12 +65,14 @@ namespace RestaurantManagement.Backend.Services
             foreach (var order in orders)
             {
                 order.IsBilled = true;
-                order.BillId = bill.Id;
+                order.BillingId = bill.Id;
                 _orderRepo.Update(order);
             }
 
             await _orderRepo.SaveChangesAsync();
-
+            var table = await _tableRepo.GetByIdAsync(tableId);
+            table.IsOccupied = false;
+            _tableRepo.Update(table);
             return new BillResponseDto
             {
                 BillId = bill.Id,
@@ -83,7 +88,7 @@ namespace RestaurantManagement.Backend.Services
             };
         }
 
-        public async Task<BillResponseDto> GetBillByIdAsync(int billId, int? waiterId, bool isAdmin)
+        public async Task<BillResponseDto> GetBillByIdAsync(Guid billId, Guid? waiterId, bool isAdmin)
         {
             var bill = await _billingRepo.GetBillDetailsAsync(billId)
                        ?? throw new NotFoundException("Bill not found.");
@@ -94,7 +99,7 @@ namespace RestaurantManagement.Backend.Services
             return MapBillToDto(bill);
         }
 
-        public async Task<List<BillResponseDto>> GetBillsByCustomerIdAsync(int customerId, int? waiterId, bool isAdmin)
+        public async Task<List<BillResponseDto>> GetBillsByCustomerIdAsync(Guid customerId, Guid? waiterId, bool isAdmin)
         {
             var bills = await _billingRepo.GetBillsByCustomerIdAsync(customerId);
 
@@ -110,7 +115,7 @@ namespace RestaurantManagement.Backend.Services
             return bills.Select(MapBillToDto).ToList();
         }
 
-        public async Task UpdateBill(int billId, int waiterId, BillUpdateRequestDto dto)
+        public async Task UpdateBill(Guid billId, Guid waiterId, BillUpdateRequestDto dto)
         {
             var bill = await _billingRepo.GetByIdAsync(billId)
                        ?? throw new Exception("Bill not found.");

@@ -6,7 +6,7 @@ namespace RestaurantManagement.Backend.Services.Interfaces
     {
         Task<ReviewResponseDto> CreateAsync(ReviewCreateRequestDto dto);
         Task<List<ReviewResponseDto>> GetAllAsync();
-        Task<ReviewResponseDto> GetByIdAsync(int id);
-        Task<List<ReviewResponseDto>> GetByCustomerIdAsync(int customerId);
+        Task<ReviewResponseDto> GetByIdAsync(Guid id);
+        Task<List<ReviewResponseDto>> GetByCustomerIdAsync(Guid customerId);
     }
 }

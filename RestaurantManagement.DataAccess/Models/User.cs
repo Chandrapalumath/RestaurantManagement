@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RestaurantManagement.DataAccess.Models.Enums;
+using RestaurantManagement.Models.Common.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,7 +13,7 @@ namespace RestaurantManagement.DataAccess.Models
     public class User // Admin, Waiter, Chef
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Required]
         [MaxLength(100)]
         public string Name { get; set; } = string.Empty;

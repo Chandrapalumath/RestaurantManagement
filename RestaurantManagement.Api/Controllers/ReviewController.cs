@@ -40,21 +40,21 @@ namespace RestaurantManagement.Api.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpGet("{id:int}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetReviewByIdAsync(int id)
+        public async Task<IActionResult> GetReviewByIdAsync(Guid id)
         {
             return Ok(await _reviewService.GetByIdAsync(id));
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpGet("customer/{Id:int}")]
+        [HttpGet("customer/{id}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetReviewsByCustomerIdAsync(int Id)
+        public async Task<IActionResult> GetReviewsByCustomerIdAsync(Guid id)
         {
-            return Ok(await _reviewService.GetByCustomerIdAsync(Id));
+            return Ok(await _reviewService.GetByCustomerIdAsync(id));
         }
     }
 }

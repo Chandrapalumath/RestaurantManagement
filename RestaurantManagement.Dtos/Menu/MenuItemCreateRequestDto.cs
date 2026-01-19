@@ -9,7 +9,7 @@ namespace RestaurantManagement.Dtos.Menu
 {
     public class MenuItemCreateRequestDto
     {
-        [Required, MinLength(2), MaxLength(100)]
+        [Required, MinLength(2), MaxLength(50)]
         public string Name { get; set; } = string.Empty;
 
         [Range(1, 999999, ErrorMessage = "Price must be greater than 0.")]

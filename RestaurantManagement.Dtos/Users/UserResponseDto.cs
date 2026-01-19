@@ -1,12 +1,14 @@
-﻿namespace RestaurantManagement.Dtos.Users
+﻿using RestaurantManagement.Models.Common.Enums;
+
+namespace RestaurantManagement.Dtos.Users
 {
     public class UserResponseDto
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string FullName { get; set; } = string.Empty;
         public string MobileNumber { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public string Role { get; set; } = string.Empty;
+        public UserRole Role { get; set; }
         public bool IsActive { get; set; }
     }
 }

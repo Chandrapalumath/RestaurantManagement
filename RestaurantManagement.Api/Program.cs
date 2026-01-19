@@ -1,16 +1,17 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RestaurantManagement.Api.Middlewares;
 using RestaurantManagement.Backend.Services;
 using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.DataAccess;
+using RestaurantManagement.DataAccess.Models;
 using RestaurantManagement.DataAccess.Repositories;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace RestaurantManagement.Api
 {
@@ -24,7 +25,13 @@ namespace RestaurantManagement.Api
             );
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(
+                    new JsonStringEnumConverter()
+                );
+            });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(opt =>
@@ -66,6 +73,7 @@ namespace RestaurantManagement.Api
             builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
             builder.Services.AddScoped<IMenuRepository, MenuRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<IGenericRepository<Table>, GenericRepository<Table>>();
             builder.Services.AddScoped<IBillingRepository, BillingRepository>();
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
@@ -77,10 +85,10 @@ namespace RestaurantManagement.Api
             builder.Services.AddScoped<IMenuService, MenuService>();
             builder.Services.AddScoped<ICustomerService, CustomerService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
-            builder.Services.AddScoped<IChefService, ChefService>();
             builder.Services.AddScoped<IBillingService, BillingService>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
             builder.Services.AddScoped<ISettingsService, SettingsService>();
+            builder.Services.AddScoped<ITableService, TableService>();
 
             var jwtSection = builder.Configuration.GetSection("Jwt");
 
@@ -132,7 +140,6 @@ namespace RestaurantManagement.Api
                             await context.Response.WriteAsync(result);
                         }
                     };
-
                 });
 
             var app = builder.Build();

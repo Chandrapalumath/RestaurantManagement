@@ -6,9 +6,9 @@ namespace RestaurantManagement.Backend.Services.Interfaces
     public interface IMenuService
     {
         Task<List<MenuItemResponseDto>> GetAllAsync();
-        Task<MenuItemResponseDto> GetByIdAsync(int id);
+        Task<MenuItemResponseDto> GetByIdAsync(Guid id);
         Task<MenuItemResponseDto> CreateAsync(MenuItemCreateRequestDto dto);
-        Task<MenuItemResponseDto> UpdateAsync(int id, MenuItemUpdateRequestDto dto);
-        Task DeleteAsync(int id);
+        Task<MenuItemResponseDto> UpdateAsync(Guid id, MenuItemUpdateRequestDto dto);
+        Task DeleteAsync(Guid id);
     }
 }

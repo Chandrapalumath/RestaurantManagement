@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+using RestaurantManagement.Models.Common.Enums;
 
 namespace RestaurantManagement.Dtos.Authentication
 {
@@ -19,14 +18,12 @@ namespace RestaurantManagement.Dtos.Authentication
         public string MobileNumber { get; set; } = string.Empty;
 
         [Required, MinLength(12), MaxLength(20)]
-        [DataType(DataType.Password)]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).*$",
             ErrorMessage = "Password must contain uppercase, lowercase, number and special character."
         )]
         public string Password { get; set; } = string.Empty;
 
         [Required]
-        [RegularExpression("^(Admin|Chef|Waiter)$", ErrorMessage = "Role must be Admin, Chef or Waiter.")]
-        public string Role { get; set; } = "Waiter";
+        public UserRole Role { get; set; }
     }
 }

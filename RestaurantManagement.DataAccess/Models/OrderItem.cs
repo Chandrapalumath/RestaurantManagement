@@ -7,19 +7,17 @@ namespace RestaurantManagement.DataAccess.Models
     public class OrderItem
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Required]
-        public int OrderId { get; set; }
+        public Guid OrderId { get; set; }
         [Required]
-        public int MenuItemId { get; set; }
+        public Guid MenuItemId { get; set; }
         [Range(1, int.MaxValue)]
         public int Quantity { get; set; }
-
         public decimal UnitPrice { get; set; }
         [ForeignKey(nameof(OrderId))]
         public Order? Order { get; set; }
         [ForeignKey(nameof(MenuItemId))]
         public MenuItem? MenuItem { get; set; }
     }
-
 }

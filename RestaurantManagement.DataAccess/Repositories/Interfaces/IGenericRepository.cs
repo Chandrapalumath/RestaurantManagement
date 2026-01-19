@@ -4,7 +4,7 @@ namespace RestaurantManagement.DataAccess.Repositories.Interfaces
 {
     public interface IGenericRepository<T> where T : class
     {
-        Task<T?> GetByIdAsync(int id);
+        Task<T?> GetByIdAsync(Guid id);
         Task<List<T>> GetAllAsync();
         Task AddAsync(T entity);
         void Update(T entity);

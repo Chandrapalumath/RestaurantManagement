@@ -39,17 +39,17 @@ namespace RestaurantManagement.Api.Controllers
             return Ok(await _userService.GetAllUsersAsync());
         }
 
-        [HttpGet("users/{id:int}")]
+        [HttpGet("users/{id}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetUserByIdAsync(int id)
+        public async Task<IActionResult> GetUserByIdAsync(Guid id)
         {
             return Ok(await _userService.GetUserByIdAsync(id));
         }
 
-        [HttpPatch("users/{id:int}")]
+        [HttpPatch("users/{id}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateUserAsync(int id, [FromBody] UserUpdateRequestDto dto)
+        public async Task<IActionResult> UpdateUserAsync(Guid id, UserUpdateRequestDto dto)
         {
             var message = await _userService.UpdateUserAsync(id, dto);
             return Ok(message);

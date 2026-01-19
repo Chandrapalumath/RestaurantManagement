@@ -1,9 +1,9 @@
 ﻿using RestaurantManagement.Backend.Exceptions;
 using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.DataAccess.Models;
-using RestaurantManagement.DataAccess.Models.Enums;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
 using RestaurantManagement.Dtos.Users;
+using RestaurantManagement.Models.Common.Enums;
 
 namespace RestaurantManagement.Backend.Services
 {
@@ -22,15 +22,13 @@ namespace RestaurantManagement.Backend.Services
             if (existing != null)
                 throw new BadRequestException("Email already exists.");
 
-            if (!Enum.TryParse<UserRole>(dto.Role, true, out var role))
-                throw new BadRequestException("Invalid role.");
-
             var user = new User
             {
+                Id = Guid.NewGuid(),
                 Email = dto.Email.Trim().ToLower(),
                 Name = dto.FullName.Trim(),
                 MobileNumber = dto.MobileNumber.Trim(),
-                Role = role,
+                Role = dto.Role,
                 IsActive = true,
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password)
             };
@@ -44,7 +42,7 @@ namespace RestaurantManagement.Backend.Services
                 FullName = user.Name,
                 MobileNumber = user.MobileNumber,
                 Email = user.Email,
-                Role = user.Role.ToString(),
+                Role = user.Role,
                 IsActive = user.IsActive
             };
         }
@@ -58,12 +56,12 @@ namespace RestaurantManagement.Backend.Services
                 FullName = u.Name,
                 MobileNumber = u.MobileNumber,
                 Email = u.Email,
-                Role = u.Role.ToString(),
+                Role = u.Role,
                 IsActive = u.IsActive
             }).ToList();
         }
 
-        public async Task<UserResponseDto> GetUserByIdAsync(int id)
+        public async Task<UserResponseDto> GetUserByIdAsync(Guid id)
         {
             var user = await _userRepo.GetByIdAsync(id)
                        ?? throw new NotFoundException("User not found or Invalid ID.");
@@ -74,12 +72,12 @@ namespace RestaurantManagement.Backend.Services
                 FullName = user.Name,
                 MobileNumber = user.MobileNumber,
                 Email = user.Email,
-                Role = user.Role.ToString(),
+                Role = user.Role,
                 IsActive = user.IsActive
             };
         }
 
-        public async Task<string> UpdateUserAsync(int id, UserUpdateRequestDto dto)
+        public async Task<string> UpdateUserAsync(Guid id, UserUpdateRequestDto dto)
         {
             var user = await _userRepo.GetByIdAsync(id)
                        ?? throw new NotFoundException("User not found.");
@@ -95,11 +93,9 @@ namespace RestaurantManagement.Backend.Services
 
             if (dto.IsActive.HasValue)
                 user.IsActive = dto.IsActive.Value;
+            
 
-            if (!Enum.TryParse<UserRole>(dto.Role, true, out var role))
-                throw new BadRequestException("Invalid role.");
-
-            if (role == UserRole.Admin)
+            if (dto.Role == UserRole.Admin)
                 throw new BadRequestException("Admin cannot be created here.");
 
             _userRepo.Update(user);
