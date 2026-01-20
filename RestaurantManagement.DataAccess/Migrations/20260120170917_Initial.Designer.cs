@@ -12,8 +12,8 @@ using RestaurantManagement.DataAccess;
 namespace RestaurantManagement.DataAccess.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20260119184003_MakeCustomerIdNullableInOrders")]
-    partial class MakeCustomerIdNullableInOrders
+    [Migration("20260120170917_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -117,6 +117,12 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int?>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TotalReviews")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
@@ -131,14 +137,11 @@ namespace RestaurantManagement.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("BillId")
+                    b.Property<Guid>("BillingId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("CustomerId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsBilled")
                         .HasColumnType("bit");
@@ -157,9 +160,7 @@ namespace RestaurantManagement.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BillId");
-
-                    b.HasIndex("CustomerId");
+                    b.HasIndex("BillingId");
 
                     b.HasIndex("TableId");
 
@@ -222,11 +223,11 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5f8667dc-3ec9-40b7-98a5-ecb0d066c8a1"),
+                            Id = new Guid("f65e726a-554e-4318-b3a1-5caa372ed74a"),
                             DiscountPercent = 10m,
                             TaxPercent = 10m,
                             UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UpdatedByAdminId = new Guid("d6143ffc-3a15-4bb6-9ddc-6f6e59db619c")
+                            UpdatedByAdminId = new Guid("1568ca98-0b78-408c-a533-3dc0dfcee1a0")
                         });
                 });
 
@@ -262,14 +263,14 @@ namespace RestaurantManagement.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("Capacity")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsOccupied")
                         .HasColumnType("bit");
-
-                    b.Property<int>("Size")
-                        .HasColumnType("int");
 
                     b.Property<string>("TableName")
                         .IsRequired()
@@ -324,13 +325,13 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d6143ffc-3a15-4bb6-9ddc-6f6e59db619c"),
-                            CreatedAt = new DateTime(2026, 1, 19, 18, 40, 1, 825, DateTimeKind.Utc).AddTicks(797),
+                            Id = new Guid("1568ca98-0b78-408c-a533-3dc0dfcee1a0"),
+                            CreatedAt = new DateTime(2026, 1, 20, 17, 9, 16, 648, DateTimeKind.Utc).AddTicks(197),
                             Email = "admin@gmail.com",
                             IsActive = true,
                             MobileNumber = "9999999999",
                             Name = "Admin",
-                            Password = "$2a$11$s.rPwHKGzu8ivRg2f49u4.7oqm8ONPrh7xnsB7a6X87QJPIpLYNra",
+                            Password = "$2a$11$zFZNswdN0DGHgZWHBMp/uusF6Cs9e53LTQ0cQwNYJG6bdGaHFrrie",
                             Role = 1
                         });
                 });
@@ -358,13 +359,15 @@ namespace RestaurantManagement.DataAccess.Migrations
                 {
                     b.HasOne("RestaurantManagement.DataAccess.Models.Bill", "Bill")
                         .WithMany("Orders")
-                        .HasForeignKey("BillId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("BillingId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("RestaurantManagement.DataAccess.Models.Customer", "Customer")
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("BillingId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("RestaurantManagement.DataAccess.Models.Table", "Table")
                         .WithMany("Orders")

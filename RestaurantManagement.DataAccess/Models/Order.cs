@@ -11,7 +11,6 @@ namespace RestaurantManagement.DataAccess.Models
         public Guid Id { get; set; }
         [Required]
         public Guid TableId { get; set; }
-        public Guid? CustomerId { get; set; }
         [Required]
         public Guid WaiterId { get; set; }
         [Required]
@@ -19,11 +18,10 @@ namespace RestaurantManagement.DataAccess.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public bool IsBilled { get; set; } = false;
-        public Guid? BillingId { get; set; }
+        public Guid BillingId { get; set; }
         public DateTime? UpdatedAt { get; set; }
         [ForeignKey(nameof(TableId))]
         public Table? Table { get; set; }
-        [ForeignKey(nameof(CustomerId))]
         public Customer? Customer { get; set; }
         [ForeignKey(nameof(WaiterId))]
         public User? Waiter { get; set; }

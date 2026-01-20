@@ -4,10 +4,9 @@ namespace RestaurantManagement.Dtos.Billing
 {
     public class BillGenerateRequestDto
     {
-        [Required, MinLength(2), MaxLength(100)]
-        public string CustomerName { get; set; } = string.Empty;
-
-        [Required, RegularExpression(@"^\d{10}$")]
-        public string MobileNumber { get; set; } = string.Empty;
+        [Required]
+        public Guid CustomerId { get; set; }
+        [Required]
+        public List<Guid> OrdersId { get; set; } = new List<Guid>();
     }
 }

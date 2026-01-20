@@ -31,7 +31,7 @@ namespace RestaurantManagement.Backend.Services
             };
         }
 
-        public async Task<SettingsResponseDto> UpdateSettingsAsync(SettingsUpdateRequestDto dto)
+        public async Task UpdateSettingsAsync(SettingsUpdateRequestDto dto)
         {
             var settings = await _settingsRepo.GetSettingsAsync();
 
@@ -49,8 +49,6 @@ namespace RestaurantManagement.Backend.Services
 
             _settingsRepo.Update(settings);
             await _settingsRepo.SaveChangesAsync();
-
-            return await GetSettingsAsync();
         }
     }
 }

@@ -8,8 +8,8 @@ namespace RestaurantManagement.Backend.Services.Interfaces
     {
         Task<OrderResponseDto> CreateOrderAsync(OrderCreateRequestDto dto, Guid waiterId);
         Task<OrderResponseDto> GetByIdAsync(Guid id);
-        Task<List<OrderResponseDto>> GetOrdersByCustomerIdAsync(Guid customerId);
         Task<List<OrderResponseDto>> GetOrdersAsync(OrderStatus status);
+        Task<List<OrderResponseDto>> GetOrdersByTableIdAsync(Guid id);
         Task<OrderResponseDto> UpdateOrderAsync(Guid orderId, OrderUpdateRequestDto dto);
     }
 }

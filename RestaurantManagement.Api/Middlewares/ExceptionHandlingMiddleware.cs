@@ -27,21 +27,18 @@ namespace RestaurantManagement.Api.Middlewares
 
                 context.Response.ContentType = "application/json";
 
-                var response = new ErrorResponse
-                {
-                    Success = false,
-                    Message = ex.Message
-                };
-
                 context.Response.StatusCode = ex switch
                 {
-                    BadRequestException => (int)HttpStatusCode.BadRequest,       // 400
-                    NotFoundException => (int)HttpStatusCode.NotFound,           // 404
-                    UnauthorizedException => (int)HttpStatusCode.Unauthorized,   // 401
-                    _ => (int)HttpStatusCode.InternalServerError                 // 500
+                    BadRequestException => StatusCodes.Status400BadRequest,
+                    NotFoundException => StatusCodes.Status404NotFound,
+                    UnauthorizedException => StatusCodes.Status401Unauthorized,
+                    _ => StatusCodes.Status500InternalServerError
                 };
 
-                response.StatusCode = context.Response.StatusCode;
+                var response = new ErrorResponse
+                {
+                    Message = ex.Message
+                };
 
                 var json = JsonSerializer.Serialize(response);
                 await context.Response.WriteAsync(json);
@@ -50,8 +47,6 @@ namespace RestaurantManagement.Api.Middlewares
     }
     public class ErrorResponse
     {
-        public bool Success { get; set; }
-        public int StatusCode { get; set; }
         public string Message { get; set; } = string.Empty;
     }
 }

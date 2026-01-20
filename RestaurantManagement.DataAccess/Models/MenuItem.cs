@@ -14,9 +14,10 @@ namespace RestaurantManagement.DataAccess.Models
         [Range(0,999999)]
         public decimal Price { get; set; }
         public bool IsAvailable { get; set; } = true;
-
+        [Range(1,5)]
+        public int? Rating { get; set; }
+        public int? TotalReviews { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     }
 

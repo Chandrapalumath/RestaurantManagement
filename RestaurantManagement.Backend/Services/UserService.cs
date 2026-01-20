@@ -1,4 +1,5 @@
 ﻿using RestaurantManagement.Backend.Exceptions;
+using RestaurantManagement.Backend.Helper;
 using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.DataAccess.Models;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
@@ -18,9 +19,9 @@ namespace RestaurantManagement.Backend.Services
 
         public async Task<UserResponseDto> CreateStaffUserAsync(CreateUserRequestDto dto)
         {
-            var existing = await _userRepo.GetByEmailAsync(dto.Email.Trim().ToLower());
-            if (existing != null)
-                throw new BadRequestException("Email already exists.");
+            var exists = await _userRepo.GetByEmailAsync(dto.Email.Trim().ToLower());
+            if (exists is not null)
+                throw new ConflictException("Email already exists.");
 
             var user = new User
             {
@@ -30,7 +31,7 @@ namespace RestaurantManagement.Backend.Services
                 MobileNumber = dto.MobileNumber.Trim(),
                 Role = dto.Role,
                 IsActive = true,
-                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password)
+                Password = PasswordHasher.Hash(dto.Password)
             };
 
             await _userRepo.AddAsync(user);

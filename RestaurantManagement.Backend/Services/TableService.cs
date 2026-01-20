@@ -20,7 +20,7 @@ namespace RestaurantManagement.Backend.Services
             var table = new Table
             {
                 TableName = dto.TableName.Trim(),
-                Size = dto.Size,
+                Capacity = dto.Size,
                 IsOccupied = false
             };
 
@@ -71,7 +71,7 @@ namespace RestaurantManagement.Backend.Services
         {
             Id = t.Id,
             TableName = t.TableName,
-            Size = t.Size,
+            Size = t.Capacity,
             IsOccupied = t.IsOccupied
         };
     }

@@ -18,12 +18,14 @@ namespace RestaurantManagement.Backend.Services
         public async Task<List<MenuItemResponseDto>> GetAllAsync()
         {
             var items = await _menuRepo.GetAllAsync();
+            if(!items.Any()) throw new NotFoundException("No Items Found");
             return items.Select(x => new MenuItemResponseDto
             {
                 Id = x.Id,
                 Name = x.Name,
                 Price = x.Price,
-                IsAvailable = x.IsAvailable
+                IsAvailable = x.IsAvailable,
+                Rating = x.Rating.Value
             }).ToList();
         }
 
@@ -37,7 +39,8 @@ namespace RestaurantManagement.Backend.Services
                 Id = item.Id,
                 Name = item.Name,
                 Price = item.Price,
-                IsAvailable = item.IsAvailable
+                IsAvailable = item.IsAvailable,
+                Rating = item.Rating.Value
             };
         }
 
@@ -46,14 +49,16 @@ namespace RestaurantManagement.Backend.Services
             var menuItem = await _menuRepo.GetByNameAsync(dto.Name);
             if(menuItem is not null)
             {
-                throw new BadRequestException("Item Already Exists");
+                throw new ConflictException("Item Already Exists");
             }
             var entity = new MenuItem
             {
                 Id = Guid.NewGuid(),
                 Name = dto.Name.Trim(),
                 Price = dto.Price,
-                IsAvailable = dto.IsAvailable
+                IsAvailable = dto.IsAvailable,
+                Rating = 0,
+                TotalReviews = 0
             };
 
             await _menuRepo.AddAsync(entity);
@@ -64,7 +69,8 @@ namespace RestaurantManagement.Backend.Services
                 Id = entity.Id,
                 Name = entity.Name,
                 Price = entity.Price,
-                IsAvailable = entity.IsAvailable
+                IsAvailable = entity.IsAvailable,
+                Rating = entity.Rating.Value
             };
         }
 
@@ -87,11 +93,26 @@ namespace RestaurantManagement.Backend.Services
 
         public async Task DeleteAsync(Guid id)
         {
-            var entity = await _menuRepo.GetByIdAsync(id)
-                         ?? throw new NotFoundException("Menu item not found.");
+            var entity = await _menuRepo.GetByIdAsync(id) ?? throw new NotFoundException("Menu item not found.");
 
             _menuRepo.Delete(entity);
             await _menuRepo.SaveChangesAsync();
+        }
+
+        public async Task UpdateRatingAsync(List<UpdateMenuItemRating> dto)
+        {
+            foreach (var details in dto)
+            {
+                var menuItem = await _menuRepo.GetByIdAsync(details.Id);
+                if (menuItem == null) throw new BadRequestException("Item Not Found");
+                var oldAvg = menuItem.Rating;
+                var oldCount = menuItem.TotalReviews;
+                var newCount = oldCount + 1;
+                menuItem.Rating = ((oldAvg * oldCount) + details.Rating) / newCount;
+                menuItem.TotalReviews = newCount;
+                _menuRepo.Update(menuItem);
+                await _menuRepo.SaveChangesAsync();
+            }
         }
     }
 

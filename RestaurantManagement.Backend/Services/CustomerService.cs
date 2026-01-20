@@ -4,6 +4,7 @@ using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.DataAccess.Models;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
 using RestaurantManagement.Dtos.Customers;
+using System.Collections.Generic;
 
 namespace RestaurantManagement.Backend.Services
 {
@@ -19,10 +20,10 @@ namespace RestaurantManagement.Backend.Services
 
         public async Task<CustomerResponseDto> CreateAsync(CustomerCreateRequestDto dto, Guid TableId)
         {
-            var existing = await _customerRepo.GetByMobileAsync(dto.MobileNumber);
-            if (existing != null)
+            var customers = await _customerRepo.GetByMobileAsync(dto.MobileNumber);
+            if (customers != null)
             {
-                await MapCustomerWithTable(TableId, existing.Id);
+                var existing = customers.FirstOrDefault();
                 return new CustomerResponseDto
                 {
                     Id = existing.Id,
@@ -40,7 +41,6 @@ namespace RestaurantManagement.Backend.Services
             };
             await _customerRepo.AddAsync(customer);
             await _customerRepo.SaveChangesAsync();
-            await MapCustomerWithTable(TableId, customer.Id);
             return new CustomerResponseDto
             {
                 Id = customer.Id,
@@ -76,15 +76,17 @@ namespace RestaurantManagement.Backend.Services
             }).ToList();
         }
         
-        private async Task MapCustomerWithTable(Guid TableId, Guid customerId)
+        public async Task<List<CustomerResponseDto>> GetByMobileNumberAsync(string mobile)
         {
-            var orders = await _orderRepo.GetNotBilledOrders(TableId);
-            foreach (var order in orders)
+            var customers = await _customerRepo.GetByMobileAsync(mobile);
+            if (!customers.Any()) throw new NotFoundException("No user found with this mobile number");
+            return customers.Select(c => new CustomerResponseDto
             {
-                order.CustomerId = customerId;
-                _orderRepo.Update(order);
-            }
-            await _orderRepo.SaveChangesAsync();
+                Id = c.Id,
+                Name = c.Name,
+                MobileNumber = c.MobileNumber,
+                CreatedAt = c.CreatedAt
+            }).ToList();
         }
     }
 }

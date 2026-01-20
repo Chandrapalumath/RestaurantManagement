@@ -7,5 +7,6 @@ namespace RestaurantManagement.Backend.Services.Interfaces
         Task<CustomerResponseDto> CreateAsync(CustomerCreateRequestDto dto, Guid TableId);
         Task<CustomerResponseDto> GetByIdAsync(Guid id);
         Task<List<CustomerResponseDto>> GetAllAsync();
+        Task<List<CustomerResponseDto>> GetByMobileNumberAsync(string mobile);
     }
 }

@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RestaurantManagement.Backend.Exceptions;
+﻿using RestaurantManagement.Backend.Exceptions;
 using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.DataAccess.Models;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
@@ -85,12 +84,6 @@ namespace RestaurantManagement.Backend.Services
 
             return MapOrderToDto(order);
         }
-
-        public async Task<List<OrderResponseDto>> GetOrdersByCustomerIdAsync(Guid customerId)
-        {
-            var list = await _orderRepo.GetOrdersByCustomerIdAsync(customerId);
-            return list.Select(MapOrderToDto).ToList();
-        }
         private static OrderResponseDto MapOrderToDto(Order order)
         {
             return new OrderResponseDto
@@ -134,6 +127,13 @@ namespace RestaurantManagement.Backend.Services
                           ?? throw new InternalServerErrorException("Order updated but could not load details.");
 
             return MapOrderToDto(updated);
+        }
+
+        public async Task<List<OrderResponseDto>> GetOrdersByTableIdAsync(Guid id)
+        {
+            var tableOrders = await _orderRepo.GetOrderWithTableIdAsync(id);
+            if (tableOrders.Any()) throw new NotFoundException("No Orders found for the table");
+            return tableOrders.Select(MapOrderToDto).ToList();
         }
     }
 }

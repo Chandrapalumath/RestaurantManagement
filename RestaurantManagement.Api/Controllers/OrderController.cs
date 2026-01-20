@@ -9,8 +9,6 @@ using System.Security.Claims;
 
 namespace RestaurantManagement.Api.Controllers
 {
-    [ProducesResponseType(typeof(void), StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(typeof(void), StatusCodes.Status403Forbidden)]
     [Authorize(Roles = "Waiter")]
     [Route("api/orders")]
     [ApiController]
@@ -24,46 +22,59 @@ namespace RestaurantManagement.Api.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateOrderAsync(OrderCreateRequestDto dto)
         {
             Guid waiterId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)); 
-            return Ok(await _orderService.CreateOrderAsync(dto, waiterId));
+            var order = await _orderService.CreateOrderAsync(dto, waiterId);
+            return CreatedAtRoute("GetOrderById", new { id = order.OrderId }, null);
         }
 
         [Authorize(Roles = "Waiter,Chef")]
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetOrderById")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(OrderResponseDto), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetOrderByIdAsync(Guid id)
         {
             return Ok(await _orderService.GetByIdAsync(id));
         }
 
-        [HttpGet("customer/{id}")]
+        [HttpGet("table/{id}")]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(List<OrderResponseDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetOrdersByCustomerIdAsync(Guid id)
         {
-            return Ok(await _orderService.GetOrdersByCustomerIdAsync(id));
+            return Ok(await _orderService.GetOrdersByTableIdAsync(id));
         }
-        
+
         [HttpGet("status")]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(List<OrderResponseDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllOrdersForStatusAsync(OrderStatus status)
         {
             return Ok(await _orderService.GetOrdersAsync(status));
         }
         [HttpPatch("{id}")]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateOrderStatusAsync(Guid id, OrderUpdateRequestDto dto)
         {
-            return Ok(await _orderService.UpdateOrderAsync(id, dto));
+            await _orderService.UpdateOrderAsync(id, dto);
+            return NoContent();
         }
     }
 }

@@ -9,16 +9,14 @@ namespace RestaurantManagement.DataAccess.Models
         public Guid Id { get; set; }
 
         [Required, MaxLength(50)]
-        public string TableName { get; set; } = string.Empty;   // like T1, T2, VIP-1
+        public string TableName { get; set; }
 
         [Range(1, 50)]
-        public int Size { get; set; }  // number of seats (future scope)
+        public int Capacity { get; set; } 
 
-        public bool IsOccupied { get; set; } = false;
+        public bool IsOccupied { get; set; } 
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        // Navigation
+        public DateTime CreatedAt { get; set; } 
         public ICollection<Order> Orders { get; set; } = new List<Order>();
     }
 }

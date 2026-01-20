@@ -8,8 +8,8 @@ namespace RestaurantManagement.DataAccess.Repositories
     {
         public CustomerRepository(RestaurantDbContext context) : base(context) { }
 
-        public async Task<Customer?> GetByMobileAsync(string mobileNumber)
-            => await _context.Customers.FirstOrDefaultAsync(x => x.MobileNumber == mobileNumber);
+        public async Task<List<Customer>?> GetByMobileAsync(string mobileNumber)
+            => await _context.Customers.Where(x => x.MobileNumber.StartsWith(mobileNumber)).ToListAsync();
     }
 
 }

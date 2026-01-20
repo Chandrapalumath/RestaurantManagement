@@ -33,7 +33,7 @@ namespace RestaurantManagement.DataAccess
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.Customer)
                 .WithMany(c => c.Orders)
-                .HasForeignKey(o => o.CustomerId)
+                .HasForeignKey(o => o.BillingId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Order>()
