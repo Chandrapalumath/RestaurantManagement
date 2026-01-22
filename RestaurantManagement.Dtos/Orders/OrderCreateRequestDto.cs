@@ -8,6 +8,6 @@ namespace RestaurantManagement.Dtos.Orders
         public Guid TableId {  get; set; }
 
         [Required, MinLength(1, ErrorMessage = "Order must contain at least 1 item.")]
-        public List<OrderItemCreateDto> Items { get; set; } = new();
+        public List<OrderItemCreateRequestDto> Items { get; set; } = new();
     }
 }

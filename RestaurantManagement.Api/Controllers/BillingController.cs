@@ -20,7 +20,7 @@ namespace RestaurantManagement.Api.Controllers
 
         [Authorize(Roles = "Waiter")]
         [HttpPost]
-        [ProducesResponseType(typeof(BillResponseDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]

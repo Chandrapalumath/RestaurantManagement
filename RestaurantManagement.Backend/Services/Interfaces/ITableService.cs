@@ -8,6 +8,5 @@ namespace RestaurantManagement.Backend.Services.Interfaces
         Task DeleteAsync(Guid tableId);
         Task<List<TableResponseDto>> GetAllAsync();
         Task<TableResponseDto> GetByIdAsync(Guid tableId);
-        Task<TableResponseDto> UpdateOccupiedAsync(Guid tableId, bool isOccupied);
     }
 }

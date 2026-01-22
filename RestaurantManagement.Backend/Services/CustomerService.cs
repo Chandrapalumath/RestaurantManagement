@@ -1,10 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using RestaurantManagement.Backend.Exceptions;
+﻿using RestaurantManagement.Backend.Exceptions;
 using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.DataAccess.Models;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
 using RestaurantManagement.Dtos.Customers;
-using System.Collections.Generic;
 
 namespace RestaurantManagement.Backend.Services
 {
@@ -18,10 +16,10 @@ namespace RestaurantManagement.Backend.Services
             _orderRepo = orderRepo;
         }
 
-        public async Task<CustomerResponseDto> CreateAsync(CustomerCreateRequestDto dto, Guid TableId)
+        public async Task<CustomerResponseDto> CreateAsync(CustomerCreateRequestDto dto)
         {
             var customers = await _customerRepo.GetByMobileAsync(dto.MobileNumber);
-            if (customers != null)
+            if (customers.Any())
             {
                 var existing = customers.FirstOrDefault();
                 return new CustomerResponseDto

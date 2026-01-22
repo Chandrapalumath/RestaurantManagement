@@ -16,10 +16,11 @@ namespace RestaurantManagement.DataAccess.Repositories
                 .FirstOrDefaultAsync(o => o.Id == orderId);
 
         public async Task<List<Order>> GetOrderWithTableIdAsync(Guid tableId)
-            => await _context.Orders
-                .Include(o => o.Items)
-                    .ThenInclude(i => i.MenuItem)
-                .Where(o => o.Id == tableId && o.IsBilled == false).ToListAsync();
+        => await _context.Orders
+            .Include(o => o.Items)
+                .ThenInclude(i => i.MenuItem)
+            .Where(o => o.TableId == tableId && !o.IsBilled)
+            .ToListAsync();
 
         public async Task<List<Order>> GetNotBilledOrders(Guid TableId)
         {

@@ -18,7 +18,7 @@ namespace RestaurantManagement.DataAccess.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public bool IsBilled { get; set; } = false;
-        public Guid BillingId { get; set; }
+        public Guid? BillingId { get; set; }
         public DateTime? UpdatedAt { get; set; }
         [ForeignKey(nameof(TableId))]
         public Table? Table { get; set; }

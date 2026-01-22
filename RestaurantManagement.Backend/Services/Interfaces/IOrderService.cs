@@ -10,6 +10,6 @@ namespace RestaurantManagement.Backend.Services.Interfaces
         Task<OrderResponseDto> GetByIdAsync(Guid id);
         Task<List<OrderResponseDto>> GetOrdersAsync(OrderStatus status);
         Task<List<OrderResponseDto>> GetOrdersByTableIdAsync(Guid id);
-        Task<OrderResponseDto> UpdateOrderAsync(Guid orderId, OrderUpdateRequestDto dto);
+        Task UpdateOrderAsync(Guid orderId, OrderUpdateRequestDto dto);
     }
 }

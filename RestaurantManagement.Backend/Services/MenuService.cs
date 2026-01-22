@@ -74,7 +74,7 @@ namespace RestaurantManagement.Backend.Services
             };
         }
 
-        public async Task<MenuItemResponseDto> UpdateAsync(Guid id, MenuItemUpdateRequestDto dto)
+        public async Task UpdateAsync(Guid id, MenuItemUpdateRequestDto dto)
         {
             var entity = await _menuRepo.GetByIdAsync(id)
                          ?? throw new NotFoundException("Menu item not found.");
@@ -87,8 +87,6 @@ namespace RestaurantManagement.Backend.Services
 
             _menuRepo.Update(entity);
             await _menuRepo.SaveChangesAsync();
-
-            return await GetByIdAsync(id);
         }
 
         public async Task DeleteAsync(Guid id)

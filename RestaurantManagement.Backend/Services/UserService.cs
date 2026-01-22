@@ -17,7 +17,7 @@ namespace RestaurantManagement.Backend.Services
             _userRepo = userRepo;
         }
 
-        public async Task<UserResponseDto> CreateStaffUserAsync(CreateUserRequestDto dto)
+        public async Task<UserResponseDto> CreateUserAsync(CreateUserRequestDto dto)
         {
             var exists = await _userRepo.GetByEmailAsync(dto.Email.Trim().ToLower());
             if (exists is not null)
@@ -78,7 +78,7 @@ namespace RestaurantManagement.Backend.Services
             };
         }
 
-        public async Task<string> UpdateUserAsync(Guid id, UserUpdateRequestDto dto)
+        public async Task UpdateUserAsync(Guid id, UserUpdateRequestDto dto)
         {
             var user = await _userRepo.GetByIdAsync(id)
                        ?? throw new NotFoundException("User not found.");
@@ -102,7 +102,6 @@ namespace RestaurantManagement.Backend.Services
             _userRepo.Update(user);
             await _userRepo.SaveChangesAsync();
 
-            return "Updated Successfully";
         }
     }
 }

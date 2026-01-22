@@ -14,8 +14,5 @@ namespace RestaurantManagement.Dtos.Customers
 
         [Required, RegularExpression(@"^\d{10}$", ErrorMessage = "Mobile number must be 10 digits.")]
         public string MobileNumber { get; set; } = string.Empty;
-
-        [Required]
-        public Guid TableId { get; set; }
     }
 }

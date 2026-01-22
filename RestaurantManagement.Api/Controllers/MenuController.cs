@@ -77,13 +77,13 @@ namespace RestaurantManagement.Api.Controllers
         // Handle this
         [Authorize(Roles = "Waiter")]
         [HttpPost("rating")]
-        [ProducesResponseType(typeof(void), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UpdateMenuItemRatingAsync(List<UpdateMenuItemRating> dto)
         {
             await _menuService.UpdateRatingAsync(dto);
-            return Ok("Rating Updated");
+            return NoContent();
         }
     }
 }

@@ -20,7 +20,7 @@ namespace RestaurantManagement.DataAccess.Models
         public bool IsPaymentDone { get; set; } = false;
         public DateTime GeneratedAt { get; set; } = DateTime.UtcNow;
         [ForeignKey(nameof(CustomerId))]
-        public Customer Customer { get; set; }
+        public Customer? Customer { get; set; }
         [ForeignKey(nameof(GeneratedByWaiterId))]
         public User? GeneratedByWaiter { get; set; }
         public ICollection<Order> Orders { get; set; } = new List<Order>(); 

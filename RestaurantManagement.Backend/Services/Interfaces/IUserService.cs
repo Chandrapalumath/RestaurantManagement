@@ -9,9 +9,9 @@ namespace RestaurantManagement.Backend.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<UserResponseDto> CreateStaffUserAsync(CreateUserRequestDto dto);
+        Task<UserResponseDto> CreateUserAsync(CreateUserRequestDto dto);
         Task<List<UserResponseDto>> GetAllUsersAsync();
         Task<UserResponseDto> GetUserByIdAsync(Guid id);
-        Task<string> UpdateUserAsync(Guid id, UserUpdateRequestDto dto);
+        Task UpdateUserAsync(Guid id, UserUpdateRequestDto dto);
     }
 }

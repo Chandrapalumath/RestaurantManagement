@@ -20,7 +20,7 @@ namespace RestaurantManagement.Backend.Services
         public async Task<AuthResponseDto> LoginAsync(LoginRequestDto dto)
         {
             var user = await _userRepo.GetByEmailAsync(dto.Email.Trim().ToLower());
-            if (user == null)
+            if (user is null)
                 throw new UnauthorizedException("Invalid email or password.");
 
             if (!user.IsActive)
@@ -29,7 +29,7 @@ namespace RestaurantManagement.Backend.Services
             var result = PasswordHasher.Verify(dto.Password, user.Password);
 
             if (!result)
-                throw new UnauthorizedException("Invalid email or password.");
+                throw new UnauthorizedException("Invalid password.");
 
             var token = _jwt.GenerateToken(user);
 

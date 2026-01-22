@@ -12,7 +12,7 @@ using RestaurantManagement.DataAccess;
 namespace RestaurantManagement.DataAccess.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20260120170917_Initial")]
+    [Migration("20260120183710_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -137,11 +137,14 @@ namespace RestaurantManagement.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BillingId")
+                    b.Property<Guid?>("BillingId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("CustomerId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsBilled")
                         .HasColumnType("bit");
@@ -161,6 +164,8 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BillingId");
+
+                    b.HasIndex("CustomerId");
 
                     b.HasIndex("TableId");
 
@@ -223,11 +228,11 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("f65e726a-554e-4318-b3a1-5caa372ed74a"),
+                            Id = new Guid("2f516c87-e573-4513-8eb0-9435ae6f0348"),
                             DiscountPercent = 10m,
                             TaxPercent = 10m,
                             UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UpdatedByAdminId = new Guid("1568ca98-0b78-408c-a533-3dc0dfcee1a0")
+                            UpdatedByAdminId = new Guid("0ea73211-b510-43ec-938c-1189cc472bfc")
                         });
                 });
 
@@ -325,13 +330,13 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("1568ca98-0b78-408c-a533-3dc0dfcee1a0"),
-                            CreatedAt = new DateTime(2026, 1, 20, 17, 9, 16, 648, DateTimeKind.Utc).AddTicks(197),
+                            Id = new Guid("0ea73211-b510-43ec-938c-1189cc472bfc"),
+                            CreatedAt = new DateTime(2026, 1, 20, 18, 37, 9, 974, DateTimeKind.Utc).AddTicks(4024),
                             Email = "admin@gmail.com",
                             IsActive = true,
                             MobileNumber = "9999999999",
                             Name = "Admin",
-                            Password = "$2a$11$zFZNswdN0DGHgZWHBMp/uusF6Cs9e53LTQ0cQwNYJG6bdGaHFrrie",
+                            Password = "$2a$11$wt0K5CokK82EvXbfLA/kgOpwc5vt83mNsu2rZv0d.tDoDNZHyF70K",
                             Role = 1
                         });
                 });
@@ -341,13 +346,13 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.HasOne("RestaurantManagement.DataAccess.Models.Customer", "Customer")
                         .WithMany("Bills")
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("RestaurantManagement.DataAccess.Models.User", "GeneratedByWaiter")
                         .WithMany("BillsGenerated")
                         .HasForeignKey("GeneratedByWaiterId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Customer");
@@ -359,26 +364,22 @@ namespace RestaurantManagement.DataAccess.Migrations
                 {
                     b.HasOne("RestaurantManagement.DataAccess.Models.Bill", "Bill")
                         .WithMany("Orders")
-                        .HasForeignKey("BillingId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("BillingId");
 
                     b.HasOne("RestaurantManagement.DataAccess.Models.Customer", "Customer")
-                        .WithMany("Orders")
-                        .HasForeignKey("BillingId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("CustomerId");
 
                     b.HasOne("RestaurantManagement.DataAccess.Models.Table", "Table")
                         .WithMany("Orders")
                         .HasForeignKey("TableId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("RestaurantManagement.DataAccess.Models.User", "Waiter")
                         .WithMany("OrdersTaken")
                         .HasForeignKey("WaiterId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Bill");
@@ -395,7 +396,7 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.HasOne("RestaurantManagement.DataAccess.Models.MenuItem", "MenuItem")
                         .WithMany("OrderItems")
                         .HasForeignKey("MenuItemId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("RestaurantManagement.DataAccess.Models.Order", "Order")
@@ -414,7 +415,7 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.HasOne("RestaurantManagement.DataAccess.Models.User", "UpdatedByAdmin")
                         .WithMany()
                         .HasForeignKey("UpdatedByAdminId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("UpdatedByAdmin");
@@ -425,7 +426,7 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.HasOne("RestaurantManagement.DataAccess.Models.Customer", "Customer")
                         .WithMany("Reviews")
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Customer");
@@ -439,8 +440,6 @@ namespace RestaurantManagement.DataAccess.Migrations
             modelBuilder.Entity("RestaurantManagement.DataAccess.Models.Customer", b =>
                 {
                     b.Navigation("Bills");
-
-                    b.Navigation("Orders");
 
                     b.Navigation("Reviews");
                 });

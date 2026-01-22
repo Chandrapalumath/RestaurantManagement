@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RestaurantManagement.Dtos.Orders
 {
-    public class OrderItemCreateDto
+    public class OrderItemCreateRequestDto
     {
         [Required]
         public Guid MenuItemId { get; set; }

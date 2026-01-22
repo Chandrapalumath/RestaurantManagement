@@ -8,9 +8,9 @@ namespace RestaurantManagement.Backend.Services
 {
     public class TableService : ITableService
     {
-        private readonly IGenericRepository<Table> _tableRepo;
+        private readonly ITableRepository _tableRepo;
 
-        public TableService(IGenericRepository<Table> tableRepo)
+        public TableService(ITableRepository tableRepo)
         {
             _tableRepo = tableRepo;
         }
@@ -54,19 +54,6 @@ namespace RestaurantManagement.Backend.Services
                         ?? throw new NotFoundException("Table not found.");
             return Map(table);
         }
-
-        public async Task<TableResponseDto> UpdateOccupiedAsync(Guid tableId, bool isOccupied)
-        {
-            var table = await _tableRepo.GetByIdAsync(tableId)
-                        ?? throw new NotFoundException("Table not found.");
-
-            table.IsOccupied = isOccupied;
-            _tableRepo.Update(table);
-            await _tableRepo.SaveChangesAsync();
-
-            return Map(table);
-        }
-
         private static TableResponseDto Map(Table t) => new()
         {
             Id = t.Id,

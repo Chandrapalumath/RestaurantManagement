@@ -20,12 +20,12 @@ namespace RestaurantManagement.Api.Controllers
 
         [Authorize(Roles = "Waiter")]
         [HttpPost]
-        [ProducesResponseType(typeof(BillResponseDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(void), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> CreateCustomerAsync(CustomerCreateRequestDto dto, Guid TableId)
+        public async Task<IActionResult> CreateCustomerAsync(CustomerCreateRequestDto dto)
         {
-            var customer = await _customerService.CreateAsync(dto, TableId);
+            var customer = await _customerService.CreateAsync(dto);
             return CreatedAtRoute("GetCustomerById", new { id = customer.Id }, null);
         }
 

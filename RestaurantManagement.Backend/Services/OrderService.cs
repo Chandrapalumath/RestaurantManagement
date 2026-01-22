@@ -12,11 +12,11 @@ namespace RestaurantManagement.Backend.Services
         private readonly IOrderRepository _orderRepo;
         private readonly ICustomerRepository _customerRepo;
         private readonly IMenuRepository _menuRepo;
-        private readonly IGenericRepository<Table> _tableRepo;
+        private readonly ITableRepository _tableRepo;
         public OrderService(
             IOrderRepository orderRepo,
             ICustomerRepository customerRepo,
-            IMenuRepository menuRepo, IGenericRepository<Table> tableRepo)
+            IMenuRepository menuRepo, ITableRepository tableRepo)
         {
             _orderRepo = orderRepo;
             _customerRepo = customerRepo;
@@ -28,8 +28,6 @@ namespace RestaurantManagement.Backend.Services
         {
             var table = await _tableRepo.GetByIdAsync(dto.TableId);
             if (table == null) throw new NotFoundException("Table not found");
-
-            if (table.IsOccupied) throw new BadRequestException("Table is already occupied");
 
             table.IsOccupied = true;
 
@@ -56,7 +54,7 @@ namespace RestaurantManagement.Backend.Services
                     throw new NotFoundException($"Menu item not found: {item.MenuItemId}");
 
                 if (!menu.IsAvailable)
-                    throw new NotFoundException($"Menu item not available: {menu.Name}");
+                    throw new BadRequestException($"Menu item not available: {menu.Name}");
 
                 var unitPrice = menu.Price;
 
@@ -70,12 +68,12 @@ namespace RestaurantManagement.Backend.Services
 
             await _orderRepo.AddAsync(order);
             await _orderRepo.SaveChangesAsync();
+            await _tableRepo.SaveChangesAsync();
             var saved = await _orderRepo.GetOrderWithItemsAsync(order.Id)
                         ?? throw new InternalServerErrorException("Order saved but could not load details.");
 
             return MapOrderToDto(saved);
         }
-
 
         public async Task<OrderResponseDto> GetByIdAsync(Guid id)
         {
@@ -91,7 +89,7 @@ namespace RestaurantManagement.Backend.Services
                 OrderId = order.Id,
                 TableId = order.TableId,
                 WaiterId = order.WaiterId,
-                Status = order.Status.ToString(),
+                Status = order.Status,
                 CreatedAt = order.CreatedAt,
                 Items = order.Items.Select(i => new OrderItemResponseDto
                 {
@@ -109,7 +107,7 @@ namespace RestaurantManagement.Backend.Services
             return list.Select(MapOrderToDto).ToList();
         }
 
-        public async Task<OrderResponseDto> UpdateOrderAsync(Guid orderId, OrderUpdateRequestDto dto)
+        public async Task UpdateOrderAsync(Guid orderId, OrderUpdateRequestDto dto)
         {
             var order = await _orderRepo.GetByIdAsync(orderId)
                         ?? throw new NotFoundException("Order not found.");
@@ -122,17 +120,12 @@ namespace RestaurantManagement.Backend.Services
 
             _orderRepo.Update(order);
             await _orderRepo.SaveChangesAsync();
-
-            var updated = await _orderRepo.GetOrderWithItemsAsync(orderId)
-                          ?? throw new InternalServerErrorException("Order updated but could not load details.");
-
-            return MapOrderToDto(updated);
         }
 
         public async Task<List<OrderResponseDto>> GetOrdersByTableIdAsync(Guid id)
         {
             var tableOrders = await _orderRepo.GetOrderWithTableIdAsync(id);
-            if (tableOrders.Any()) throw new NotFoundException("No Orders found for the table");
+            if (!tableOrders.Any()) throw new NotFoundException("No Orders found for the table");
             return tableOrders.Select(MapOrderToDto).ToList();
         }
     }

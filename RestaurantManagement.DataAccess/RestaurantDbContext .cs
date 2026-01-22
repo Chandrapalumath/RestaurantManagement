@@ -24,66 +24,6 @@ namespace RestaurantManagement.DataAccess
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Order>()
-            .HasOne(o => o.Table)
-            .WithMany(t => t.Orders)
-            .HasForeignKey(o => o.TableId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Customer)
-                .WithMany(c => c.Orders)
-                .HasForeignKey(o => o.BillingId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Waiter)
-                .WithMany(u => u.OrdersTaken)
-                .HasForeignKey(o => o.WaiterId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<OrderItem>()
-                .HasOne(oi => oi.Order)
-                .WithMany(o => o.Items)
-                .HasForeignKey(oi => oi.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<OrderItem>()
-                .HasOne(oi => oi.MenuItem)
-                .WithMany(mi => mi.OrderItems)
-                .HasForeignKey(oi => oi.MenuItemId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Bill>()
-                .HasOne(b => b.Customer)
-                .WithMany(c => c.Bills)
-                .HasForeignKey(b => b.CustomerId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Bill>()
-                .HasOne(b => b.GeneratedByWaiter)
-                .WithMany(u => u.BillsGenerated)
-                .HasForeignKey(b => b.GeneratedByWaiterId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Bill)
-                .WithMany(b => b.Orders)
-                .HasForeignKey(o => o.BillingId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Review>()
-                .HasOne(r => r.Customer)
-                .WithMany(c => c.Reviews)
-                .HasForeignKey(r => r.CustomerId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<RestaurantSettings>()
-                .HasOne(s => s.UpdatedByAdmin)
-                .WithMany()
-                .HasForeignKey(s => s.UpdatedByAdminId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             var adminId = Guid.NewGuid();
 
             modelBuilder.Entity<User>().HasData(

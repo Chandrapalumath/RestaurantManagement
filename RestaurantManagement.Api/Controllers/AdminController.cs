@@ -28,7 +28,7 @@ namespace RestaurantManagement.Api.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CreateUserAsync(CreateUserRequestDto dto)
         {
-            var result = await _userService.CreateStaffUserAsync(dto);
+            var result = await _userService.CreateUserAsync(dto);
             return CreatedAtRoute("GetUserByIdAsync", new { id = result.Id }, null);
         }
 

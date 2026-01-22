@@ -9,7 +9,6 @@ using System.Security.Claims;
 
 namespace RestaurantManagement.Api.Controllers
 {
-    [Authorize(Roles = "Waiter")]
     [Route("api/orders")]
     [ApiController]
     public class OrderController : ControllerBase
@@ -20,7 +19,7 @@ namespace RestaurantManagement.Api.Controllers
         {
             _orderService = orderService;
         }
-
+        [Authorize(Roles = "Waiter")]
         [HttpPost]
         [ProducesResponseType(typeof(void), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
@@ -46,16 +45,17 @@ namespace RestaurantManagement.Api.Controllers
             return Ok(await _orderService.GetByIdAsync(id));
         }
 
+        [Authorize(Roles = "Waiter")]
         [HttpGet("table/{id}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(List<OrderResponseDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetOrdersByCustomerIdAsync(Guid id)
+        public async Task<IActionResult> GetOrdersByTableIdAsync(Guid id)
         {
             return Ok(await _orderService.GetOrdersByTableIdAsync(id));
         }
-
+        [Authorize(Roles = "Waiter,Chef")]
         [HttpGet("status")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
@@ -66,6 +66,7 @@ namespace RestaurantManagement.Api.Controllers
         {
             return Ok(await _orderService.GetOrdersAsync(status));
         }
+        [Authorize(Roles = "Waiter,Chef")]
         [HttpPatch("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]

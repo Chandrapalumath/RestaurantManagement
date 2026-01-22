@@ -73,7 +73,7 @@ namespace RestaurantManagement.Api
             builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
             builder.Services.AddScoped<IMenuRepository, MenuRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-            builder.Services.AddScoped<IGenericRepository<Table>, GenericRepository<Table>>();
+            builder.Services.AddScoped<ITableRepository, TableRepository>();
             builder.Services.AddScoped<IBillingRepository, BillingRepository>();
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<ISettingsRepository, SettingsRepository>();
