@@ -49,7 +49,6 @@ public class CustomerServiceTests
         Assert.AreEqual(existingCustomer.Id, result.Id);
         Assert.AreEqual(existingCustomer.Name, result.Name);
         Assert.AreEqual(existingCustomer.MobileNumber, result.MobileNumber);
-        Assert.AreEqual(existingCustomer.CreatedAt, result.CreatedAt);
     }
 
     [TestMethod]
@@ -134,7 +133,6 @@ public class CustomerServiceTests
         Assert.AreEqual(customer.Id, result.Id);
         Assert.AreEqual("Test", result.Name);
         Assert.AreEqual("777", result.MobileNumber);
-        Assert.AreEqual(customer.CreatedAt, result.CreatedAt);
     }
 
     [TestMethod]

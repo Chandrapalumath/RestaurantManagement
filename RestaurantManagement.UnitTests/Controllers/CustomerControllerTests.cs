@@ -33,8 +33,7 @@ public class CustomerControllerTests
         {
             Id = Guid.NewGuid(),
             Name = dto.Name,
-            MobileNumber = dto.MobileNumber,
-            CreatedAt = DateTime.UtcNow
+            MobileNumber = dto.MobileNumber
         };
 
         _customerServiceMock
@@ -62,8 +61,7 @@ public class CustomerControllerTests
         {
             Id = customerId,
             Name = "Sam",
-            MobileNumber = "9999999999",
-            CreatedAt = DateTime.UtcNow
+            MobileNumber = "9999999999"
         };
 
         _customerServiceMock

@@ -154,7 +154,6 @@ public class AuthServiceTests
         var result = await _service.LoginAsync(dto);
         // Assert
         Assert.IsNotNull(result);
-        Assert.AreEqual(user.Id, result.UserId);
         Assert.AreEqual("Chandrapal", result.FullName);
         Assert.AreEqual(UserRole.Admin.ToString(), result.Role);
         Assert.AreEqual("FAKE_JWT_TOKEN", result.Token);

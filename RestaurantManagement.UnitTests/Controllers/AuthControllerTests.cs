@@ -50,7 +50,6 @@ public class AuthControllerTests
 
         var response = new AuthResponseDto
         {
-            UserId = Guid.NewGuid(),
             FullName = "Test User",
             Role = "Admin",
             Token = "FAKE_JWT_TOKEN"
@@ -70,7 +69,6 @@ public class AuthControllerTests
 
         var data = okResult.Value as AuthResponseDto;
         Assert.IsNotNull(data);
-        Assert.AreEqual(response.UserId, data.UserId);
         Assert.AreEqual("FAKE_JWT_TOKEN", data.Token);
     }
 

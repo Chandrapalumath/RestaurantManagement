@@ -36,7 +36,6 @@ namespace RestaurantManagement.Backend.Services
 
             return new AuthResponseDto
             {
-                UserId = user.Id,
                 FullName = user.Name,
                 Role = user.Role.ToString(),
                 Token = token

@@ -24,8 +24,7 @@ namespace RestaurantManagement.Backend.Services
                 {
                     Id = existing.Id,
                     Name = existing.Name,
-                    MobileNumber = existing.MobileNumber,
-                    CreatedAt = existing.CreatedAt
+                    MobileNumber = existing.MobileNumber
                 };
             }
 
@@ -41,8 +40,7 @@ namespace RestaurantManagement.Backend.Services
             {
                 Id = customer.Id,
                 Name = customer.Name,
-                MobileNumber = customer.MobileNumber,
-                CreatedAt = customer.CreatedAt
+                MobileNumber = customer.MobileNumber
             };
         }
 
@@ -55,8 +53,7 @@ namespace RestaurantManagement.Backend.Services
             {
                 Id = customer.Id,
                 Name = customer.Name,
-                MobileNumber = customer.MobileNumber,
-                CreatedAt = customer.CreatedAt
+                MobileNumber = customer.MobileNumber
             };
         }
 
@@ -67,8 +64,7 @@ namespace RestaurantManagement.Backend.Services
             {
                 Id = c.Id,
                 Name = c.Name,
-                MobileNumber = c.MobileNumber,
-                CreatedAt = c.CreatedAt
+                MobileNumber = c.MobileNumber
             }).ToList();
         }
         
@@ -80,8 +76,7 @@ namespace RestaurantManagement.Backend.Services
             {
                 Id = c.Id,
                 Name = c.Name,
-                MobileNumber = c.MobileNumber,
-                CreatedAt = c.CreatedAt
+                MobileNumber = c.MobileNumber
             }).ToList();
         }
     }
