@@ -28,7 +28,7 @@ namespace RestaurantManagement.Api.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateOrderAsync(OrderCreateRequestDto dto)
         {
-            Guid waiterId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)); 
+            Guid waiterId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!); 
             var order = await _orderService.CreateOrderAsync(dto, waiterId);
             return CreatedAtRoute("GetOrderById", new { id = order.OrderId }, null);
         }

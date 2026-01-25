@@ -19,12 +19,11 @@ namespace RestaurantManagement.Backend.Tests.Services
         {
             _settingsRepoMock = new Mock<ISettingsRepository>();
             _userRepoMock = new Mock<IUserRepository>();
-
             _service = new SettingsService(_settingsRepoMock.Object, _userRepoMock.Object);
         }
         [TestMethod]
         [ExpectedException(typeof(NotFoundException))]
-        public async Task GetSettingsAsync_ShouldThrowNotFound_WhenSettingsIsNull()
+        public async Task GetSettingsAsync_SettingsDoNotExist_ThrowsNotFoundException()
         {
             // Arrange
             _settingsRepoMock
@@ -43,7 +42,7 @@ namespace RestaurantManagement.Backend.Tests.Services
             }
         }
         [TestMethod]
-        public async Task GetSettingsAsync_ShouldReturnMappedDto_WhenSettingsExists()
+        public async Task GetSettingsAsync_SettingsExist_ReturnsSettingsDto()
         {
             // Arrange
             var settings = new RestaurantSettings
@@ -68,7 +67,7 @@ namespace RestaurantManagement.Backend.Tests.Services
             Assert.AreEqual(settings.UpdatedAt, result.UpdatedAt);
         }
         [TestMethod]
-        public async Task UpdateSettingsAsync_ShouldCreateNewSettings_WhenSettingsDoesNotExist()
+        public async Task UpdateSettingsAsync_NoExistingSettings_CreatesAndReturnsSettingsDto()
         {
             // Arrange
             _settingsRepoMock
@@ -98,7 +97,7 @@ namespace RestaurantManagement.Backend.Tests.Services
             Assert.AreNotEqual(Guid.Empty, createdSettings!.Id);
         }
         [TestMethod]
-        public async Task UpdateSettingsAsync_ShouldUpdateTaxPercentOnly_WhenProvided()
+        public async Task UpdateSettingsAsync_TaxPercentOnlyProvided_UpdatesTaxAndReturnsDto()
         {
             // Arrange
             var settings = new RestaurantSettings
@@ -130,7 +129,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
 
         [TestMethod]
-        public async Task UpdateSettingsAsync_ShouldUpdateDiscountPercentOnly_WhenProvided()
+        public async Task UpdateSettingsAsync_DiscountPercentOnlyProvided_UpdatesDiscountAndReturnsDto()
         {
             // Arrange
             var settings = new RestaurantSettings
@@ -162,7 +161,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
 
         [TestMethod]
-        public async Task UpdateSettingsAsync_ShouldUpdateBothTaxAndDiscount_WhenProvided()
+        public async Task UpdateSettingsAsync_AllFieldsProvided_UpdatesAllAndReturnsDto()
         {
             // Arrange
             var settings = new RestaurantSettings
@@ -194,7 +193,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
 
         [TestMethod]
-        public async Task UpdateSettingsAsync_ShouldOnlyUpdateUpdatedAt_WhenNoValuesProvided()
+        public async Task UpdateSettingsAsync_NoValuesProvided_OnlyUpdatesTimestampAndReturnsDto()
         {
             // Arrange
             var settings = new RestaurantSettings

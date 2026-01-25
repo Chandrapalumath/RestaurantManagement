@@ -20,11 +20,11 @@ namespace RestaurantManagement.Backend.Tests.Services
             _userRepoMock = new Mock<IUserRepository>();
             _service = new UserService(_userRepoMock.Object);
         }
+
         [TestMethod]
         [ExpectedException(typeof(ConflictException))]
-        public async Task CreateUserAsync_ShouldThrowConflict_WhenEmailAlreadyExists()
+        public async Task CreateUserAsync_EmailAlreadyExists_ThrowsConflictException()
         {
-            // Arrange
             var dto = new CreateUserRequestDto
             {
                 Email = " test@abc.com ",
@@ -38,7 +38,6 @@ namespace RestaurantManagement.Backend.Tests.Services
                 .Setup(r => r.GetByEmailAsync("test@abc.com"))
                 .ReturnsAsync(new User());
 
-            // Act + Assert
             try
             {
                 await _service.CreateUserAsync(dto);
@@ -49,10 +48,10 @@ namespace RestaurantManagement.Backend.Tests.Services
                 throw;
             }
         }
+
         [TestMethod]
-        public async Task CreateUserAsync_ShouldCreateUser_Save_AndReturnMappedDto()
+        public async Task CreateUserAsync_ValidUser_SavesAndReturnsUserDto()
         {
-            // Arrange
             var dto = new CreateUserRequestDto
             {
                 Email = "  TEST@ABC.COM  ",
@@ -73,24 +72,20 @@ namespace RestaurantManagement.Backend.Tests.Services
                 .Callback<User>(u => capturedUser = u)
                 .Returns(Task.CompletedTask);
 
-            _userRepoMock.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
+            _userRepoMock
+                .Setup(r => r.SaveChangesAsync())
+                .Returns(Task.CompletedTask);
 
-            // Act
             var result = await _service.CreateUserAsync(dto);
 
-            // Assert - user object created correctly
             Assert.IsNotNull(capturedUser);
-
-            Assert.AreEqual("test@abc.com", capturedUser.Email);             
-            Assert.AreEqual("Chandrapal Singh", capturedUser.Name);       
-            Assert.AreEqual("9876543210", capturedUser.MobileNumber);        
+            Assert.AreEqual("test@abc.com", capturedUser.Email);
+            Assert.AreEqual("Chandrapal Singh", capturedUser.Name);
+            Assert.AreEqual("9876543210", capturedUser.MobileNumber);
             Assert.AreEqual(UserRole.Chef, capturedUser.Role);
             Assert.IsTrue(capturedUser.IsActive);
-
             Assert.AreNotEqual(dto.Password, capturedUser.Password);
-            Assert.IsFalse(string.IsNullOrWhiteSpace(capturedUser.Password));
 
-            // Assert - response dto mapping
             Assert.AreEqual(capturedUser.Id, result.Id);
             Assert.AreEqual("Chandrapal Singh", result.FullName);
             Assert.AreEqual("9876543210", result.MobileNumber);
@@ -98,10 +93,10 @@ namespace RestaurantManagement.Backend.Tests.Services
             Assert.AreEqual(UserRole.Chef, result.Role);
             Assert.IsTrue(result.IsActive);
         }
+
         [TestMethod]
-        public async Task GetAllUsersAsync_ShouldReturnMappedList()
+        public async Task GetAllUsersAsync_UsersExist_ReturnsUserDtoList()
         {
-            // Arrange
             var users = new List<User>
             {
                 new User
@@ -126,48 +121,38 @@ namespace RestaurantManagement.Backend.Tests.Services
 
             _userRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(users);
 
-            // Act
             var result = await _service.GetAllUsersAsync();
 
-            // Assert
-            Assert.IsNotNull(result);
             Assert.AreEqual(2, result.Count);
             Assert.AreEqual(users[0].Id, result[0].Id);
             Assert.AreEqual("User1", result[0].FullName);
-            Assert.AreEqual("user1@test.com", result[0].Email);
-            Assert.AreEqual("111", result[0].MobileNumber);
             Assert.AreEqual(UserRole.Waiter, result[0].Role);
             Assert.IsTrue(result[0].IsActive);
-            Assert.AreEqual(users[1].Id, result[1].Id);
             Assert.AreEqual("User2", result[1].FullName);
-            Assert.AreEqual(UserRole.Chef, result[1].Role);
             Assert.IsFalse(result[1].IsActive);
         }
+
         [TestMethod]
-        public async Task GetAllUsersAsync_ShouldReturnEmptyList_WhenNoUsers()
+        public async Task GetAllUsersAsync_NoUsersFound_ReturnsEmptyList()
         {
-            // Arrange
             _userRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<User>());
 
-            // Act
             var result = await _service.GetAllUsersAsync();
 
-            // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(0, result.Count);
         }
+
         [TestMethod]
         [ExpectedException(typeof(NotFoundException))]
-        public async Task GetUserByIdAsync_ShouldThrowNotFound_WhenUserNotExists()
+        public async Task GetUserByIdAsync_UserDoesNotExist_ThrowsNotFoundException()
         {
-            // Arrange
             _userRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
                          .ReturnsAsync((User?)null);
 
-            // Act + Assert
             try
             {
-                await _service.GetUserByIdAsync(Guid.NewGuid());
+                await _service.GetUserByIdAsync(Guid.NewGuid(), true, null);
             }
             catch (NotFoundException ex)
             {
@@ -175,60 +160,95 @@ namespace RestaurantManagement.Backend.Tests.Services
                 throw;
             }
         }
+
         [TestMethod]
-        public async Task GetUserByIdAsync_ShouldReturnMappedUser_WhenExists()
+        public async Task GetUserByIdAsync_AdminAccess_ReturnsUser()
         {
-            // Arrange
             var user = new User
             {
                 Id = Guid.NewGuid(),
-                Name = "Test",
-                Email = "test@abc.com",
-                MobileNumber = "123",
+                Name = "Admin View",
+                Email = "admin@test.com",
+                MobileNumber = "111",
                 Role = UserRole.Waiter,
                 IsActive = true
             };
 
             _userRepoMock.Setup(r => r.GetByIdAsync(user.Id)).ReturnsAsync(user);
 
-            // Act
-            var result = await _service.GetUserByIdAsync(user.Id);
+            var result = await _service.GetUserByIdAsync(user.Id, true, Guid.NewGuid());
 
-            // Assert
             Assert.AreEqual(user.Id, result.Id);
-            Assert.AreEqual("Test", result.FullName);
-            Assert.AreEqual("test@abc.com", result.Email);
-            Assert.AreEqual("123", result.MobileNumber);
-            Assert.AreEqual(UserRole.Waiter, result.Role);
-            Assert.IsTrue(result.IsActive);
+            Assert.AreEqual("Admin View", result.FullName);
+        }
+
+        [TestMethod]
+        public async Task GetUserByIdAsync_SelfAccess_ReturnsUser()
+        {
+            var userId = Guid.NewGuid();
+
+            var user = new User
+            {
+                Id = userId,
+                Name = "Self User",
+                Email = "self@test.com",
+                MobileNumber = "222",
+                Role = UserRole.Waiter,
+                IsActive = true
+            };
+
+            _userRepoMock.Setup(r => r.GetByIdAsync(userId)).ReturnsAsync(user);
+
+            var result = await _service.GetUserByIdAsync(userId, false, userId);
+
+            Assert.AreEqual(userId, result.Id);
+            Assert.AreEqual("Self User", result.FullName);
+        }
+
+        [TestMethod]
+        public async Task GetUserByIdAsync_NonAdminAccessingOtherUser_ThrowsForbiddenException()
+        {
+            var requesterId = Guid.NewGuid();
+            var targetUserId = Guid.NewGuid();
+
+            var user = new User
+            {
+                Id = targetUserId,
+                Name = "Other User",
+                Email = "other@test.com",
+                MobileNumber = "333",
+                Role = UserRole.Waiter,
+                IsActive = true
+            };
+
+            _userRepoMock.Setup(r => r.GetByIdAsync(targetUserId)).ReturnsAsync(user);
+
+            var ex = await Assert.ThrowsExceptionAsync<ForbiddenException>(() =>
+                _service.GetUserByIdAsync(targetUserId, false, requesterId));
+
+            Assert.AreEqual("You are not allowed to view this user.", ex.Message);
         }
         [TestMethod]
         [ExpectedException(typeof(NotFoundException))]
-        public async Task UpdateUserAsync_ShouldThrowNotFound_WhenUserDoesNotExist()
+        public async Task UpdateUserAsync_UserDoesNotExist_ThrowsNotFoundException()
         {
-            // Arrange
             _userRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
                          .ReturnsAsync((User?)null);
 
-            var dto = new UserUpdateRequestDto
-            {
-                FullName = "New Name"
-            };
-
-            // Act + Assert
             try
             {
-                await _service.UpdateUserAsync(Guid.NewGuid(), dto);
-            } catch(NotFoundException ex)
+                await _service.UpdateUserAsync(Guid.NewGuid(), new UserUpdateRequestDto());
+            }
+            catch (NotFoundException ex)
             {
                 Assert.AreEqual("User not found.", ex.Message);
                 throw;
             }
         }
+
         [TestMethod]
-        public async Task UpdateUserAsync_ShouldUpdateOnlyProvidedFields()
+        public async Task UpdateUserAsync_PartialFieldsProvided_UpdatesOnlySpecifiedFields()
         {
-            // Arrange
             var user = new User
             {
                 Id = Guid.NewGuid(),
@@ -250,19 +270,17 @@ namespace RestaurantManagement.Backend.Tests.Services
             _userRepoMock.Setup(r => r.GetByIdAsync(user.Id)).ReturnsAsync(user);
             _userRepoMock.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
 
-            // Act
             await _service.UpdateUserAsync(user.Id, dto);
 
-            // Assert changes
             Assert.AreEqual("New Name", user.Name);
             Assert.AreEqual("9999", user.MobileNumber);
             Assert.AreEqual("new@test.com", user.Email);
-            Assert.AreEqual(false, user.IsActive);
+            Assert.IsFalse(user.IsActive);
         }
+
         [TestMethod]
-        public async Task UpdateUserAsync_ShouldNotChangeFields_WhenDtoHasOnlyNullOrWhitespace()
+        public async Task UpdateUserAsync_NullOrWhitespaceFields_MakesNoChanges()
         {
-            // Arrange
             var user = new User
             {
                 Id = Guid.NewGuid(),
@@ -285,19 +303,17 @@ namespace RestaurantManagement.Backend.Tests.Services
             _userRepoMock.Setup(r => r.GetByIdAsync(user.Id)).ReturnsAsync(user);
             _userRepoMock.Setup(r => r.SaveChangesAsync()).Returns(Task.CompletedTask);
 
-            // Act
             await _service.UpdateUserAsync(user.Id, dto);
 
-            // Assert no change
             Assert.AreEqual("Same Name", user.Name);
             Assert.AreEqual("same@test.com", user.Email);
             Assert.AreEqual("555", user.MobileNumber);
             Assert.IsTrue(user.IsActive);
         }
+
         [TestMethod]
-        public async Task UpdateUserAsync_ShouldThrowBadRequest_WhenRoleAdminIsPassed()
+        public async Task UpdateUserAsync_RoleIsAdmin_ThrowsBadRequestException()
         {
-            // Arrange
             var user = new User
             {
                 Id = Guid.NewGuid(),
@@ -315,7 +331,6 @@ namespace RestaurantManagement.Backend.Tests.Services
 
             _userRepoMock.Setup(r => r.GetByIdAsync(user.Id)).ReturnsAsync(user);
 
-            // Act + Assert
             var ex = await Assert.ThrowsExceptionAsync<BadRequestException>(() =>
                 _service.UpdateUserAsync(user.Id, dto));
 

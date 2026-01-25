@@ -11,6 +11,7 @@ namespace RestaurantManagement.DataAccess.Models
         public Guid CustomerId { get; set; }
         [Required]
         public Guid GeneratedByWaiterId { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
         public decimal SubTotal { get; set; }
         public decimal DiscountPercent { get; set; }
         public decimal DiscountAmount { get; set; }

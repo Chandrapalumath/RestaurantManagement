@@ -46,7 +46,7 @@ namespace RestaurantManagement.Backend.Services
 
         public async Task<MenuItemResponseDto> CreateAsync(MenuItemCreateRequestDto dto)
         {
-            var menuItem = await _menuRepo.GetByNameAsync(dto.Name);
+            var menuItem = await _menuRepo.GetByNameAsync(dto.Name.Trim().ToLower());
             if(menuItem is not null)
             {
                 throw new ConflictException("Item Already Exists");
@@ -54,7 +54,7 @@ namespace RestaurantManagement.Backend.Services
             var entity = new MenuItem
             {
                 Id = Guid.NewGuid(),
-                Name = dto.Name.Trim(),
+                Name = dto.Name.Trim().ToLower(),
                 Price = dto.Price,
                 IsAvailable = dto.IsAvailable,
                 Rating = 0,
@@ -70,7 +70,7 @@ namespace RestaurantManagement.Backend.Services
                 Name = entity.Name,
                 Price = entity.Price,
                 IsAvailable = entity.IsAvailable,
-                Rating = entity.Rating.Value
+                Rating = entity.Rating ?? 0
             };
         }
 
@@ -108,9 +108,9 @@ namespace RestaurantManagement.Backend.Services
                 var newCount = oldCount + 1;
                 menuItem.Rating = ((oldAvg * oldCount) + details.Rating) / newCount;
                 menuItem.TotalReviews = newCount;
-                _menuRepo.Update(menuItem);
-                await _menuRepo.SaveChangesAsync();
             }
+            //_menuRepo.Update(menuItem);
+            await _menuRepo.SaveChangesAsync();
         }
     }
 

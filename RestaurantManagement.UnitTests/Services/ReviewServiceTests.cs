@@ -7,6 +7,7 @@ using RestaurantManagement.Dtos.Reviews;
 
 namespace RestaurantManagement.Backend.Tests.Services
 {
+    [TestClass]
     public class ReviewServiceTests
     {
         private Mock<IReviewRepository> _reviewRepoMock = null!;
@@ -24,7 +25,7 @@ namespace RestaurantManagement.Backend.Tests.Services
 
         [TestMethod]
         [ExpectedException(typeof(NotFoundException))]
-        public async Task CreateAsync_ShouldThrowNotFound_WhenCustomerDoesNotExist()
+        public async Task CreateAsync_CustomerDoesNotExist_ThrowsNotFoundException()
         {
             // Arrange
             var dto = new ReviewCreateRequestDto
@@ -51,7 +52,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
 
         [TestMethod]
-        public async Task CreateAsync_ShouldCreateReview_SaveAndReturnMappedDto()
+        public async Task CreateAsync_ValidReview_SavesAndReturnsReviewDto()
         {
             // Arrange
             var customerId = Guid.NewGuid();
@@ -97,7 +98,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
 
         [TestMethod]
-        public async Task CreateAsync_ShouldAllowNullComment_AndReturnNullCommentInDto()
+        public async Task CreateAsync_CommentIsNull_ReturnsReviewDtoWithNullComment()
         {
             // Arrange
             var customerId = Guid.NewGuid();
@@ -132,7 +133,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
         
         [TestMethod]
-        public async Task GetAllAsync_ShouldReturnMappedList()
+        public async Task GetAllAsync_ReviewsExist_ReturnsReviewDtoList()
         {
             // Arrange
             var reviews = new List<Review>
@@ -171,7 +172,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
 
         [TestMethod]
-        public async Task GetAllAsync_ShouldReturnEmptyList_WhenNoReviews()
+        public async Task GetAllAsync_NoReviewsExist_ReturnsEmptyList()
         {
             // Arrange
             _reviewRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Review>());
@@ -186,7 +187,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         
         [TestMethod]
         [ExpectedException(typeof(NotFoundException))]
-        public async Task GetByIdAsync_ShouldThrowNotFound_WhenReviewNotExists()
+        public async Task GetByIdAsync_ReviewDoesNotExist_ThrowsNotFoundException()
         {
             // Arrange
             var id = Guid.NewGuid();
@@ -201,11 +202,12 @@ namespace RestaurantManagement.Backend.Tests.Services
             catch (NotFoundException ex)
             {
                 Assert.AreEqual("Review not found.", ex.Message);
+                throw;
             }
         }
 
         [TestMethod]
-        public async Task GetByIdAsync_ShouldReturnMappedDto_WhenReviewExists()
+        public async Task GetByIdAsync_ReviewExists_ReturnsReviewDto()
         {
             // Arrange
             var review = new Review
@@ -231,7 +233,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
         
         [TestMethod]
-        public async Task GetByCustomerIdAsync_ShouldReturnMappedList()
+        public async Task GetByCustomerIdAsync_CustomerHasReviews_ReturnsReviewDtoList()
         {
             // Arrange
             var customerId = Guid.NewGuid();
@@ -270,7 +272,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
 
         [TestMethod]
-        public async Task GetByCustomerIdAsync_ShouldReturnEmptyList_WhenNoReviewsForCustomer()
+        public async Task GetByCustomerIdAsync_CustomerHasNoReviews_ReturnsEmptyList()
         {
             // Arrange
             var customerId = Guid.NewGuid();

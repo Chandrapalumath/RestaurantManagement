@@ -1,0 +1,2 @@
+1. dotnet tool install -g coverlet.console
+2. coverlet .\bin\Debug\net8.0\RestaurantManagement.UnitTests.dll --target "dotnet" --targetargs "test --no-build"

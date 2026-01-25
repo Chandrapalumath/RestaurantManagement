@@ -27,7 +27,7 @@ namespace RestaurantManagement.DataAccess.Repositories
             return await _context.Orders.Where(o => o.TableId == TableId && o.IsBilled == false).ToListAsync();
         }
 
-        public async Task<List<Order>> GetOrdersForChefAsync(OrderStatus status)
+        public async Task<List<Order>> GetOrdersForChefAsync(OrderStatus? status)
         {
             IQueryable<Order> query = _context.Orders
                 .Include(o => o.Items)

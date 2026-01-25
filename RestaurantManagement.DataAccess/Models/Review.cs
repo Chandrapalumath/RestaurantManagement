@@ -15,6 +15,6 @@ namespace RestaurantManagement.DataAccess.Models
         public string? Comment { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         [ForeignKey(nameof(CustomerId))]
-        public Customer? Customer { get; set; }
+        public Customer? Customer { get; set; } 
     }
 }

@@ -22,7 +22,6 @@ namespace RestaurantManagement.DataAccess.Models
         public DateTime? UpdatedAt { get; set; }
         [ForeignKey(nameof(TableId))]
         public Table? Table { get; set; }
-        public Customer? Customer { get; set; }
         [ForeignKey(nameof(WaiterId))]
         public User? Waiter { get; set; }
 

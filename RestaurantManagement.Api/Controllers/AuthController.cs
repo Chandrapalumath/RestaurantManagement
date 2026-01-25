@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Api.Middlewares;
 using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.Dtos.Authentication;
+using System.Security.Claims;
 
 namespace RestaurantManagement.Api.Controllers
 {
@@ -27,6 +27,18 @@ namespace RestaurantManagement.Api.Controllers
         {
             var result = await _authService.LoginAsync(dto);
             return Ok(result);
+        }
+        [Authorize]
+        [HttpPatch("change-password")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ChangePassword(ChangePasswordRequestDto dto)
+        {
+            var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            await _authService.ChangePasswordAsync(userId, dto);
+            return NoContent();
         }
     }
 }

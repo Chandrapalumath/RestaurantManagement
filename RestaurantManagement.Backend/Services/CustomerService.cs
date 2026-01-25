@@ -9,17 +9,15 @@ namespace RestaurantManagement.Backend.Services
     public class CustomerService : ICustomerService
     {
         private readonly ICustomerRepository _customerRepo;
-        private readonly IOrderRepository _orderRepo;
-        public CustomerService(ICustomerRepository customerRepo, IOrderRepository orderRepo)
+        public CustomerService(ICustomerRepository customerRepo)
         {
             _customerRepo = customerRepo;
-            _orderRepo = orderRepo;
         }
 
         public async Task<CustomerResponseDto> CreateAsync(CustomerCreateRequestDto dto)
         {
-            var customers = await _customerRepo.GetByMobileAsync(dto.MobileNumber);
-            if (customers.Any())
+            var customers = await _customerRepo.GetByMobileAsync(dto.MobileNumber.Trim());
+            if (customers is not null)
             {
                 var existing = customers.FirstOrDefault();
                 return new CustomerResponseDto
@@ -76,7 +74,7 @@ namespace RestaurantManagement.Backend.Services
         
         public async Task<List<CustomerResponseDto>> GetByMobileNumberAsync(string mobile)
         {
-            var customers = await _customerRepo.GetByMobileAsync(mobile);
+            var customers = await _customerRepo.GetByMobileAsync(mobile.Trim());
             if (!customers.Any()) throw new NotFoundException("No user found with this mobile number");
             return customers.Select(c => new CustomerResponseDto
             {

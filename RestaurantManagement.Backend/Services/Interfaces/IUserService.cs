@@ -11,7 +11,7 @@ namespace RestaurantManagement.Backend.Services.Interfaces
     {
         Task<UserResponseDto> CreateUserAsync(CreateUserRequestDto dto);
         Task<List<UserResponseDto>> GetAllUsersAsync();
-        Task<UserResponseDto> GetUserByIdAsync(Guid id);
+        Task<UserResponseDto> GetUserByIdAsync(Guid id, bool isAdmin, Guid? userId);
         Task UpdateUserAsync(Guid id, UserUpdateRequestDto dto);
     }
 }

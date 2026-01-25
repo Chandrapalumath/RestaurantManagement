@@ -22,7 +22,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
 
         [TestMethod]
-        public async Task CreateAsync_ShouldCreateTable_SaveAndReturnMappedDto()
+        public async Task CreateAsync_ValidTable_SavesAndReturnsTableDto()
         {
             // Arrange
             var dto = new TableCreateRequestDto
@@ -58,7 +58,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
         [TestMethod]
         [ExpectedException(typeof(NullReferenceException))]
-        public async Task CreateAsync_ShouldThrow_WhenTableNameIsNull()
+        public async Task CreateAsync_TableNameIsNull_ThrowsValidationException()
         {
             // dto.TableName.Trim()
             var dto = new TableCreateRequestDto
@@ -72,7 +72,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
         [TestMethod]
         [ExpectedException(typeof(NotFoundException))]
-        public async Task DeleteAsync_ShouldThrowNotFound_WhenTableDoesNotExist()
+        public async Task DeleteAsync_TableDoesNotExist_ThrowsNotFoundException()
         {
             // Arrange
             _tableRepoMock
@@ -85,7 +85,7 @@ namespace RestaurantManagement.Backend.Tests.Services
 
         [TestMethod]
         [ExpectedException(typeof(BadRequestException))]
-        public async Task DeleteAsync_ShouldThrowBadRequest_WhenTableIsOccupied()
+        public async Task DeleteAsync_TableIsOccupied_ThrowsInvalidOperationException()
         {
             // Arrange
             var table = new Table
@@ -112,7 +112,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
 
         [TestMethod]
-        public async Task DeleteAsync_ShouldDeleteTable_WhenNotOccupied()
+        public async Task DeleteAsync_TableIsNotOccupied_DeletesSuccessfully()
         {
             // Arrange
             var table = new Table
@@ -135,7 +135,7 @@ namespace RestaurantManagement.Backend.Tests.Services
             // Assert : If the method executed properly
         }
         [TestMethod]
-        public async Task GetAllAsync_ShouldReturnMappedList()
+        public async Task GetAllAsync_TablesExist_ReturnsTableDtoList()
         {
             // Arrange
             var tables = new List<Table>
@@ -162,7 +162,7 @@ namespace RestaurantManagement.Backend.Tests.Services
             Assert.IsTrue(result[1].IsOccupied);
         }
         [TestMethod]
-        public async Task GetAllAsync_ShouldReturnEmptyList_WhenNoTablesFound()
+        public async Task GetAllAsync_NoTablesFound_ReturnsEmptyList()
         {
             // Arrange
             _tableRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Table>());
@@ -176,7 +176,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
         [TestMethod]
         [ExpectedException(typeof(NotFoundException))]
-        public async Task GetByIdAsync_ShouldThrowNotFound_WhenTableNotExists()
+        public async Task GetByIdAsync_TableDoesNotExist_ThrowsNotFoundException()
         {
             // Arrange
             _tableRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
@@ -186,7 +186,7 @@ namespace RestaurantManagement.Backend.Tests.Services
             await _service.GetByIdAsync(Guid.NewGuid());
         }
         [TestMethod]
-        public async Task GetByIdAsync_ShouldReturnMappedDto_WhenExists()
+        public async Task GetByIdAsync_TableExists_ReturnsTableDto()
         {
             // Arrange
             var table = new Table

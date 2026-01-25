@@ -62,10 +62,16 @@ namespace RestaurantManagement.Backend.Services
             }).ToList();
         }
 
-        public async Task<UserResponseDto> GetUserByIdAsync(Guid id)
+        public async Task<UserResponseDto> GetUserByIdAsync(Guid id, bool isAdmin, Guid? userId)
         {
             var user = await _userRepo.GetByIdAsync(id)
                        ?? throw new NotFoundException("User not found or Invalid ID.");
+
+            if (!isAdmin)
+            {
+                if (!userId.HasValue || userId.Value != id)
+                    throw new ForbiddenException("You are not allowed to view this user.");
+            }
 
             return new UserResponseDto
             {

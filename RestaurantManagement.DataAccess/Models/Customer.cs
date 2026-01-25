@@ -9,14 +9,13 @@ namespace RestaurantManagement.DataAccess.Models
         [Key]
         public Guid Id { get; set; }
         [Required]
-        [MaxLength(100)]
+        [MinLength(3),MaxLength(100)]
         public string Name { get; set; } = string.Empty;
         [Required]
-        [MaxLength(10)]
+        [MinLength(1), MaxLength(10)]
         public string MobileNumber { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public ICollection<Bill> Bills { get; set; } = new List<Bill>();
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
-
 }

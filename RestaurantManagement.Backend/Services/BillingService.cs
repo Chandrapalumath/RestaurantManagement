@@ -115,7 +115,10 @@ namespace RestaurantManagement.Backend.Services
         {
             var bills = await _billingRepo.GetBillsByCustomerIdAsync(customerId);
 
-            if (isAdmin || waiterId.HasValue)
+            if (isAdmin)
+                return bills.Select(MapBillToDto).ToList();
+
+            if (waiterId.HasValue)
                 bills = bills.Where(b => b.GeneratedByWaiterId == waiterId.Value).ToList();
             else
                 throw new ForbiddenException("No Access to the data");
@@ -139,9 +142,11 @@ namespace RestaurantManagement.Backend.Services
 
             if (dto.IsPaymentDone.HasValue)
             {
-                if(dto.IsPaymentDone.Value == true) 
-                    throw new BadRequestException("You cannot update payment it is already done.");
-                bill.IsPaymentDone = true;
+                if (bill.IsPaymentDone)
+                    throw new BadRequestException("Payment already done.");
+
+                if (dto.IsPaymentDone == true)
+                    bill.IsPaymentDone = true; ;
             }
                 
             _billingRepo.Update(bill);

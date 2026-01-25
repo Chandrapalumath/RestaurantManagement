@@ -4,18 +4,19 @@ using RestaurantManagement.Api.Middlewares;
 using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.Dtos.Settings;
 using RestaurantManagement.Dtos.Users;
+using System.Security.Claims;
 
 namespace RestaurantManagement.Api.Controllers
 {
     [Authorize(Roles = "Admin")]
-    [Route("api/admin")]
+    [Route("api")]
     [ApiController]
-    public class AdminController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
         private readonly ISettingsService _settingsService;
 
-        public AdminController(IUserService userService, ISettingsService settingsService)
+        public UserController(IUserService userService, ISettingsService settingsService)
         {
             _userService = userService;
             _settingsService = settingsService;
@@ -41,16 +42,6 @@ namespace RestaurantManagement.Api.Controllers
             return Ok(await _userService.GetAllUsersAsync());
         }
 
-        [HttpGet("users/{id}", Name = "GetUserByIdAsync")]
-        [ProducesResponseType(typeof(IEnumerable<UserResponseDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetUserByIdAsync(Guid id)
-        {
-            return Ok(await _userService.GetUserByIdAsync(id));
-        }
-
         [HttpPatch("users/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
@@ -60,6 +51,19 @@ namespace RestaurantManagement.Api.Controllers
         {
             await _userService.UpdateUserAsync(id, dto);
             return NoContent();
+        }
+
+        [Authorize]
+        [HttpGet("users/{id}", Name = "GetUserByIdAsync")]
+        [ProducesResponseType(typeof(IEnumerable<UserResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetUserByIdAsync(Guid id)
+        {
+            Guid? userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            bool isAdmin = User.IsInRole("Admin");
+            return Ok(await _userService.GetUserByIdAsync(id, isAdmin, userId));
         }
 
         [HttpGet("settings")]

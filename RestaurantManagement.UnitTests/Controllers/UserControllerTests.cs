@@ -2,29 +2,28 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RestaurantManagement.Api.Controllers;
-using RestaurantManagement.Api.Middlewares;
-using RestaurantManagement.Backend.Services;
+using RestaurantManagement.Backend.Exceptions;
 using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.Dtos.Settings;
 using RestaurantManagement.Dtos.Users;
 using RestaurantManagement.Models.Common.Enums;
-using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 
 namespace RestaurantManagement.Api.Tests;
 
 [TestClass]
-public class AdminControllerTests
+public class UserControllerTests
 {
     private Mock<IUserService> _userServiceMock = null!;
     private Mock<ISettingsService> _settingsServiceMock = null!;
-    private AdminController _adminController = null!;
+    private UserController _controller = null!;
 
     [TestInitialize]
     public void Setup()
     {
         _userServiceMock = new Mock<IUserService>();
         _settingsServiceMock = new Mock<ISettingsService>();
-        _adminController = new AdminController(_userServiceMock.Object, _settingsServiceMock.Object);
+        _controller = new UserController(_userServiceMock.Object, _settingsServiceMock.Object);
     }
 
     [TestMethod]
@@ -52,7 +51,7 @@ public class AdminControllerTests
             .Setup(s => s.CreateUserAsync(dto))
             .ReturnsAsync(createdUser);
 
-        var result = await _adminController.CreateUserAsync(dto);
+        var result = await _controller.CreateUserAsync(dto);
         Assert.IsNotNull(result);
 
         var createdAt = result as CreatedAtRouteResult;
@@ -78,7 +77,7 @@ public class AdminControllerTests
             .ReturnsAsync(users);
 
         // Act
-        var result = await _adminController.GetAllUsersAsync();
+        var result = await _controller.GetAllUsersAsync();
 
         // Assert
         Assert.IsNotNull(result);
@@ -91,38 +90,6 @@ public class AdminControllerTests
         Assert.AreEqual(2, data.Count());
     }
 
-    [TestMethod]
-    public async Task GetUserByIdAsync_UserExists_ReturnsOk()
-    {
-        // Arrange
-        var userId = Guid.NewGuid();
-
-        var user = new UserResponseDto
-        {
-            Id = userId,
-            FullName = "Alex",
-            Email = "alex@gmail.com",
-            MobileNumber = "7777777777",
-            Role = UserRole.Waiter,
-            IsActive = true
-        };
-
-        _userServiceMock
-            .Setup(s => s.GetUserByIdAsync(userId))
-            .ReturnsAsync(user);
-
-        // Act
-        var result = await _adminController.GetUserByIdAsync(userId);
-
-        // Assert
-
-        var ok = result as OkObjectResult;
-        Assert.IsNotNull(ok);
-
-        var data = ok.Value as UserResponseDto;
-        Assert.IsNotNull(data);
-        Assert.AreEqual(userId, data.Id);
-    }
 
     [TestMethod]
     public async Task UpdateUserAsync_ValidUser_ReturnsNoContent()
@@ -143,7 +110,7 @@ public class AdminControllerTests
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await _adminController.UpdateUserAsync(userId, dto);
+        var result = await _controller.UpdateUserAsync(userId, dto);
 
         // Assert
         Assert.IsInstanceOfType(result, typeof(NoContentResult));
@@ -165,7 +132,7 @@ public class AdminControllerTests
             .ReturnsAsync(settings);
 
         // Act
-        var result = await _adminController.GetSettingsAsync();
+        var result = await _controller.GetSettingsAsync();
 
         // Assert
         var ok = result as OkObjectResult;
@@ -192,9 +159,138 @@ public class AdminControllerTests
             .Returns(Task.CompletedTask);
 
         // Act
-        var result = await _adminController.UpdateSettingsAsync(dto);
+        var result = await _controller.UpdateSettingsAsync(dto);
 
         // Assert
         Assert.IsInstanceOfType(result, typeof(NoContentResult));
+    }
+    private void SetUserContext(Guid userId, bool isAdmin)
+    {
+        var claims = new[]
+        {
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+            new Claim(ClaimTypes.Role, isAdmin ? "Admin" : "User")
+        };
+
+        var identity = new ClaimsIdentity(claims, "TestAuth");
+        var principal = new ClaimsPrincipal(identity);
+
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = principal
+            }
+        };
+    }
+
+    [TestMethod]
+    public async Task GetUserByIdAsync_ShouldReturnOk_WhenAdminRequestsAnyUser()
+    {
+        // Arrange
+        var adminId = Guid.NewGuid();
+        var targetUserId = Guid.NewGuid();
+
+        SetUserContext(adminId, isAdmin: true);
+
+        var responseDto = new UserResponseDto
+        {
+            Id = targetUserId,
+            FullName = "Test User",
+            Email = "test@test.com",
+            IsActive = true
+        };
+
+        _userServiceMock
+            .Setup(s => s.GetUserByIdAsync(targetUserId, true, adminId))
+            .ReturnsAsync(responseDto);
+
+        // Act
+        var result = await _controller.GetUserByIdAsync(targetUserId);
+
+        // Assert
+        var okResult = result as OkObjectResult;
+        Assert.IsNotNull(okResult);
+        Assert.AreEqual(StatusCodes.Status200OK, okResult.StatusCode);
+
+        var data = okResult.Value as UserResponseDto;
+        Assert.IsNotNull(data);
+        Assert.AreEqual(targetUserId, data.Id);
+    }
+
+    [TestMethod]
+    public async Task GetUserByIdAsync_ShouldReturnOk_WhenUserRequestsOwnProfile()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+
+        SetUserContext(userId, isAdmin: false);
+
+        var responseDto = new UserResponseDto
+        {
+            Id = userId,
+            FullName = "Self User",
+            Email = "self@test.com",
+            IsActive = true
+        };
+
+        _userServiceMock
+            .Setup(s => s.GetUserByIdAsync(userId, false, userId))
+            .ReturnsAsync(responseDto);
+
+        // Act
+        var result = await _controller.GetUserByIdAsync(userId);
+
+        // Assert
+        var okResult = result as OkObjectResult;
+        Assert.IsNotNull(okResult);
+        Assert.AreEqual(StatusCodes.Status200OK, okResult.StatusCode);
+
+        var data = okResult.Value as UserResponseDto;
+        Assert.IsNotNull(data);
+        Assert.AreEqual(userId, data.Id);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ForbiddenException))]
+    public async Task GetUserByIdAsync_ShouldThrowForbidden_WhenUserAccessesOtherUser()
+    {
+        // Arrange
+        var userId = Guid.NewGuid();
+        var otherUserId = Guid.NewGuid();
+
+        SetUserContext(userId, isAdmin: false);
+
+        _userServiceMock
+            .Setup(s => s.GetUserByIdAsync(otherUserId, false, userId))
+            .ThrowsAsync(new ForbiddenException("You are not allowed to view this user."));
+
+        // Act + Assert
+        try
+        {
+            await _controller.GetUserByIdAsync(otherUserId);
+        }
+        catch (ForbiddenException ex)
+        {
+            throw;
+        }
+    }
+
+    [TestMethod]
+    public async Task GetUserByIdAsync_ShouldThrowNotFound_WhenUserDoesNotExist()
+    {
+        // Arrange
+        var adminId = Guid.NewGuid();
+        var targetUserId = Guid.NewGuid();
+
+        SetUserContext(adminId, isAdmin: true);
+
+        _userServiceMock
+            .Setup(s => s.GetUserByIdAsync(targetUserId, true, adminId))
+            .ThrowsAsync(new NotFoundException("User not found or Invalid ID."));
+
+        // Act + Assert
+        await Assert.ThrowsExceptionAsync<NotFoundException>(() =>
+            _controller.GetUserByIdAsync(targetUserId));
     }
 }

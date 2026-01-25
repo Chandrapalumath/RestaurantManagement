@@ -33,7 +33,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
         [TestMethod]
         [ExpectedException(typeof(NotFoundException))]
-        public async Task CreateOrderAsync_ShouldThrowNotFound_WhenTableNotFound()
+        public async Task CreateOrderAsync_TableNotFound_ThrowsNotFoundException()
         {
             // Arrange
             var dto = new OrderCreateRequestDto
@@ -62,7 +62,7 @@ namespace RestaurantManagement.Backend.Tests.Services
 
         [TestMethod]
         [ExpectedException (typeof(BadRequestException))]
-        public async Task CreateOrderAsync_ShouldThrowBadRequest_WhenAnyItemQuantityIsZeroOrNegative()
+        public async Task CreateOrderAsync_QuantityIsInvalid_ThrowsBadRequestException()
         {
             // Arrange
             var table = new Table { Id = Guid.NewGuid(), IsOccupied = false };
@@ -90,7 +90,7 @@ namespace RestaurantManagement.Backend.Tests.Services
 
         [TestMethod]
         [ExpectedException (typeof(NotFoundException))]
-        public async Task CreateOrderAsync_ShouldThrowNotFound_WhenMenuItemNotFound()
+        public async Task CreateOrderAsync_MenuItemDoesNotExist_ThrowsNotFoundException()
         {
             // Arrange
             var table = new Table { Id = Guid.NewGuid(), IsOccupied = false };
@@ -125,7 +125,7 @@ namespace RestaurantManagement.Backend.Tests.Services
 
         [TestMethod]
         [ExpectedException(typeof(BadRequestException))]
-        public async Task CreateOrderAsync_ShouldThrowNotFound_WhenMenuItemIsNotAvailable()
+        public async Task CreateOrderAsync_MenuItemNotAvailable_ThrowsNotFoundException()
         {
             // Arrange
             var table = new Table { Id = Guid.NewGuid(), IsOccupied = false };
@@ -164,7 +164,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
 
         [TestMethod]
-        public async Task CreateOrderAsync_ShouldCreateOrder_SaveAndReturnMappedDto()
+        public async Task CreateOrderAsync_ValidOrder_SavesAndReturnsOrderDto()
         {
             // Arrange
             var table = new Table { Id = Guid.NewGuid(), IsOccupied = false };
@@ -253,7 +253,7 @@ namespace RestaurantManagement.Backend.Tests.Services
 
         [TestMethod]
         [ExpectedException(typeof(NotFoundException))]
-        public async Task GetByIdAsync_ShouldThrowNotFound_WhenOrderNotExists()
+        public async Task GetByIdAsync_OrderDoesNotExist_ThrowsNotFoundException()
         {
             // Arrange
             var id = Guid.NewGuid();
@@ -273,7 +273,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
 
         [TestMethod]
-        public async Task GetByIdAsync_ShouldReturnMappedDto_WhenOrderExists()
+        public async Task GetByIdAsync_OrderExists_ReturnsOrderDto()
         {
             // Arrange
             var order = new Order
@@ -310,7 +310,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
 
         [TestMethod]
-        public async Task GetOrdersAsync_ShouldReturnMappedList()
+        public async Task GetOrdersAsync_WhenCalled_ReturnsOrderDtoList()
         {
             // Arrange
             var list = new List<Order>
@@ -348,7 +348,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         
         [TestMethod]
         [ExpectedException(typeof(NotFoundException))]
-        public async Task UpdateOrderAsync_ShouldThrowNotFound_WhenOrderNotExists()
+        public async Task UpdateOrderAsync_OrderDoesNotExist_ThrowsNotFoundException()
         {
             // Arrange
             var orderId = Guid.NewGuid();
@@ -370,7 +370,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
 
         [TestMethod]
-        public async Task UpdateOrderAsync_ShouldUpdateStatus_SaveAndCallGetOrderWithItems()
+        public async Task UpdateOrderAsync_ValidStatus_UpdatesAndReturnsOrderDto()
         {
             // Arrange
             var orderId = Guid.NewGuid();
@@ -408,7 +408,7 @@ namespace RestaurantManagement.Backend.Tests.Services
 
         [TestMethod]
         [ExpectedException(typeof(NotFoundException))]
-        public async Task GetOrdersByTableIdAsync_ShouldThrowNotFound_WhenNoOrdersFound()
+        public async Task GetOrdersByTableIdAsync_NoOrdersFound_ThrowsNotFoundException()
         {
             // Arrange
             var tableId = Guid.NewGuid();
@@ -428,7 +428,7 @@ namespace RestaurantManagement.Backend.Tests.Services
         }
 
         [TestMethod]
-        public async Task GetOrdersByTableIdAsync_ShouldReturnMappedList_WhenOrdersExist()
+        public async Task GetOrdersByTableIdAsync_OrdersExist_ReturnsOrderDtoList()
         {
             // Arrange
             var tableId = Guid.NewGuid();

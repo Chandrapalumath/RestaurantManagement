@@ -14,6 +14,7 @@ namespace RestaurantManagement.DataAccess.Models
         public Guid MenuItemId { get; set; }
         [Range(1, int.MaxValue)]
         public int Quantity { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
         public decimal UnitPrice { get; set; }
         [ForeignKey(nameof(OrderId))]
         public Order? Order { get; set; }

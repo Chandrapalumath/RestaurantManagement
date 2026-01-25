@@ -14,5 +14,4 @@ namespace RestaurantManagement.DataAccess.Repositories
                 .OrderByDescending(r => r.CreatedAt)
                 .ToListAsync();
     }
-
 }

@@ -75,12 +75,14 @@ public class OrderControllerTests
                 new OrderItemResponseDto
                 {
                     MenuItemId = Guid.NewGuid(),
-                    Quantity = 2
+                    Quantity = 2,
+                    UnitPrice = 120
                 },
                 new OrderItemResponseDto
                 {
                     MenuItemId = Guid.NewGuid(),
-                    Quantity = 2
+                    Quantity = 2,
+                    UnitPrice = 120
                 }
             }
         };

@@ -5,8 +5,8 @@ using Microsoft.OpenApi.Models;
 using RestaurantManagement.Api.Middlewares;
 using RestaurantManagement.Backend.Services;
 using RestaurantManagement.Backend.Services.Interfaces;
+using RestaurantManagement.Backend.Utils;
 using RestaurantManagement.DataAccess;
-using RestaurantManagement.DataAccess.Models;
 using RestaurantManagement.DataAccess.Repositories;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
 using System.Text;
@@ -80,7 +80,7 @@ namespace RestaurantManagement.Api
 
             
             builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<JwtTokenGenerator>();
+            builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IMenuService, MenuService>();
             builder.Services.AddScoped<ICustomerService, CustomerService>();

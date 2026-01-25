@@ -15,15 +15,14 @@ namespace RestaurantManagement.DataAccess.Models
         [Key]
         public Guid Id { get; set; }
         [Required]
-        [MaxLength(100)]
+        [MinLength(100),MaxLength(100)]
         public string Name { get; set; } = string.Empty;
         [Required]
-        [MaxLength(10)]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Mobile number must contain 10 to 15 digits")]
         public string MobileNumber { get; set; } = string.Empty;
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
         [Required]
-        
         public string Password { get; set; } = string.Empty;
         public UserRole Role { get; set; } 
         public bool IsActive { get; set; } = true;
