@@ -14,12 +14,10 @@ namespace RestaurantManagement.Api.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly ISettingsService _settingsService;
 
-        public UserController(IUserService userService, ISettingsService settingsService)
+        public UserController(IUserService userService)
         {
             _userService = userService;
-            _settingsService = settingsService;
         }
 
         [HttpPost("users")]
@@ -64,27 +62,6 @@ namespace RestaurantManagement.Api.Controllers
             Guid? userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             bool isAdmin = User.IsInRole("Admin");
             return Ok(await _userService.GetUserByIdAsync(id, isAdmin, userId));
-        }
-
-        [HttpGet("settings")]
-        [ProducesResponseType(typeof(IEnumerable<SettingsResponseDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetSettingsAsync()
-        {
-            return Ok(await _settingsService.GetSettingsAsync());
-        }
-
-        [HttpPatch("settings")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateSettingsAsync(SettingsUpdateRequestDto dto)
-        {
-            await _settingsService.UpdateSettingsAsync(dto);
-            return NoContent();
         }
     }
 }
