@@ -54,7 +54,7 @@ public class BillingServiceTests
 
     [TestMethod]
     [ExpectedException(typeof(BadRequestException))]
-    public async Task GenerateBillAsync_ShouldThrow_WhenOrderNotCompleted()
+    public async Task GenerateBillAsync_OrderNotCompleted_ThrowsException()
     {
         var orderId = Guid.NewGuid();
 
@@ -80,7 +80,7 @@ public class BillingServiceTests
 
     [TestMethod]
     [ExpectedException(typeof(NotFoundException))]
-    public async Task GenerateBillAsync_ShouldThrow_WhenSettingsNotConfigured()
+    public async Task GenerateBillAsync_SettingsNotConfigured_ThrowsException()
     {
         var orderId = Guid.NewGuid();
 
@@ -115,7 +115,7 @@ public class BillingServiceTests
 
     [TestMethod]
     [ExpectedException(typeof(BadRequestException))]
-    public async Task GenerateBillAsync_ShouldThrow_WhenOrdersFromDifferentTables()
+    public async Task GenerateBillAsync_OrdersFromDifferentTables_ThrowsException()
     {
         var o1 = new Order
         {
@@ -155,7 +155,7 @@ public class BillingServiceTests
     }
 
     [TestMethod]
-    public async Task GenerateBillAsync_ShouldGenerateBill_AndUpdateOrdersAndTable()
+    public async Task GenerateBillAsync_ValidOrders_GeneratesBillAndUpdatesStatus()
     {
         var tableId = Guid.NewGuid();
         var waiterId = Guid.NewGuid();
@@ -207,7 +207,7 @@ public class BillingServiceTests
 
     [TestMethod]
     [ExpectedException(typeof(ForbiddenException))]
-    public async Task GetBillByIdAsync_ShouldThrowForbidden_WhenWaiterAccessOtherBill()
+    public async Task GetBillByIdAsync_WaiterAccessesOtherBill_ThrowsForbiddenException()
     {
         var bill = new Bill
         {
@@ -229,7 +229,7 @@ public class BillingServiceTests
     }
 
     [TestMethod]
-    public async Task GetBillByIdAsync_ShouldAllowAdmin()
+    public async Task GetBillByIdAsync_AdminUser_ReturnsBill()
     {
         var bill = new Bill { Id = Guid.NewGuid(), DiscountAmount = 120, DiscountPercent =  12 };
 
@@ -243,7 +243,7 @@ public class BillingServiceTests
 
     [TestMethod]
     [ExpectedException (typeof(BadRequestException))]
-    public async Task UpdateBill_ShouldThrow_WhenNotOwnerWaiter()
+    public async Task UpdateBill_NotOwnerWaiter_ThrowsException()
     {
         var bill = new Bill
         {
@@ -267,7 +267,7 @@ public class BillingServiceTests
     }
 
     [TestMethod]
-    public async Task UpdateBill_ShouldMarkPaymentDone()
+    public async Task UpdateBill_PaymentReceived_MarksPaymentAsDone()
     {
         var waiterId = Guid.NewGuid();
 

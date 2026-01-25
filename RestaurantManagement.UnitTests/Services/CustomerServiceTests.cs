@@ -21,7 +21,7 @@ public class CustomerServiceTests
     }
 
     [TestMethod]
-    public async Task CreateAsync_ShouldReturnExistingCustomer_WhenMobileAlreadyExists()
+    public async Task CreateAsync_MobileAlreadyExists_ReturnsExistingCustomer()
     {
         // Arrange
         var existingCustomer = new Customer
@@ -53,7 +53,7 @@ public class CustomerServiceTests
     }
 
     [TestMethod]
-    public async Task CreateAsync_ShouldCreateCustomer_WhenMobileDoesNotExist()
+    public async Task CreateAsync_MobileDoesNotExist_CreatesNewCustomer()
     {
         // Arrange
         var dto = new CustomerCreateRequestDto
@@ -92,7 +92,7 @@ public class CustomerServiceTests
 
     [TestMethod]
     [ExpectedException(typeof(NotFoundException))]
-    public async Task GetByIdAsync_ShouldThrowNotFound_WhenCustomerDoesNotExist()
+    public async Task GetByIdAsync_CustomerDoesNotExist_ThrowsNotFoundException()
     {
         // Arrange
         _customerRepoMock
@@ -112,7 +112,7 @@ public class CustomerServiceTests
     }
 
     [TestMethod]
-    public async Task GetByIdAsync_ShouldReturnMappedCustomer_WhenExists()
+    public async Task GetByIdAsync_CustomerExists_ReturnsMappedCustomer()
     {
         // Arrange
         var customer = new Customer
@@ -138,7 +138,7 @@ public class CustomerServiceTests
     }
 
     [TestMethod]
-    public async Task GetAllAsync_ShouldReturnMappedList()
+    public async Task GetAllAsync_CustomersExist_ReturnsMappedList()
     {
         // Arrange
         var customers = new List<Customer>
@@ -173,7 +173,7 @@ public class CustomerServiceTests
     }
 
     [TestMethod]
-    public async Task GetAllAsync_ShouldReturnEmptyList_WhenNoCustomers()
+    public async Task GetAllAsync_NoCustomers_ReturnsEmptyList()
     {
         // Arrange
         _customerRepoMock
@@ -190,7 +190,7 @@ public class CustomerServiceTests
 
     [TestMethod]
     [ExpectedException(typeof(NotFoundException))]  
-    public async Task GetByMobileNumberAsync_ShouldThrowNotFound_WhenNoCustomerFound()
+    public async Task GetByMobileNumberAsync_NoCustomerFound_ThrowsNotFoundException()
     {
         // Arrange
         _customerRepoMock
@@ -210,7 +210,7 @@ public class CustomerServiceTests
     }
 
     [TestMethod]
-    public async Task GetByMobileNumberAsync_ShouldReturnMappedList_WhenCustomersExist()
+    public async Task GetByMobileNumberAsync_CustomerExists_ReturnsMappedCustomer()
     {
         // Arrange
         var customers = new List<Customer>

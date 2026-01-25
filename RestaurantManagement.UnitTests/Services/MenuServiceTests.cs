@@ -22,7 +22,7 @@ public class MenuServiceTests
 
     [TestMethod]
     [ExpectedException(typeof(NotFoundException))]
-    public async Task GetAllAsync_ShouldThrowNotFound_WhenNoItems()
+    public async Task GetAllAsync_NoItemsFound_ThrowsNotFoundException()
     {
         // Arrange
         _menuRepoMock.Setup(r => r.GetAllAsync())
@@ -40,7 +40,7 @@ public class MenuServiceTests
     }
 
     [TestMethod]
-    public async Task GetAllAsync_ShouldReturnMappedList_WhenItemsExist()
+    public async Task GetAllAsync_ItemsExist_ReturnsMappedList()
     {
         // Arrange
         var items = new List<MenuItem>
@@ -70,7 +70,7 @@ public class MenuServiceTests
 
     [TestMethod]
     [ExpectedException(typeof(NotFoundException))]
-    public async Task GetByIdAsync_ShouldThrowNotFound_WhenItemDoesNotExist()
+    public async Task GetByIdAsync_ItemDoesNotExist_ThrowsNotFoundException()
     {
         // Arrange
         _menuRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
@@ -87,7 +87,7 @@ public class MenuServiceTests
     }
 
     [TestMethod]
-    public async Task GetByIdAsync_ShouldReturnMappedDto_WhenItemExists()
+    public async Task GetByIdAsync_ItemExists_ReturnsMappedDto()
     {
         // Arrange
         var item = new MenuItem
@@ -114,7 +114,7 @@ public class MenuServiceTests
 
     [TestMethod]
     [ExpectedException(typeof(ConflictException))]
-    public async Task CreateAsync_ShouldThrowConflict_WhenItemAlreadyExists()
+    public async Task CreateAsync_ItemAlreadyExists_ThrowsConflictException()
     {
         // Arrange
         var dto = new MenuItemCreateRequestDto
@@ -140,7 +140,7 @@ public class MenuServiceTests
     }
 
     [TestMethod]
-    public async Task CreateAsync_ShouldCreateItem_SaveAndReturnDto()
+    public async Task CreateAsync_ValidItem_SavesAndReturnsDto()
     {
         // Arrange
         var dto = new MenuItemCreateRequestDto
@@ -179,7 +179,7 @@ public class MenuServiceTests
 
     [TestMethod]
     [ExpectedException(typeof(NotFoundException))]
-    public async Task UpdateAsync_ShouldThrowNotFound_WhenItemDoesNotExist()
+    public async Task UpdateAsync_ItemDoesNotExist_ThrowsNotFoundException()
     {
         // Arrange
         _menuRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
@@ -199,7 +199,7 @@ public class MenuServiceTests
     }
 
     [TestMethod]
-    public async Task UpdateAsync_ShouldUpdateProvidedFields()
+    public async Task UpdateAsync_ValidInput_UpdatesProvidedFields()
     {
         // Arrange
         var item = new MenuItem
@@ -233,7 +233,7 @@ public class MenuServiceTests
     }
     [TestMethod]
     [ExpectedException(typeof(NotFoundException))]
-    public async Task DeleteAsync_ShouldThrowNotFound_WhenItemDoesNotExist()
+    public async Task DeleteAsync_ItemDoesNotExist_ThrowsNotFoundException()
     {
         _menuRepoMock.Setup(r => r.GetByIdAsync(It.IsAny<Guid>()))
                      .ReturnsAsync((MenuItem?)null);
@@ -264,7 +264,7 @@ public class MenuServiceTests
 
     [TestMethod]
     [ExpectedException(typeof(BadRequestException))]
-    public async Task UpdateRatingAsync_ShouldThrowBadRequest_WhenItemNotFound()
+    public async Task UpdateRatingAsync_ItemNotFound_ThrowsBadRequestException()
     {
         var dto = new List<UpdateMenuItemRating>
         {
@@ -285,7 +285,7 @@ public class MenuServiceTests
     }
 
     [TestMethod]
-    public async Task UpdateRatingAsync_ShouldRecalculateAverageCorrectly()
+    public async Task UpdateRatingAsync_ValidRating_RecalculatesAverageCorrectly()
     {
         var item = new MenuItem
         {

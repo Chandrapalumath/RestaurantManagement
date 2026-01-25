@@ -35,7 +35,7 @@ public class JwtTokenGeneratorTests
     }
 
     [TestMethod]
-    public void GenerateToken_ShouldReturnValidJwtToken()
+    public void GenerateToken_ValidRequest_ReturnsValidJwtToken()
     {
         // Arrange
         var user = new User
@@ -57,7 +57,7 @@ public class JwtTokenGeneratorTests
     }
 
     [TestMethod]
-    public void GenerateToken_ShouldContainExpectedClaims()
+    public void GenerateToken_ValidUser_ContainsExpectedClaims()
     {
         // Arrange
         var user = new User
@@ -89,7 +89,7 @@ public class JwtTokenGeneratorTests
     }
 
     [TestMethod]
-    public void GenerateToken_ShouldSetCorrectIssuerAndAudience()
+    public void GenerateToken_ValidSettings_SetsCorrectIssuerAndAudience()
     {
         // Arrange
         var user = new User
@@ -109,7 +109,7 @@ public class JwtTokenGeneratorTests
     }
 
     [TestMethod]
-    public void GenerateToken_ShouldHaveValidExpiryTime()
+    public void GenerateToken_ValidRequest_SetsCorrectExpiryTime()
     {
         // Arrange
         var user = new User
@@ -130,7 +130,7 @@ public class JwtTokenGeneratorTests
     }
 
     [TestMethod]
-    public void GenerateToken_ShouldBeSignedWithConfiguredKey()
+    public void GenerateToken_ConfiguredKey_ReturnsSignedToken()
     {
         // Arrange
         var user = new User

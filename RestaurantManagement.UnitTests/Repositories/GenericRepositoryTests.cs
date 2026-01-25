@@ -30,7 +30,7 @@ public class GenericRepositoryTests
     }
     
     [TestMethod]
-    public async Task AddAsync_AddsEntityToDatabase()
+    public async Task AddAsync_ValidEntity_AddsToDatabase()
     {
         // Arrange
         var customer = new Customer
@@ -83,7 +83,7 @@ public class GenericRepositoryTests
     }
 
     [TestMethod]
-    public async Task GetAllAsync_ReturnsAllEntities()
+    public async Task GetAllAsync_IsValid_ReturnsAllEntities()
     {
         // Arrange
         _context.Customers.AddRange(
@@ -101,7 +101,7 @@ public class GenericRepositoryTests
     }
 
     [TestMethod]
-    public async Task Update_UpdatesExistingEntity()
+    public async Task Update_ExistingEntity_UpdatesSuccessfully()
     {
         // Arrange
         var customer = new Customer
@@ -124,7 +124,7 @@ public class GenericRepositoryTests
         Assert.AreEqual("New Name", updated!.Name);
     }
     [TestMethod]
-    public async Task Delete_RemovesEntityFromDatabase()
+    public async Task Delete_ExistingEntity_RemovesFromDatabase()
     {
         // Arrange
         var customer = new Customer

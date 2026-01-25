@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RestaurantManagement.Models.Common.Enums;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RestaurantManagement.DataAccess.Models
 {
@@ -15,15 +10,17 @@ namespace RestaurantManagement.DataAccess.Models
         [Key]
         public Guid Id { get; set; }
         [Required]
-        [MinLength(100),MaxLength(100)]
-        public string Name { get; set; } = string.Empty;
+        [MinLength(3),MaxLength(100)]
+        public string Name { get; set; }
         [Required]
-        [RegularExpression(@"^\d{10}$", ErrorMessage = "Mobile number must contain 10 to 15 digits")]
-        public string MobileNumber { get; set; } = string.Empty;
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Mobile number must contain 10 digits")]
+        public string MobileNumber { get; set; }
+        [Required]
         [EmailAddress]
-        public string Email { get; set; } = string.Empty;
+        public string Email { get; set; }
         [Required]
-        public string Password { get; set; } = string.Empty;
+        public string Password { get; set; }
+        [Required]
         public UserRole Role { get; set; } 
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

@@ -79,7 +79,7 @@ public class OrderRepositoryTests
     }
 
     [TestMethod]
-    public async Task GetOrderWithTableIdAsync_ReturnsOnlyNotBilledOrdersForTable()
+    public async Task GetOrderWithTableIdAsync_ValidTableId_ReturnsOnlyNotBilledOrders()
     {
         // Arrange
         var tableId = Guid.NewGuid();
@@ -121,7 +121,7 @@ public class OrderRepositoryTests
     }
 
     [TestMethod]
-    public async Task GetNotBilledOrders_ReturnsOnlyUnbilledOrders()
+    public async Task GetNotBilledOrders_IsNotBilled_UnbilledOrders()
     {
         // Arrange
         var tableId = Guid.NewGuid();

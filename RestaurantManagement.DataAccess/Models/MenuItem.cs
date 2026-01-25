@@ -10,7 +10,7 @@ namespace RestaurantManagement.DataAccess.Models
         public Guid Id { get; set; }
         [Required]
         [MinLength(3),MaxLength(100)]
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; } 
         [Range(0,999999)]
         public decimal Price { get; set; }
         public bool IsAvailable { get; set; } = true;
