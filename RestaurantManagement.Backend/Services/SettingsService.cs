@@ -47,7 +47,6 @@ namespace RestaurantManagement.Backend.Services
                 settings.DiscountPercent = dto.DiscountPercent.Value;
             settings.UpdatedAt = DateTime.UtcNow;
 
-            _settingsRepo.Update(settings);
             await _settingsRepo.SaveChangesAsync();
         }
     }

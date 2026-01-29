@@ -28,6 +28,7 @@ namespace RestaurantManagement.Api.Controllers
             var result = await _authService.LoginAsync(dto);
             return Ok(result);
         }
+
         [Authorize]
         [HttpPatch("change-password")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

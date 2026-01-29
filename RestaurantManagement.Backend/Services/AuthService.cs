@@ -56,7 +56,6 @@ namespace RestaurantManagement.Backend.Services
 
             user.Password = PasswordHasher.Hash(dto.NewPassword);
 
-            _userRepo.Update(user);
             await _userRepo.SaveChangesAsync();
         }
     }

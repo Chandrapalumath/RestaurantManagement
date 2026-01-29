@@ -7,7 +7,7 @@ namespace RestaurantManagement.DataAccess.Repositories.Interfaces
         Task<T?> GetByIdAsync(Guid id);
         Task<List<T>> GetAllAsync();
         Task AddAsync(T entity);
-        void Update(T entity);
+        //void Update(T entity);
         void Delete(T entity);
         Task SaveChangesAsync();
     }

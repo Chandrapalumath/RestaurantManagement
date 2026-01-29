@@ -63,25 +63,6 @@ namespace RestaurantManagement.Api.Controllers
             return Ok(await _billingService.GetBillByIdAsync(id, waiterId, isAdmin));
         }
 
-        //[Authorize(Roles = "Waiter,Admin")]
-        //[HttpGet("customer/{id:Guid}")]
-        //[ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
-        //[ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        //[ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
-        //[ProducesResponseType(typeof(BillResponseDto), StatusCodes.Status200OK)]
-        //[ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
-        //[ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        //public async Task<IActionResult> GetBillsByCustomerIdAsync(Guid id)
-        //{
-        //    Guid? waiterId = User.IsInRole("Waiter")
-        //    ? Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)
-        //    : null;
-
-        //    bool isAdmin = User.IsInRole("Admin");
-
-        //    return Ok(await _billingService.GetBillsByCustomerIdAsync(id, waiterId, isAdmin));
-        //}
-
         [Authorize(Roles = "Admin")]
         [HttpGet]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]

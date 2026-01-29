@@ -118,7 +118,6 @@ namespace RestaurantManagement.Backend.Services
             }
             order.UpdatedAt = DateTime.UtcNow;
 
-            _orderRepo.Update(order);
             await _orderRepo.SaveChangesAsync();
         }
 

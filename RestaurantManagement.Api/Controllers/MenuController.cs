@@ -74,7 +74,6 @@ namespace RestaurantManagement.Api.Controllers
             return NoContent();
         }
 
-        // Handle this
         [Authorize(Roles = "Waiter")]
         [HttpPost("rating")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

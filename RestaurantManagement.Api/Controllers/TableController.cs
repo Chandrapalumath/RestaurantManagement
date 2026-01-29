@@ -31,6 +31,7 @@ namespace RestaurantManagement.Api.Controllers
         {
             return Ok(await _tableService.GetAllAsync());
         }
+
         [Authorize]
         [HttpGet("{id}", Name = "GetTableById")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]

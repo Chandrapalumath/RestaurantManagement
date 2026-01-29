@@ -195,7 +195,6 @@ public class AuthServiceTests
             "Password should be updated and hashed"
         );
 
-        _userRepoMock.Verify(r => r.Update(user), Times.Once);
         _userRepoMock.Verify(r => r.SaveChangesAsync(), Times.Once);
     }
 

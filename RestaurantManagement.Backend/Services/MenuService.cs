@@ -85,7 +85,6 @@ namespace RestaurantManagement.Backend.Services
             if (dto.IsAvailable.HasValue)
                 entity.IsAvailable = dto.IsAvailable.Value;
 
-            _menuRepo.Update(entity);
             await _menuRepo.SaveChangesAsync();
         }
 

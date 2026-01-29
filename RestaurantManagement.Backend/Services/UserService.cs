@@ -105,7 +105,6 @@ namespace RestaurantManagement.Backend.Services
             if (dto.Role == UserRole.Admin)
                 throw new BadRequestException("Admin cannot be created here.");
 
-            _userRepo.Update(user);
             await _userRepo.SaveChangesAsync();
 
         }

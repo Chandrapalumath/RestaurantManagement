@@ -55,6 +55,7 @@ namespace RestaurantManagement.Api.Controllers
         {
             return Ok(await _orderService.GetOrdersByTableIdAsync(id));
         }
+
         [Authorize(Roles = "Waiter,Chef")]
         [HttpGet("status")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -66,6 +67,7 @@ namespace RestaurantManagement.Api.Controllers
         {
             return Ok(await _orderService.GetOrdersAsync(status));
         }
+
         [Authorize(Roles = "Waiter,Chef")]
         [HttpPatch("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

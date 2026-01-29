@@ -9,6 +9,6 @@ namespace RestaurantManagement.DataAccess.Repositories
         public MenuRepository(RestaurantDbContext context) : base(context) { }
 
         public async Task<MenuItem?> GetByNameAsync(string name)
-            => await _context.MenuItems.FirstOrDefaultAsync(x => x.Name == name);
+            => await _context.MenuItems.AsNoTracking().FirstOrDefaultAsync(x => x.Name == name);
     }
 }

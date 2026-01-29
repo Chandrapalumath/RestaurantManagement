@@ -10,6 +10,7 @@ namespace RestaurantManagement.DataAccess.Repositories
 
         public async Task<List<Review>> GetByCustomerIdAsync(Guid customerId)
             => await _context.Reviews
+            .AsNoTracking()
                 .Where(r => r.CustomerId == customerId)
                 .OrderByDescending(r => r.CreatedAt)
                 .ToListAsync();

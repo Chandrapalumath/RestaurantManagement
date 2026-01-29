@@ -74,13 +74,11 @@ namespace RestaurantManagement.Backend.Services
             {
                 order.IsBilled = true;
                 order.BillingId = bill.Id;
-                _orderRepo.Update(order);
             }
 
             await _orderRepo.SaveChangesAsync();
             var table = await _tableRepo.GetByIdAsync(tableId);
             table.IsOccupied = false;
-            _tableRepo.Update(table);
             await _tableRepo.SaveChangesAsync();
             return new BillResponseDto
             {
@@ -148,8 +146,6 @@ namespace RestaurantManagement.Backend.Services
                 if (dto.IsPaymentDone == true)
                     bill.IsPaymentDone = true; ;
             }
-                
-            _billingRepo.Update(bill);
             await _billingRepo.SaveChangesAsync();
         }
 

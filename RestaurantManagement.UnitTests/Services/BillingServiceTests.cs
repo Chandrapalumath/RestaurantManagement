@@ -289,6 +289,5 @@ public class BillingServiceTests
         await _service.UpdateBill(bill.Id, waiterId, dto);
 
         Assert.IsTrue(bill.IsPaymentDone);
-        _billingRepoMock.Verify(r => r.Update(bill), Times.Once);
     }
 }

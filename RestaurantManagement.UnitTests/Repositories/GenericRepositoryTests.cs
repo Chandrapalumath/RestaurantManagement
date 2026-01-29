@@ -116,7 +116,6 @@ public class GenericRepositoryTests
 
         // Act
         customer.Name = "New Name";
-        _repo.Update(customer);
         await _repo.SaveChangesAsync();
 
         // Assert
