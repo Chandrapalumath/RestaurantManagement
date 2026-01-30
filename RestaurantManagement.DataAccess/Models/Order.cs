@@ -30,5 +30,4 @@ namespace RestaurantManagement.DataAccess.Models
         [ForeignKey(nameof(BillingId))]
         public Bill? Bill { get; set; }
     }
-
 }

@@ -25,8 +25,9 @@
               }
             ],
             "styles": [
-              "src/material-theme.scss",
-              "src/styles.css"
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "src/styles.css",
+              "src/material-theme.scss"
             ]
           },
           "configurations": {

@@ -1,11 +1,9 @@
 import { Component } from '@angular/core';
-import { CreateUser } from './create-user/create-user';
-import { Login } from './login/login';
+import { RouterModule } from "@angular/router";
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [CreateUser,Login],
+  imports: [RouterModule],
   templateUrl: './app.html',
 })
 export class App {}
