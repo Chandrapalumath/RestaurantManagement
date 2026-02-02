@@ -1,0 +1,18 @@
+<h2>Customer & Billing</h2>
+
+<app-customer (customerSelected)="onCustomerSelected($event)"></app-customer>
+
+<div class="mt-4 d-flex gap-3">
+
+  <button mat-raised-button color="primary"
+          [disabled]="!selectedCustomerId"
+          (click)="generateBill()">
+    Proceed to Billing
+  </button>
+
+  <button mat-raised-button color="accent"
+          (click)="router.navigate(['/table-session', tableId])">
+    Back to Table
+  </button>
+
+</div>

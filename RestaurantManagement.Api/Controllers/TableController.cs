@@ -1,12 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Api.Middlewares;
-using RestaurantManagement.Backend.Services;
 using RestaurantManagement.Backend.Services.Interfaces;
-using RestaurantManagement.Dtos.Menu;
-using RestaurantManagement.Dtos.Reviews;
 using RestaurantManagement.Dtos.Tables;
 
 namespace RestaurantManagement.Api.Controllers

@@ -1,20 +1,20 @@
 <h2 mat-dialog-title>Bill Summary</h2>
 
-<div mat-dialog-content>
-
-  <p><strong>Bill ID:</strong> {{ bill.billId }}</p>
-  <p><strong>Customer ID:</strong> {{ bill.customerId }}</p>
-  <p><strong>Subtotal:</strong> ₹ {{ bill.subTotal }}</p>
-  <p><strong>Discount:</strong> ₹ {{ bill.discountAmount }}</p>
-  <p><strong>Tax:</strong> ₹ {{ bill.taxAmount }}</p>
-  <p><strong>Grand Total:</strong> ₹ {{ bill.grandTotal }}</p>
-  <p><strong>Status:</strong>
-    <span *ngIf="!bill.isPaymentDone" class="badge bg-warning text-dark">
-      Payment Pending
-    </span>
-  </p>
-
-</div>
+@if (bill) {
+  <mat-dialog-content>
+    <p><strong>Bill ID:</strong> {{ bill.billId }}</p>
+    <p><strong>Customer ID:</strong> {{ bill.customerId }}</p>
+    <p><strong>Subtotal:</strong> ₹ {{ bill.subTotal }}</p>
+    <p><strong>Discount:</strong> ₹ {{ bill.discountAmount }}</p>
+    <p><strong>Tax:</strong> ₹ {{ bill.taxAmount }}</p>
+    <hr>
+    <h3>Total: ₹ {{ bill.grandTotal }}</h3>
+  </mat-dialog-content>
+} @else {
+  <mat-dialog-content>
+    <p class="text-danger">Bill details not available.</p>
+  </mat-dialog-content>
+}
 
 <div mat-dialog-actions align="end">
   <button mat-raised-button color="primary" mat-dialog-close>Close</button>

@@ -24,6 +24,17 @@ namespace RestaurantManagement.Api
                 options.UseSqlServer(builder.Configuration.GetConnectionString("RestaurantDBConnection"))
             );
             // Add services to the container.
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngular",
+                    policy => policy.WithOrigins("http://localhost:4200")
+                                    .AllowAnyHeader()
+                                    .AllowAnyMethod()
+                                    .WithExposedHeaders("Location"));
+            });
+
+            
+
 
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
@@ -143,7 +154,8 @@ namespace RestaurantManagement.Api
                 });
 
             var app = builder.Build();
-
+            app.UseCors("AllowAngular");
+            app.UseCors("AllowFrontend");
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

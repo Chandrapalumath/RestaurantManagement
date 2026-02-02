@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RestaurantManagement.DataAccess.Models
 {
@@ -17,6 +18,10 @@ namespace RestaurantManagement.DataAccess.Models
 
         public DateTime CreatedAt { get; set; } 
         public ICollection<Order> Orders { get; set; } = new List<Order>();
+        public Guid? OccupiedByWaiterId { get; set; }
+
+        [ForeignKey(nameof(OccupiedByWaiterId))]
+        public User? OccupiedByWaiter { get; set; }
     }
 }
 

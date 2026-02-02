@@ -56,6 +56,18 @@ namespace RestaurantManagement.Api.Controllers
             return Ok(await _orderService.GetOrdersByTableIdAsync(id));
         }
 
+        [Authorize(Roles = "Waiter")]
+        [HttpGet("waiter")]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(List<OrderResponseDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetPendingAndProgressOrdersByWaiterIdAsync()
+        {
+            Guid waiterId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            return Ok(await _orderService.GetOrdersByWaiterIdAsync(waiterId));
+        }
+
         [Authorize(Roles = "Waiter,Chef")]
         [HttpGet("status")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status400BadRequest)]

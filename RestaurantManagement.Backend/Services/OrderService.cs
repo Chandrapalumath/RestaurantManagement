@@ -30,6 +30,7 @@ namespace RestaurantManagement.Backend.Services
             if (table == null) throw new NotFoundException("Table not found");
 
             table.IsOccupied = true;
+            table.OccupiedByWaiterId = waiterId;
 
             foreach (var item in dto.Items)
             {
@@ -127,5 +128,13 @@ namespace RestaurantManagement.Backend.Services
             if (!tableOrders.Any()) throw new NotFoundException("No Orders found for the table");
             return tableOrders.Select(MapOrderToDto).ToList();
         }
+        public async Task<List<OrderResponseDto>> GetOrdersByWaiterIdAsync(Guid waiterId)
+        {
+            var Orders = await _orderRepo.GetOrderWithWaiterIdAsync(waiterId);
+            if (!Orders.Any()) throw new NotFoundException("No Orders found for the table");
+            return Orders.Select(MapOrderToDto).ToList();
+        }
+
+        
     }
 }
