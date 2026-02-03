@@ -1,0 +1,41 @@
+@if (order) {
+  <mat-card class="p-4 shadow">
+    <h2>Order Details</h2>
+    <p><strong>Order ID:</strong> {{ order.orderId }}</p>
+    <p><strong>Table ID:</strong> {{ order.tableId }}</p>
+    <p><strong>Status:</strong> 
+      <span class="badge" [class.bg-warning]="order.status === 'Pending'">
+        {{ order.status }}
+      </span>
+    </p>
+
+    <h3>Items</h3>
+    <ul>
+      @for (i of order.items; track $index) {
+        <li>{{ i.menuItemName }} × {{ i.quantity }}</li>
+      } @empty {
+        <li>No items found in this order.</li>
+      }
+    </ul>
+
+    <mat-form-field appearance="outline" class="w-100 mt-3">
+      <mat-label>Update Status</mat-label>
+      <mat-select [(ngModel)]="selectedStatus">
+        <mat-option value="Pending">Pending</mat-option>
+        <mat-option value="Preparing">Preparing</mat-option>
+        <mat-option value="Completed">Completed</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="mt-3">
+      <button mat-raised-button color="primary" (click)="updateStatus()">
+        Update Status
+      </button>
+      <button mat-button (click)="goBack()">Back</button>
+    </div>
+  </mat-card>
+} @else {
+  <div class="text-center mt-5">
+    <p>Loading order details...</p>
+  </div>
+}

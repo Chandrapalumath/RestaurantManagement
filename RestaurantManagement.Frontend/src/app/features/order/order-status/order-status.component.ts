@@ -4,7 +4,6 @@ import { MatCardModule } from '@angular/material/card';
 import { OrderService } from '../../order/order.service';
 
 @Component({
-  standalone: true,
   selector: 'app-waiter-orders',
   imports: [CommonModule, MatCardModule],
   template: `

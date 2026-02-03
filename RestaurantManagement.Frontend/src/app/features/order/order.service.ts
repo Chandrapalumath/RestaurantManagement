@@ -19,4 +19,14 @@ export class OrderService {
   getOrdersForWaiter() {
     return this.http.get<any[]>(`${this.orderUrl}/waiter`); 
   }
+  getOrdersByStatus(status: string) {
+    return this.http.get<any[]>(`${this.orderUrl}/status?status=${status}`);
+  }
+
+  updateStatus(id: string, status: string) {
+    return this.http.patch(`${this.orderUrl}/${id}`, { status });
+  }
+  getOrderById(id: string) {
+    return this.http.get<any>(`${this.orderUrl}/${id}`);
+  }
 }

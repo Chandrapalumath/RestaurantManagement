@@ -1,0 +1,29 @@
+<div class="layout">
+
+  <header class="header">
+    <h2>Chef Dashboard</h2>
+    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="profile-pic" />
+  </header>
+
+  <div class="body">
+
+    <nav class="sidebar">
+      <a routerLink="orders" [queryParams]="{status:'all'}" routerLinkActive="active">
+        <mat-icon>restaurant_menu</mat-icon> All Orders
+      </a>
+
+      <a routerLink="orders" [queryParams]="{status:'Pending'}" routerLinkActive="active">
+        <mat-icon>schedule</mat-icon> Pending Orders
+      </a>
+
+      <a routerLink="orders" [queryParams]="{status:'Preparing'}" routerLinkActive="active">
+        <mat-icon>local_fire_department</mat-icon> Preparing Orders
+      </a>
+    </nav>
+
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+
+  </div>
+</div>

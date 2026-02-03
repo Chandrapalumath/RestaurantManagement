@@ -1,0 +1,52 @@
+<div class="layout">
+
+  <!-- HEADER -->
+  <header class="header">
+    <h2>Admin Dashboard</h2>
+    <img src="https://i.pravatar.cc/40" class="profile-pic" />
+  </header>
+
+  <div class="body">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+
+      <a routerLink="users" routerLinkActive="active">
+        <mat-icon>person</mat-icon>
+        Users
+      </a>
+
+      <a routerLink="settings" routerLinkActive="active">
+        <mat-icon>settings</mat-icon>
+        Update Settings
+      </a>
+
+      <a routerLink="menu" routerLinkActive="active">
+        <mat-icon>restaurant_menu</mat-icon>
+        Menu Items
+      </a>
+
+      <a routerLink="tables" routerLinkActive="active">
+        <mat-icon>table_restaurant</mat-icon>
+        Tables
+      </a>
+
+      <a routerLink="customers" routerLinkActive="active">
+        <mat-icon>groups</mat-icon>
+        Customers
+      </a>
+
+      <a routerLink="reviews" routerLinkActive="active">
+        <mat-icon>rate_review</mat-icon>
+        Reviews
+      </a>
+
+    </nav>
+
+    <!-- CONTENT -->
+    <main class="content">
+      <router-outlet></router-outlet>
+    </main>
+
+  </div>
+</div>

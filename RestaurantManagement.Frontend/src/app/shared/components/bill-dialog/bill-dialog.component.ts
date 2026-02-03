@@ -5,7 +5,6 @@ import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-bill-dialog',
-  standalone: true,
   imports: [CommonModule, MatDialogModule, MatButtonModule],
   templateUrl: './bill-dialog.component.html'
 })

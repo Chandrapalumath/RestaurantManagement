@@ -1,0 +1,40 @@
+<div class="container mt-4">
+
+  <h2 class="mb-4">Customer Review</h2>
+
+  <!-- Ordered Items Rating -->
+  <mat-card *ngFor="let item of items" class="p-3 shadow mb-3">
+    <h5>{{ item.name }}</h5>
+
+    <div>
+      <button *ngFor="let s of [1,2,3,4,5]"
+              mat-icon-button
+              (click)="item.rating = s">
+        ⭐
+      </button>
+      <span class="ms-2">Rating: {{ item.rating }}</span>
+    </div>
+  </mat-card>
+
+  <!-- Restaurant Rating -->
+  <mat-card class="p-3 shadow mb-4">
+    <h4>Rate Restaurant</h4>
+
+    <div>
+      <button *ngFor="let s of [1,2,3,4,5]"
+              mat-icon-button
+              (click)="restaurantRating = s">
+        ⭐
+      </button>
+      <span class="ms-2">Rating: {{ restaurantRating }}</span>
+    </div>
+  </mat-card>
+
+  <!-- Submit Button -->
+  <div class="text-end">
+    <button mat-raised-button color="primary" (click)="submitRating()">
+      Submit Ratings
+    </button>
+  </div>
+
+</div>

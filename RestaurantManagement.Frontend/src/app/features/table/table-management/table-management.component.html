@@ -1,0 +1,48 @@
+<mat-card class="p-4 shadow">
+  <h2>Add Table</h2>
+
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Table Name</mat-label>
+      <input matInput formControlName="tableName" placeholder="e.g. Table 1 or Balcony-1">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Capacity (Seats)</mat-label>
+      <input matInput type="number" formControlName="size">
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="add()" [disabled]="form.invalid">
+      Add Table
+    </button>
+  </form>
+</mat-card>
+
+<mat-card class="mt-4 p-3 shadow">
+  <h3>Existing Tables</h3>
+
+  <div class="table-list">
+    @for (t of tables; track t.id) {
+      <div class="d-flex justify-content-between align-items-center border p-2 mb-2 rounded">
+        <div>
+          <strong>{{ t.tableName }}</strong>
+          <span class="ms-2 text-muted">(Seats: {{ t.size }})</span>
+          
+          @if (t.isOccupied) {
+            <span class="badge bg-danger ms-2">Occupied</span>
+          } @else {
+            <span class="badge bg-success ms-2">Available</span>
+          }
+        </div>
+
+        <button mat-icon-button color="warn" (click)="delete(t.id)" title="Delete Table">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    } @empty {
+      <div class="alert alert-info">
+        No tables found. Please add a table to get started.
+      </div>
+    }
+  </div>
+</mat-card>

@@ -108,7 +108,6 @@ namespace RestaurantManagement.Backend.Services
                 menuItem.Rating = ((oldAvg * oldCount) + details.Rating) / newCount;
                 menuItem.TotalReviews = newCount;
             }
-            //_menuRepo.Update(menuItem);
             await _menuRepo.SaveChangesAsync();
         }
     }

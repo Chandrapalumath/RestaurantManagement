@@ -1,0 +1,58 @@
+<mat-card class="p-4 shadow">
+
+  <h2>{{ editId ? 'Update Menu Item' : 'Add Menu Item' }}</h2>
+
+  <form [formGroup]="form">
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Price</mat-label>
+      <input matInput type="number" formControlName="price">
+    </mat-form-field>
+
+    <mat-checkbox formControlName="isAvailable">Available</mat-checkbox>
+
+    <br><br>
+
+    <button mat-raised-button color="primary" (click)="submit()">
+      {{ editId ? 'Update' : 'Add' }}
+    </button>
+
+    @if (editId) {
+      <button mat-button color="warn" (click)="reset()">Cancel</button>
+    }
+
+  </form>
+
+</mat-card>
+
+<mat-card class="mt-4 p-3 shadow">
+  <h3>Menu Items</h3>
+
+  @for (item of menuItems; track item.id ?? $index) {
+    <div class="d-flex justify-content-between align-items-center border p-2 mb-2">
+
+      <div>
+        <strong>{{ item.name }}</strong> — ₹{{ item.price }}
+        
+        @if (!item.isAvailable) {
+          <span class="text-danger"> (Unavailable)</span>
+        }
+        
+        ⭐ {{ item.rating }}
+      </div>
+
+      <div>
+        <button mat-button color="primary" (click)="edit(item)">Edit</button>
+        <button mat-button color="warn" (click)="delete(item.id)">Delete</button>
+      </div>
+
+    </div>
+  } @empty {
+    <div class="text-muted">No items available</div>
+  }
+</mat-card>

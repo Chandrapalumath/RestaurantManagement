@@ -37,8 +37,4 @@ export class WaiterHomeComponent implements OnInit {
       this.cdr.detectChanges();
     });
   }
-
-  // get visibleTables() {
-  //   return this.tables;
-  // }
 }

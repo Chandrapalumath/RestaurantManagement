@@ -1,0 +1,36 @@
+.order-card {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.badge {
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-weight: bold;
+  color: white;
+}
+
+.pending {
+  background: #ff9800;
+}
+
+.preparing {
+  background: #2196f3;
+}
+
+.completed {
+  background: #4caf50;
+}
+
+.status-dropdown {
+  padding: 8px;
+  margin: 10px 0;
+  border-radius: 6px;
+}
+
+.buttons {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}

@@ -9,7 +9,6 @@ import { BillService } from '../billing.service';
 import { BillDialogComponent } from '../../../shared/components/bill-dialog/bill-dialog.component';
 
 @Component({
-  standalone: true,
   selector: 'app-customer-billing',
   imports: [CommonModule, MatButtonModule, CustomerComponent],
   templateUrl: './customer-billing.component.html'
@@ -64,9 +63,7 @@ export class CustomerBillingComponent {
         dialogRef.afterClosed().subscribe(() => {
           this.router.navigate(['/waiter/dashboard']);
         });
-
       });
-
     });
   }
 }

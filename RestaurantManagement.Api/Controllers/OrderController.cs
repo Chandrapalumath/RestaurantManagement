@@ -80,7 +80,7 @@ namespace RestaurantManagement.Api.Controllers
             return Ok(await _orderService.GetOrdersAsync(status));
         }
 
-        [Authorize(Roles = "Waiter,Chef")]
+        [Authorize(Roles = "Chef")]
         [HttpPatch("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]

@@ -1,0 +1,46 @@
+<mat-card class="p-4 shadow">
+
+  <h2>Current Settings</h2>
+
+  @if (currentSettings) {
+    <p><strong>Tax %:</strong> {{ currentSettings.taxPercent }}</p>
+    <p><strong>Discount %:</strong> {{ currentSettings.discountPercent }}</p>
+    <p><strong>Last Updated:</strong> {{ currentSettings.updatedAt | date:'medium' }}</p>
+  } @else {
+    <p class="text-muted italic">Fetching current settings...</p>
+  }
+
+  <hr>
+
+  <h3>Update Settings</h3>
+
+  <form [formGroup]="form">
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Tax Percent</mat-label>
+      <input matInput type="number" formControlName="taxPercent">
+
+      @if (form.get('taxPercent')?.invalid && form.get('taxPercent')?.touched) {
+        <mat-error>Must be between 0 and 100</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Discount Percent</mat-label>
+      <input matInput type="number" formControlName="discountPercent">
+
+      @if (form.get('discountPercent')?.invalid && form.get('discountPercent')?.touched) {
+        <mat-error>Must be between 0 and 100</mat-error>
+      }
+    </mat-form-field>
+
+    <button 
+      mat-raised-button 
+      color="primary" 
+      (click)="update()" 
+      [disabled]="form.invalid">
+      Update Settings
+    </button>
+
+  </form>
+</mat-card>

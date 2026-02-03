@@ -8,7 +8,6 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-change-password',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,

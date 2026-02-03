@@ -19,7 +19,7 @@ export class TableSessionComponent implements OnInit {
   tableId!: string;
   orders: any[] = [];
   selectedCustomerId!: string;
-
+  isBillGenerated = false;
   billService = inject(BillService);
   dialog = inject(MatDialog);
 
@@ -89,7 +89,7 @@ export class TableSessionComponent implements OnInit {
 
           this.dialog.open(BillDialogComponent, {
             width: '450px',
-            data: bill
+              data: bill
           });
 
         });
@@ -97,5 +97,6 @@ export class TableSessionComponent implements OnInit {
       },
       error: err => console.log("BILL ERROR:", err)
     });
+    this.isBillGenerated=true;
   }
 }

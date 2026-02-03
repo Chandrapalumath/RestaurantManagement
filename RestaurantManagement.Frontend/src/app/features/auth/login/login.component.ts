@@ -50,8 +50,8 @@ export class LoginComponent {
         console.log("DECODED ROLE:", role);
 
         if (role === 'Waiter') this.router.navigate(['/waiter/dashboard']);
-        else if (role === 'Admin') this.router.navigate(['/admin/dashboard']);
-        else if (role === 'Chef') this.router.navigate(['/chef/dashboard']);
+        else if (role === 'Admin') this.router.navigate(['/admin']);
+        else if (role === 'Chef') this.router.navigate(['/chef']);
         else console.error("ROLE NOT MATCHING");
       },
       error: (err) => {

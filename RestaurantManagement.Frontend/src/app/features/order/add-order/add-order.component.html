@@ -5,7 +5,7 @@
 
   <div class="row g-4">
     @for (item of menuItems; track item.id) {
-      <div class="col-md-3" *ngFor="let item of menuItems">
+      <div class="col-md-3">
       <mat-card class="shadow p-3 text-center">
         <h5>{{ item.name }}</h5>
         <p>₹ {{ item.price }}</p>

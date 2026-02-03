@@ -16,4 +16,15 @@ export class TableService {
   getOrdersByTable(tableId: string) {
     return this.http.get<any[]>(`${this.apiUrlForOrder}/${tableId}`);
   }
+  getAll() {
+    return this.http.get<any[]>(this.apiUrl);
+  }
+
+  create(table: any) {
+    return this.http.post(this.apiUrl, table);
+  }
+
+  delete(id: string) {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
 }

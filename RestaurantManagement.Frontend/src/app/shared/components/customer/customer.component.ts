@@ -1,63 +1,90 @@
 import { Component, EventEmitter, Output, inject } from '@angular/core';
-import { CustomerService } from './customer.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
+import { CustomerService } from './customer.service';
 
 @Component({
   selector: 'app-customer',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatCardModule,
-    MatButtonModule,
-    MatInputModule
-  ],
+  imports: [CommonModule, FormsModule, MatCardModule, MatButtonModule, MatInputModule],
   templateUrl: './customer.component.html'
 })
-
 export class CustomerComponent {
 
+  service = inject(CustomerService);
   @Output() customerSelected = new EventEmitter<string>();
 
   mobileNumber = '';
   customerName = '';
   foundCustomer: any = null;
 
-  service = inject(CustomerService);
+  searchPerformed = false;   
 
   searchCustomer() {
-    this.service.searchByMobile(this.mobileNumber).subscribe({
-      next: (res: any[]) => {
 
-        if (!res || res.length === 0) {
-          this.foundCustomer = null;
-          alert("Customer not found");
-          return;
-        }
+  if (this.mobileNumber.length !== 10) {
+    alert("Enter valid 10 digit number");
+    return;
+  }
 
-        this.foundCustomer = res[0];
+  this.searchPerformed = true;
 
-        console.log("FOUND CUSTOMER:", this.foundCustomer);
+  this.service.searchByMobile(this.mobileNumber).subscribe({
+    next: (res) => {
 
-        this.customerSelected.emit(this.foundCustomer.id);
-      },
-      error: err => {
-        console.log(err);
-        alert("Customer not found");
+      if (!res || res.length === 0) {
+        this.foundCustomer = null;
+        return;
       }
+
+      this.foundCustomer = res[0];
+
+      this.customerName = this.foundCustomer.name;
+      this.mobileNumber = this.foundCustomer.mobileNumber;
+
+      this.customerSelected.emit(this.foundCustomer.id);
+    },
+    error: () => alert("Server error")
+  });
+}
+
+
+  createCustomer() {
+
+    if (!this.customerName) {
+      alert("Enter customer name");
+      return;
+    }
+
+    const payload = {
+      name: this.customerName,
+      mobileNumber: this.mobileNumber
+    };
+
+    this.service.createCustomer(payload).subscribe({
+      next: (res) => {
+
+        const location = res.headers.get('Location');
+        const id = location?.split('/').pop();
+
+        this.foundCustomer = {
+          id,
+          name: this.customerName,
+          mobileNumber: this.mobileNumber
+        };
+
+        this.customerSelected.emit(id!);
+      },
+      error: () => alert("Backend error while creating customer")
     });
   }
 
-  createCustomer() {
-    const payload = { name: this.customerName, mobile: this.mobileNumber };
-
-    this.service.createCustomer(payload).subscribe((res: any) => {
-      this.foundCustomer = res;
-      this.customerSelected.emit(res.id);
-    });
+  clear() {
+    this.searchPerformed = false;
+    this.foundCustomer = null;
+    this.customerName = '';
+    this.mobileNumber = '';
   }
 }

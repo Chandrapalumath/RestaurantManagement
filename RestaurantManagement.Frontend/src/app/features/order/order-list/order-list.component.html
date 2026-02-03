@@ -1,0 +1,23 @@
+<h2>{{ title }}</h2>
+
+<div class="orders-container">
+  @for (o of orders; track o.orderId) {
+    <mat-card class="order-card mb-3 p-3 shadow-sm" (click)="viewOrder(o.orderId)" style="cursor: pointer;">
+      <p class="mb-1"><strong>Order:</strong> {{ o.orderId }}</p>
+      <p class="mb-1"><strong>Table:</strong> {{ o.tableId }}</p>
+      
+      <p class="mb-0">
+        <strong>Status:</strong> 
+        <span [class.text-warning]="o.status === 'Pending'" 
+              [class.text-info]="o.status === 'Preparing'"
+              [class.text-success]="o.status === 'Completed'">
+          {{ o.status }}
+        </span>
+      </p>
+    </mat-card>
+  } @empty {
+    <div class="alert alert-light border text-center">
+      No orders to display at the moment.
+    </div>
+  }
+</div>

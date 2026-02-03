@@ -1,0 +1,37 @@
+.layout { display: flex; flex-direction: column; height: 100vh; }
+
+.header {
+  height: 60px;
+  background: linear-gradient(45deg, #6a5acd, #7b68ee);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.profile-pic { width: 40px; border-radius: 50%; }
+
+.body { display: flex; flex: 1; }
+
+.sidebar {
+  width: 220px;
+  background: #f8f9fa;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sidebar a {
+  text-decoration: none;
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 6px;
+  color: #333;
+}
+
+.sidebar a.active { background: #e6e6fa; font-weight: bold; }
+
+.content { flex: 1; padding: 20px; }

@@ -16,23 +16,12 @@ namespace RestaurantManagement.Backend.Services
 
         public async Task<CustomerResponseDto> CreateAsync(CustomerCreateRequestDto dto)
         {
-            var customers = await _customerRepo.GetByMobileAsync(dto.MobileNumber.Trim());
-            if (customers is not null)
-            {
-                var existing = customers.FirstOrDefault();
-                return new CustomerResponseDto
-                {
-                    Id = existing.Id,
-                    Name = existing.Name,
-                    MobileNumber = existing.MobileNumber
-                };
-            }
-
             var customer = new Customer
             {
                 Id = Guid.NewGuid(),
                 Name = dto.Name.Trim(),
-                MobileNumber = dto.MobileNumber.Trim()
+                MobileNumber = dto.MobileNumber.Trim(),
+                CreatedAt = DateTime.UtcNow
             };
             await _customerRepo.AddAsync(customer);
             await _customerRepo.SaveChangesAsync();
@@ -71,7 +60,7 @@ namespace RestaurantManagement.Backend.Services
         public async Task<List<CustomerResponseDto>> GetByMobileNumberAsync(string mobile)
         {
             var customers = await _customerRepo.GetByMobileAsync(mobile.Trim());
-            if (!customers.Any()) throw new NotFoundException("No user found with this mobile number");
+            //if (!customers.Any()) throw new NotFoundException("No user found with this mobile number");
             return customers.Select(c => new CustomerResponseDto
             {
                 Id = c.Id,

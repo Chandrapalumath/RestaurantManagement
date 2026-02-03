@@ -59,7 +59,12 @@ namespace RestaurantManagement.Api.Controllers
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult> GetCustomerByMobilePartialSearch(string number)
         {
-            return Ok(await _customerService.GetByMobileNumberAsync(number)); ;
+            var customers = await _customerService.GetByMobileNumberAsync(number);
+
+            if (!customers.Any())
+                return Ok(new List<CustomerResponseDto>());
+
+            return Ok(customers);
         }
     }
 }
