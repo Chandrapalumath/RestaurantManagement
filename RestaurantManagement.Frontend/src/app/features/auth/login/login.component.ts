@@ -7,7 +7,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../../services/authService/auth.service';
+import { UserCredentials } from '../../../models/auth.model';
 
 
 @Component({
@@ -39,9 +40,10 @@ export class LoginComponent {
       return;
     }
 
-    console.log("FORM DATA:", this.loginForm.value);
+    const credentials = this.loginForm.value as UserCredentials;
+    console.log("FORM DATA:", credentials);
 
-    this.authService.login(this.loginForm.value).subscribe({
+    this.authService.login(credentials).subscribe({
       next: (res) => {
         console.log("API RESPONSE:", res);
         this.authService.saveToken(res.token);

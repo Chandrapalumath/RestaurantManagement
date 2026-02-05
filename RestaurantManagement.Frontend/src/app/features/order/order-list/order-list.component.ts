@@ -1,8 +1,10 @@
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
-import { OrderService } from '../order.service';
+import { OrderService } from '../../../services/orderService/order.service';
+import { forkJoin } from 'rxjs';
+import { OrderResponse } from '../../../models/order.model';
 
 @Component({
   selector: 'app-order-list',
@@ -10,52 +12,40 @@ import { OrderService } from '../order.service';
   templateUrl: './order-list.component.html'
 })
 export class OrderListComponent implements OnInit {
+  private service = inject(OrderService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
-  service = inject(OrderService);
-  route = inject(ActivatedRoute);
-  router = inject(Router);
-  private cdr = inject(ChangeDetectorRef);
-
-  orders: any[] = [];
-  title = "All Orders";
+  orders = signal<OrderResponse[]>([]);
+  title = signal<string>("All Orders");
 
   ngOnInit() {
     this.route.queryParamMap.subscribe(params => {
       const status = params.get('status') || 'all';
-      console.log("STATUS FILTER:", status);
-
       if (status === 'all') {
-        this.title = "All Orders";
-        this.loadAll();
-        this.cdr.detectChanges();
+        this.title.set("All Active Orders");
+        this.loadActiveOrders();
       } else {
-        this.title = `${status} Orders`;
+        this.title.set(`${status} Orders`);
         this.loadByStatus(status);
-        this.cdr.detectChanges();
       }
     });
   }
 
-  loadAll() {
-    this.service.getOrdersByStatus('Pending').subscribe(p => {
-      this.service.getOrdersByStatus('Preparing').subscribe(pr => {
-        this.orders = [...p, ...pr];
-        console.log("ALL ORDERS:", this.orders);
-        this.cdr.detectChanges();
-      });
+  loadActiveOrders() {
+    forkJoin({
+      pending: this.service.getOrdersByStatus('Pending'),
+      preparing: this.service.getOrdersByStatus('Preparing')
+    }).subscribe(res => {
+      this.orders.set([...res.pending, ...res.preparing]);
     });
   }
 
   loadByStatus(status: string) {
-    this.service.getOrdersByStatus(status).subscribe(data => {
-      this.orders = data;
-      console.log("FILTERED ORDERS:", data);
-      this.cdr.detectChanges();
-    });
+    this.service.getOrdersByStatus(status).subscribe(data => this.orders.set(data));
   }
 
   viewOrder(id: string) {
-    console.log("OPEN ORDER:", id);
     this.router.navigate(['/chef/orders', id]);
   }
 }

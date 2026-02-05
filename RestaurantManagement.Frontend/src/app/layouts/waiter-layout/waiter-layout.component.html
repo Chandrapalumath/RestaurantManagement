@@ -1,29 +1,26 @@
 <div class="layout">
 
-  <header class="header">
-    <h2>Waiter Dashboard</h2>
-    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKUAAACUCAMAAADF0xngAAAARVBMVEX6+vqPj4////+MjIzX19eHh4eEhISAgID29vaTk5Pq6urh4eHc3Nzv7++lpaXFxcXPz8+5ubmZmZmzs7O/v7+fn5+tra3dr8wIAAADXklEQVR4nO2b23LjIAxAsQQ24Pv1/z91cZOm2TZxUWMsd6rz0Om0L2eEJYOElRIEQRAEQRAEQRAEQTgAeIdb5CmrW6mnvu8n7dU5RcFWvSsKYxDR5EXhptKeTRTqqTEmuwONadr6TJ5gpwwx+wyia9V5PHVmviheMK46hyao/kEcP+I5cQuugHLPAnkN58y/6uCH54G8ajbcSQT2W8mw6g2vpFIRkms0eYPZbz+TN82WURN0TCTfKPk0rYu1xIFNEqa49V7JO65g1tHrHXBMkjBRLJEpmHYmWS6WQxKq+KfyTZMlzSm5s2JYlhyiXjt3sVxYHsycJBmCyWAJnmpZMKQPaKplzpA+0NKSJ1hqBktiivMk+S+xpK84h2VHtmQ49EJJrkSeoWDWBTWWHNsNoL0gs2xgeY8vNE3Ts1h2tAfTMBT1gHcUSZxrDkmlSEuOLAtOOo1nXFv1VZNw8GHaA6+WZXzJzD2TZGCMfUuaibFRVEeefXBmOeZegSquZuYcr/A7zaidEVNBv9OM2GbynMT/p/0u0QvuSK6AzrZSCB1jg/UOKJvnOZQvvInzAagWHw6mwh87/mHPDbDTYD57ohmmk411wXdznt8iipjnjeaeRj0AwOpxdhfmsbLnnONfbhvUAavOfCdCEDiBVzhK0Zb655RH3DQCpWd8jaZKLhl2FtT+0Je3e+odCFSbu7RYjEupCeXGnRwKmCXUtM0+kmsTIZkkvUn9nHQHNnJfdQNM1nMl96i3KBJJUtuq26Sa99EnPFukejCh3fG5/POWv2LFdyyX6eZ9sW3AOJLN+/yu9TJV3xX2tEx214R6N2cLTHZxlH694DkJR/p+x4KZbrKy4/5yTCYZKuZulkm72KTLjBuSSS9dQ7VPMUp8hQOWPdI8+bWDeoc1xyb1vA9er0aI6TvZUH1p8xMlU57F7zRf6m/gcMyUCvwL0TQHLPdVUy0/9EQcjxwLdPiTimQyfZyiWr8sHMnhRNMfPqYCvziCKBo3cozSQPk2K+I8TeFattkuqHJx2eN57i2I4b9uLFlHuyFjq2kZMDcPvy01Oc5je0jD/3vRutRTM5iiKPKAMeFH+B2HpdW+PoHiO5dJjvVlVelOV1XprTrtd+SHD58EQRAEQRAEQRAEQfjj/AM+5iY1fDzUXwAAAABJRU5ErkJggg==" class="profile-pic" />
-  </header>
+  <app-navbar></app-navbar>
 
   <div class="body">
 
     <nav class="sidebar">
-    
+
       <a routerLink="dashboard" routerLinkActive="active">
         <mat-icon>table_restaurant</mat-icon>
         All Tables
       </a>
-    
+
       <a routerLink="occupied" routerLinkActive="active">
         <mat-icon>event_seat</mat-icon>
         Occupied Tables
       </a>
-    
+
       <a routerLink="orders" routerLinkActive="active">
         <mat-icon>receipt_long</mat-icon>
         Orders Status
       </a>
-    
+
     </nav>
 
     <main class="content">

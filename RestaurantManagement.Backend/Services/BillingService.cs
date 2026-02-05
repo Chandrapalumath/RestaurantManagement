@@ -3,7 +3,7 @@ using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.DataAccess.Models;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
 using RestaurantManagement.Dtos.Billing;
-using RestaurantManagement.Dtos.Users;
+using RestaurantManagement.Dtos.Menu;
 using RestaurantManagement.Models.Common.Enums;
 
 namespace RestaurantManagement.Backend.Services
@@ -63,7 +63,7 @@ namespace RestaurantManagement.Backend.Services
                 TaxPercent = taxPercent,
                 TaxAmount = taxAmount,
                 GrandTotal = grandTotal,
-                IsPaymentDone = false,
+                IsPaymentDone = true,
                 GeneratedAt = DateTime.UtcNow
             };
 
@@ -148,7 +148,27 @@ namespace RestaurantManagement.Backend.Services
             }
             await _billingRepo.SaveChangesAsync();
         }
+        public async Task<List<MenuItemResponseDto>> GetMenuItemByBillIdAsync(Guid billId)
+        {
+            var orders = await _orderRepo.GetOrdersByBillIdAsync(billId);
+            var bill = await _billingRepo.GetByIdAsync(billId);
 
+            var menuItems = orders
+                .SelectMany(o => o.Items)
+                .GroupBy(i => i.MenuItemId)
+                .Select(g => new MenuItemResponseDto
+                {
+                    Id = g.First().MenuItem.Id,
+                    Name = g.First().MenuItem.Name,
+                    Price = g.First().UnitPrice,
+                    IsAvailable = g.First().MenuItem.IsAvailable,
+                    Rating = g.First().MenuItem.Rating.Value,
+                    CustomerId = bill.CustomerId
+                })
+                .ToList();
+
+            return menuItems;
+        }
         private static BillResponseDto MapBillToDto(Bill bill)
         {
             return new BillResponseDto
@@ -162,7 +182,8 @@ namespace RestaurantManagement.Backend.Services
                 TaxAmount = bill.TaxAmount,
                 GrandTotal = bill.GrandTotal,
                 IsPaymentDone = bill.IsPaymentDone,
-                GeneratedAt = bill.GeneratedAt
+                GeneratedAt = bill.GeneratedAt,
+                WaiterId = bill.GeneratedByWaiterId
             };
         }
     }

@@ -1,22 +1,31 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
-import { SettingsService } from '../settings.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { SettingsService } from '../../../services/settingsService/settings.service';
+import { SettingsResponse, SettingsUpdateRequest } from '../../../models/setting.model';
 
 @Component({
   selector: 'app-update-settings',
-  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatButtonModule, MatInputModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatCardModule,
+    MatButtonModule,
+    MatInputModule,
+    MatFormFieldModule
+  ],
   templateUrl: './update-settings.html'
 })
 export class UpdateSettingsComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private service = inject(SettingsService);
 
-  fb = inject(FormBuilder);
-  service = inject(SettingsService);
-
-  currentSettings: any;
+  // Signal for current settings
+  currentSettings = signal<SettingsResponse | null>(null);
 
   form = this.fb.group({
     taxPercent: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
@@ -29,10 +38,7 @@ export class UpdateSettingsComponent implements OnInit {
 
   loadSettings() {
     this.service.getSettings().subscribe(res => {
-      console.log("CURRENT SETTINGS:", res);
-
-      this.currentSettings = res;
-
+      this.currentSettings.set(res);
       this.form.patchValue({
         taxPercent: res.taxPercent,
         discountPercent: res.discountPercent
@@ -43,9 +49,14 @@ export class UpdateSettingsComponent implements OnInit {
   update() {
     if (this.form.invalid) return;
 
-    this.service.updateSettings(this.form.value).subscribe(() => {
-      alert("Settings updated successfully");
-      this.loadSettings();
+    const payload = this.form.value as SettingsUpdateRequest;
+
+    this.service.updateSettings(payload).subscribe({
+      next: () => {
+        alert("Settings updated successfully");
+        this.loadSettings();
+      },
+      error: (err) => console.error("Update failed", err)
     });
   }
 }

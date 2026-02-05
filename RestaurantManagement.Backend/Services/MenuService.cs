@@ -95,7 +95,6 @@ namespace RestaurantManagement.Backend.Services
             _menuRepo.Delete(entity);
             await _menuRepo.SaveChangesAsync();
         }
-
         public async Task UpdateRatingAsync(List<UpdateMenuItemRating> dto)
         {
             foreach (var details in dto)

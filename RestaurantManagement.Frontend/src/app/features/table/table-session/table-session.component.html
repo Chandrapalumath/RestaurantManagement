@@ -1,70 +1,54 @@
 <div class="container mt-4">
-
   <h2>Table Session</h2>
-  <p><strong>Table ID:</strong> {{ tableId }}</p>
+  <p><strong>Table ID:</strong> {{ tableId() }}</p>
 
   <mat-card class="p-3 shadow mb-4">
     <h5>Current Orders</h5>
-
-    @for (order of orders; track order.id ?? $index) {
-      <ul class="list-group">
-        <li class="list-group-item">
-          <div class="fw-bold mb-1">
-            Order ID: {{ order.id }}
-            <span class="badge ms-2"
-                  [ngClass]="{
+    @for (order of orders(); track order.id) {
+    <ul class="list-group mb-2">
+      <li class="list-group-item">
+        <div class="fw-bold mb-1">
+          Order ID: {{ order.id }}
+          <span class="badge ms-2" [ngClass]="{
                     'bg-warning text-dark': order.status === 'Pending',
                     'bg-info': order.status === 'Preparing',
                     'bg-success': order.status === 'Completed'
                   }">
-              {{ order.status }}
-            </span>
-          </div> 
-
-          <ul class="ms-3 mb-2">
-            @for (item of order.items; track $index) {
-              <li>
-                {{ item.name }} × {{ item.quantity }}
-              </li>
-            }
-          </ul>
-        </li>
-      </ul>
+            {{ order.status }}
+          </span>
+        </div>
+        <ul class="ms-3 mb-2">
+          @for (item of order.items; track $index) {
+          <li>{{ item.name }} × {{ item.quantity }}</li>
+          }
+        </ul>
+      </li>
+    </ul>
     } @empty {
-      <div class="text-muted">
-        No orders placed yet.
-      </div>
+    <div class="text-muted">No orders placed yet.</div>
     }
   </mat-card>
 
-  <div class="d-flex gap-3" *ngIf="!isBillGenerated">
+  @if (!isBillGenerated()) {
+  <div class="d-flex gap-3">
+    <button mat-raised-button color="primary" [routerLink]="['/table-session', tableId(), 'add-order']">
+      Add Order
+    </button>
+    <button mat-raised-button color="warn" [disabled]="!canGenerateBill()"
+      [routerLink]="['/billing/customer', tableId()]">
+      Generate Bill
+    </button>
+  </div>
+  }
 
-  <button mat-raised-button color="primary"
-          [routerLink]="['/table-session', tableId, 'add-order']">
-    Add Order
-  </button>
-
-  <button mat-raised-button color="warn"
-          [disabled]="!canGenerateBill"
-          (click)="generateBill()"
-          [routerLink]="['/billing/customer', tableId]">
-    Generate Bill
-  </button>
-
-</div>
-
-<div class="d-flex gap-3" *ngIf="isBillGenerated">
-
-  <button mat-raised-button color="accent"
-          [routerLink]="['/review', tableId]">
-    Add Review
-  </button>
-
-  <button mat-raised-button color="primary"
-          [routerLink]="['/waiter/dashboard']">
-    Go Home
-  </button>
-
-</div>
-
+  @if (isBillGenerated()) {
+  <div class="d-flex gap-3">
+    <button mat-raised-button color="accent" [routerLink]="['/review', tableId()]">
+      Add Review
+    </button>
+    <button mat-raised-button color="primary" [routerLink]="['/waiter/dashboard']">
+      Go Home
+    </button>
+  </div>
+  }
 </div>

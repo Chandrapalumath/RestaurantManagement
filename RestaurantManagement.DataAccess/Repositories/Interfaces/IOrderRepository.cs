@@ -10,5 +10,6 @@ namespace RestaurantManagement.DataAccess.Repositories.Interfaces
         Task<List<Order>> GetNotBilledOrders(Guid TableId);
         Task<List<Order>> GetOrderWithTableIdAsync(Guid tableId);
         Task<List<Order>> GetOrderWithWaiterIdAsync(Guid waiterId);
+        Task<List<Order>> GetOrdersByBillIdAsync(Guid billId);
     }
 }

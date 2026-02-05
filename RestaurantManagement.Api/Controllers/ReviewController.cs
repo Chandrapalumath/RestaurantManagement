@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Api.Middlewares;
 using RestaurantManagement.Backend.Services.Interfaces;
-using RestaurantManagement.Dtos.Billing;
-using RestaurantManagement.Dtos.Orders;
 using RestaurantManagement.Dtos.Reviews;
 
 namespace RestaurantManagement.Api.Controllers

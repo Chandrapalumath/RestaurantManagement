@@ -4,6 +4,7 @@
     {
         public Guid BillId { get; set; }
         public Guid CustomerId { get; set; }
+        public Guid WaiterId { get; set; }
         public decimal SubTotal { get; set; }
         public decimal DiscountPercent { get; set; }
         public decimal DiscountAmount { get; set; }

@@ -1,4 +1,5 @@
 ﻿using RestaurantManagement.Dtos.Billing;
+using RestaurantManagement.Dtos.Menu;
 
 namespace RestaurantManagement.Backend.Services.Interfaces
 {
@@ -9,6 +10,7 @@ namespace RestaurantManagement.Backend.Services.Interfaces
         Task<List<BillResponseDto>> GetBillsByCustomerIdAsync(Guid customerId, Guid? waiterId, bool isAdmin);
         Task<List<BillResponseDto>> GetAllBillsAsync();
         Task<BillResponseDto> GenerateBillAsync(Guid waiterId, BillGenerateRequestDto dto);
+        Task<List<MenuItemResponseDto>> GetMenuItemByBillIdAsync(Guid billId);
     }
 }
 

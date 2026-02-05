@@ -1,77 +1,85 @@
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { CommonModule, CurrencyPipe, TitleCasePipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router } from '@angular/router';
-import { OrderService } from '../order.service';
+import { FormsModule } from '@angular/forms';
+import { OrderService } from '../../../services/orderService/order.service';
+import { SearchBoxComponent } from "../../../shared/components/search/search.component";
+import { OrderCreateRequest, OrderMenuItem } from '../../../models/order.model';
 
 @Component({
   selector: 'app-add-order',
-  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, FormsModule, TitleCasePipe, CurrencyPipe, SearchBoxComponent],
   templateUrl: './add-order.component.html'
 })
-
 export class AddOrderComponent implements OnInit {
-  tableId!: string;
-  menuItems: any[] = [];
+  private orderService = inject(OrderService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
-  orderService = inject(OrderService);
-  route = inject(ActivatedRoute);
-  router = inject(Router);
-  private cdr = inject(ChangeDetectorRef);
+  tableId = signal<string>('');
+  menuItems = signal<OrderMenuItem[]>([]);
+  searchText = signal<string>('');
+
+  filteredItems = computed(() => {
+    const text = this.searchText().toLowerCase().trim();
+    if (!text) return this.menuItems();
+    return this.menuItems().filter(i => i.name.toLowerCase().includes(text));
+  });
 
   ngOnInit() {
-    this.tableId = this.route.snapshot.paramMap.get('id')!;
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) this.tableId.set(id);
     this.loadMenu();
-    this.cdr.detectChanges();
   }
 
   loadMenu() {
     this.orderService.getMenuItems().subscribe(data => {
-      console.log("MENU API:", data);
-      this.menuItems = data.map(m => ({
-        id: m.id ?? m.Id,
-        name: m.name ?? m.Name,
-        price: m.price ?? m.Price,
+      const mapped = data.map(m => ({
+        ...m,
         quantity: 0
       }));
-      this.cdr.detectChanges();
+      this.menuItems.set(mapped);
     });
-    
   }
 
-  increase(item: any) { item.quantity++; this.cdr.detectChanges();}
-  decrease(item: any) { if (item.quantity > 0) item.quantity--; this.cdr.detectChanges();}
+  onSearch(val: string) {
+    this.searchText.set(val);
+  }
+
+  increase(item: OrderMenuItem) {
+    this.menuItems.update(items =>
+      items.map(i => i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i)
+    );
+  }
+
+  decrease(item: OrderMenuItem) {
+    if (item.quantity <= 0) return;
+    this.menuItems.update(items =>
+      items.map(i => i.id === item.id ? { ...i, quantity: i.quantity - 1 } : i)
+    );
+  }
 
   placeOrder() {
-    const items = this.menuItems
-      .filter(i => i.quantity > 0)
-      .map(i => ({
-        menuItemId: i.id,
-        quantity: i.quantity
-      }));
-
-    if (items.length === 0) {
+    const selectedItems = this.menuItems().filter(i => i.quantity > 0);
+    if (selectedItems.length === 0) {
       alert("Select at least one item");
       return;
     }
 
-    const orderPayload = {
-      tableId: this.tableId,
-      items: items
+    const payload: OrderCreateRequest = {
+      tableId: this.tableId(),
+      items: selectedItems.map(i => ({ menuItemId: i.id, quantity: i.quantity }))
     };
 
-    console.log("ORDER PAYLOAD:", orderPayload);
+    this.orderService.createOrder(payload).subscribe(() => {
+      alert("Order placed successfully!");
+      alert("navifated to" + ['/waiter/table-session/' + this.tableId()])
+      this.router.navigate(['/table-session', this.tableId()]).then(() => {
 
-    this.orderService.createOrder(orderPayload).subscribe({
-      next: () => {
-        alert("Order placed successfully! ");
-        this.router.navigate(['/table-session', this.tableId]).then(() => {
-          
-        });
-      },
-      error: err => console.log("ORDER ERROR:", err)
+      });
     });
   }
 }

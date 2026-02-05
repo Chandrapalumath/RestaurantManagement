@@ -1,0 +1,14 @@
+<h2>My Occupied Tables</h2>
+<div class="grid">
+    @for (t of occupiedTables(); track t.id) {
+    <mat-card class="p-3 mb-2 shadow-sm">
+        <h3>{{ t.tableName }}</h3>
+        <p>Size: {{ t.size }}</p>
+        <span class="badge bg-warning text-dark">Occupied</span>
+    </mat-card>
+    } @empty {
+    <div class="no-tables alert alert-info text-center">
+        <p>No tables are currently occupied.</p>
+    </div>
+    }
+</div>

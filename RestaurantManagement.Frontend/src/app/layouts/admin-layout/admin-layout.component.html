@@ -1,15 +1,15 @@
 <div class="layout">
 
   <!-- HEADER -->
-  <header class="header">
-    <h2>Admin Dashboard</h2>
-    <img src="https://i.pravatar.cc/40" class="profile-pic" />
-  </header>
-
+  <app-navbar></app-navbar>
   <div class="body">
 
     <!-- SIDEBAR -->
     <nav class="sidebar">
+      <a routerLink="dashboard" routerLinkActive="active">
+        <mat-icon>dashboard</mat-icon>
+        Overview
+      </a>
 
       <a routerLink="users" routerLinkActive="active">
         <mat-icon>person</mat-icon>

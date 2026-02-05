@@ -9,21 +9,13 @@ import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-user-management',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatCardModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSelectModule
-  ],
+  imports: [CommonModule, ReactiveFormsModule, MatCardModule, MatInputModule, MatButtonModule, MatSelectModule],
   templateUrl: './user-management.component.html',
-  styleUrls: ['./user-management.component.css']
+  styleUrl: './user-management.component.css'
 })
 export class UserManagementComponent {
-
-  fb = inject(FormBuilder);
-  http = inject(HttpClient);
+  private fb = inject(FormBuilder);
+  private http = inject(HttpClient);
 
   roles = ['Admin', 'Waiter', 'Chef'];
 
@@ -36,16 +28,10 @@ export class UserManagementComponent {
       Validators.minLength(12),
       Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).*$/)
     ]],
-    role: ['', Validators.required]
+    role: [null as number | null, Validators.required]
   });
 
   submit() {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      return;
-    }
-
-    console.log("Creating user:", this.form.value);
 
     this.http.post('https://localhost:7095/api/users', this.form.value)
       .subscribe({
@@ -55,7 +41,7 @@ export class UserManagementComponent {
         },
         error: err => {
           console.error(err);
-          alert("Error creating user ");
+          alert(err.error?.Message || "Error creating user");
         }
       });
   }

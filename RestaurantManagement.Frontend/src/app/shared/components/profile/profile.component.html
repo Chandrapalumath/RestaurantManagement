@@ -1,0 +1,16 @@
+<mat-card class="p-4 shadow w-50 mx-auto mt-4" *ngIf="user">
+
+  <h3 class="mb-3">My Profile</h3>
+
+  <p><strong>Name:</strong> {{ user.fullName }}</p>
+  <p><strong>Email:</strong> {{ user.email }}</p>
+  <p><strong>Mobile:</strong> {{ user.mobileNumber }}</p>
+  <p><strong>Role:</strong> {{ user.role }}</p>
+  <p>
+    <strong>Status:</strong>
+    <span [class.text-success]="user.isActive" [class.text-danger]="!user.isActive">
+      {{ user.isActive ? 'Active' : 'Inactive' }}
+    </span>
+  </p>
+
+</mat-card>

@@ -51,5 +51,13 @@ namespace RestaurantManagement.DataAccess.Repositories
 
             return await query.OrderByDescending(o => o.CreatedAt).ToListAsync();
         }
+        public async Task<List<Order>> GetOrdersByBillIdAsync(Guid billId)
+        {
+            return await _context.Orders
+                .Where(o => o.BillingId == billId)
+                .Include(o => o.Items)
+                    .ThenInclude(i => i.MenuItem)
+                .ToListAsync();
+        }
     }
 }

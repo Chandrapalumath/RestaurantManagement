@@ -1,0 +1,33 @@
+<mat-card class="p-3 shadow">
+  <h5>Customer Search</h5>
+
+  <mat-form-field appearance="outline" class="w-100 mb-3">
+    <mat-label>Mobile Number</mat-label>
+    <input matInput [ngModel]="mobileNumber()" (ngModelChange)="mobileNumber.set($event)">
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" (click)="searchCustomer()">
+    Search
+  </button>
+
+  @if (searchPerformed() && !foundCustomer()) {
+  <div class="mt-3">
+    <p class="text-danger">Customer not found. Create new one:</p>
+    <mat-form-field appearance="outline" class="w-100 mb-3">
+      <mat-label>Customer Name</mat-label>
+      <input matInput [ngModel]="customerName()" (ngModelChange)="customerName.set($event)">
+    </mat-form-field>
+    <button mat-raised-button color="accent" (click)="createCustomer()">
+      Add Customer
+    </button>
+  </div>
+  }
+
+  @if (foundCustomer()) {
+  <div class="mt-3">
+    <p><strong>Name:</strong> {{ foundCustomer().name }}</p>
+    <p><strong>Mobile:</strong> {{ foundCustomer().mobileNumber }}</p>
+    <button mat-button color="warn" (click)="clear()">Clear Selection</button>
+  </div>
+  }
+</mat-card>

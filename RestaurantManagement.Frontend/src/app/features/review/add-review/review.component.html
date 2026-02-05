@@ -1,0 +1,26 @@
+<div class="container mt-4">
+  <h2>Order Review</h2>
+
+  @for (item of items(); track item.id) {
+  <div class="card p-3 mb-3 shadow">
+    <h5>{{ item.name }}</h5>
+    <label>Rate Item</label>
+    <select class="form-select w-25" [(ngModel)]="item.rating">
+      <option [value]="0">Select</option>
+      <option *ngFor="let r of [1,2,3,4,5]" [value]="r">{{ r }}</option>
+    </select>
+  </div>
+  }
+
+  <hr>
+  <h4>Rate Restaurant</h4>
+  <select class="form-select w-25 mb-3" [ngModel]="restaurantRating()" (ngModelChange)="restaurantRating.set($event)">
+    <option [value]="0">Select</option>
+    <option *ngFor="let r of [1,2,3,4,5]" [value]="r">{{ r }}</option>
+  </select>
+
+  <textarea class="form-control mb-3" placeholder="Comment" [ngModel]="comment()"
+    (ngModelChange)="comment.set($event)"></textarea>
+
+  <button class="btn btn-primary" (click)="submit()">Submit Review</button>
+</div>

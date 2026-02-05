@@ -8,7 +8,7 @@
       <mat-label>Email</mat-label>
       <input matInput formControlName="email" type="email">
       @if (form.get('email')?.invalid && form.get('email')?.touched) {
-        <mat-error>Valid email is required</mat-error>
+      <mat-error>Valid email is required</mat-error>
       }
     </mat-form-field>
 
@@ -31,9 +31,9 @@
       <mat-label>Role</mat-label>
       <mat-select formControlName="role">
         @for (r of roles; track r) {
-          <mat-option [value]="r">{{ r }}</mat-option>
+        <mat-option [value]="r">{{ r }}</mat-option>
         } @empty {
-          <mat-option disabled>No roles available</mat-option>
+        <mat-option disabled>No roles available</mat-option>
         }
       </mat-select>
     </mat-form-field>

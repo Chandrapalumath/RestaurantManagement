@@ -1,0 +1,45 @@
+<div class="dashboard" *ngIf="dashboard">
+
+  <div class="cards">
+
+    <div class="card">
+      <h3>Total Tables</h3>
+      <p>{{dashboard.totalTables}}</p>
+    </div>
+
+    <div class="card">
+      <h3>Occupied</h3>
+      <p>{{dashboard.occupiedTables}}</p>
+    </div>
+
+    <div class="card">
+      <h3>Total Sales</h3>
+      <p>₹{{dashboard.totalSales}}</p>
+    </div>
+
+    <div class="card">
+      <h3>Tax</h3>
+      <p>{{dashboard.tax}}%</p>
+    </div>
+
+    <div class="card">
+      <h3>Discount</h3>
+      <p>{{dashboard.discount}}%</p>
+    </div>
+
+    <div class="card rating">
+      ⭐ <span>{{dashboard.averageRating}}</span>
+      <small>Average Rating</small>
+    </div>
+
+  </div>
+
+  <div class="waiters">
+    <h2>Top 5 Waiters</h2>
+    <div *ngFor="let w of dashboard.topWaiters" class="waiter-card">
+      <span>ID: {{w.waiterId}}</span>
+      <span>Orders: {{w.count}}</span>
+    </div>
+  </div>
+
+</div>

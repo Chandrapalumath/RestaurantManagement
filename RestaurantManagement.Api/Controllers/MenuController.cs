@@ -11,10 +11,12 @@ namespace RestaurantManagement.Api.Controllers
     public class MenuController : ControllerBase
     {
         private readonly IMenuService _menuService;
+        private readonly IBillingService _billService;
 
-        public MenuController(IMenuService menuService)
+        public MenuController(IMenuService menuService, IBillingService billService)
         {
             _menuService = menuService;
+            _billService = billService;
         }
 
         [Authorize]
@@ -37,6 +39,17 @@ namespace RestaurantManagement.Api.Controllers
         public async Task<IActionResult> GetMenuItemByIdAsync(Guid id)
         {
             return Ok(await _menuService.GetByIdAsync(id)); ;
+        }
+
+        [Authorize]
+        [HttpGet("bill/{id}")]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(List<MenuItemResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetMenuItemByBillIdAsync(Guid id)
+        {
+            return Ok(await _billService.GetMenuItemByBillIdAsync(id));
         }
 
         [Authorize(Roles = "Admin")]

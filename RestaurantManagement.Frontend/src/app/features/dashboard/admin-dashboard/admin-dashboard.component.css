@@ -1,0 +1,58 @@
+.dashboard {
+  padding: 25px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  color: #ffffff;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.card {
+  background: #ffffff;       
+  color: #111;                
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.35);
+}
+
+.card h3 {
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.card p {
+  font-size: 26px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.rating {
+  background: #ff9800;
+  color: #000;
+}
+
+.waiters {
+  margin-top: 40px;
+}
+
+.waiter-card {
+  background: #1b1f27;
+  margin: 10px 0;
+  padding: 15px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+}

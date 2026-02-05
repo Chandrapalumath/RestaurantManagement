@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace RestaurantManagement.Api.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     [Route("api")]
     [ApiController]
     public class UserController : ControllerBase
@@ -20,6 +20,7 @@ namespace RestaurantManagement.Api.Controllers
             _userService = userService;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("users")]
         [ProducesResponseType(typeof(void), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
@@ -31,6 +32,7 @@ namespace RestaurantManagement.Api.Controllers
             return CreatedAtRoute("GetUserByIdAsync", new { id = result.Id }, null);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("users")]
         [ProducesResponseType(typeof(IEnumerable<UserResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
@@ -40,6 +42,7 @@ namespace RestaurantManagement.Api.Controllers
             return Ok(await _userService.GetAllUsersAsync());
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPatch("users/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
@@ -51,7 +54,6 @@ namespace RestaurantManagement.Api.Controllers
             return NoContent();
         }
 
-        [Authorize]
         [HttpGet("users/{id}", Name = "GetUserByIdAsync")]
         [ProducesResponseType(typeof(IEnumerable<UserResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]

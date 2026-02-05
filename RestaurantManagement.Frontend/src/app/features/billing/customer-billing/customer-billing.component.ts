@@ -1,12 +1,13 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { TableService } from '../../table/table.service';
-import { CustomerComponent } from '../../../shared/components/customer/customer.component';
-import { BillService } from '../billing.service';
-import { BillDialogComponent } from '../../../shared/components/bill-dialog/bill-dialog.component';
+import { TableService } from '../../../services/tableService/table.service';
+import { CustomerComponent } from '../../user/add-customer/customer.component';
+import { BillService } from '../../../services/billingService/billing.service';
+import { BillDialogComponent } from '../bill-dialog/bill-dialog.component';
+import { BillGenerateRequest } from '../../../models/billing.model';
 
 @Component({
   selector: 'app-customer-billing',
@@ -21,27 +22,29 @@ export class CustomerBillingComponent {
   billService = inject(BillService);
   tableService = inject(TableService);
 
-  tableId!: string;
-  selectedCustomerId!: string;
-  orderIds: string[] = [];
+  tableId = signal<string>('');
+  selectedCustomerId = signal<string>('');
+  orderIds = signal<string[]>([]);
 
   ngOnInit() {
-    this.tableId = this.route.snapshot.paramMap.get('tableId')!;
+    this.tableId.set(this.route.snapshot.paramMap.get('tableId')!);
 
-    this.tableService.getOrdersByTable(this.tableId).subscribe(data => {
-      this.orderIds = data.map((o: any) => o.orderId);
+    this.tableService.getOrdersByTable(this.tableId()).subscribe(data => {
+      this.orderIds.set(data.map((o: any) => o.orderId));
+
       console.log("ORDER IDS:", this.orderIds);
     });
   }
 
+
   onCustomerSelected(id: string) {
-    this.selectedCustomerId = id;
+    this.selectedCustomerId.set(id);
   }
 
   generateBill() {
-    const payload = {
-      customerId: this.selectedCustomerId,
-      ordersId: this.orderIds  
+    const payload: BillGenerateRequest = {
+      customerId: this.selectedCustomerId(),
+      ordersId: this.orderIds()
     };
 
     console.log("BILL PAYLOAD:", payload);
@@ -58,10 +61,6 @@ export class CustomerBillingComponent {
         const dialogRef = this.dialog.open(BillDialogComponent, {
           width: '450px',
           data: bill
-        });
-
-        dialogRef.afterClosed().subscribe(() => {
-          this.router.navigate(['/waiter/dashboard']);
         });
       });
     });

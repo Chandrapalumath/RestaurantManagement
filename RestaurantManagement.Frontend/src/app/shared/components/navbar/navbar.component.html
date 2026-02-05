@@ -1,0 +1,19 @@
+<header class="header d-flex justify-content-between align-items-center px-4">
+    <h2>Restaurant Management</h2>
+
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="profile-pic">
+    </button>
+
+    <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="viewProfile()">
+            <mat-icon>account_circle</mat-icon>
+            View Profile
+        </button>
+
+        <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            Sign Out
+        </button>
+    </mat-menu>
+</header>
