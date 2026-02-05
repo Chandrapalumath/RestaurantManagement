@@ -6,16 +6,16 @@ import { Observable } from 'rxjs';
 @Injectable({ providedIn: 'root' })
 export class BillService {
 
-  private apiUrl = 'https://localhost:7095/api/billing';
+  private billApiUrl = 'https://localhost:7095/api/billing';
 
   constructor(private http: HttpClient) { }
 
   generateBill(payload: BillGenerateRequest): Observable<HttpResponse<any>> {
-    return this.http.post<any>(this.apiUrl, payload, { observe: 'response' });
+    return this.http.post<any>(this.billApiUrl, payload, { observe: 'response' });
   }
 
   getBillById(id: string): Observable<BillResponse> {
-    return this.http.get<BillResponse>(`${this.apiUrl}/${id}`);
+    return this.http.get<BillResponse>(`${this.billApiUrl}/${id}`);
   }
 
   getItemsByBillId(billId: string): Observable<MenuItemResponse[]> {

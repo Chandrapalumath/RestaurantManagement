@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login.component';
 import { ChangePasswordComponent } from './features/auth/change-password/change-password.component';
-import { WaiterHomeComponent } from './features/dashboard/waiter-dashboard/waiter-home.component';
 import { AddOrderComponent } from './features/order/add-order/add-order.component';
 import { TableSessionComponent } from './features/table/table-session/table-session.component';
 import { WaiterLayoutComponent } from './layouts/waiter-layout/waiter-layout.component';
@@ -21,6 +20,7 @@ import { AdminCustomerComponent } from './features/user/view-customer/admin-cust
 import { AdminReviewComponent } from './features/review/view-review/admin-review.component';
 import { AdminDashboardComponent } from './features/dashboard/admin-dashboard/admin-dashboard.component';
 import { ProfileComponent } from './shared/components/profile/profile.component';
+import { WaiterHomeComponent } from './features/dashboard/waiter-dashboard/waiter-dashboard.component';
 
 export const routes: Routes = [
     { path: "", redirectTo: 'login', pathMatch: 'full' },
@@ -39,6 +39,7 @@ export const routes: Routes = [
             { path: 'dashboard', component: WaiterHomeComponent },
             { path: 'occupied', component: WaiterOccupiedTablesComponent },
             { path: 'orders', component: WaiterOrdersStatusComponent },
+            { path: 'profile', component: ProfileComponent },
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
         ]
     },
@@ -48,6 +49,7 @@ export const routes: Routes = [
         children: [
             { path: 'orders', component: OrderListComponent },
             { path: 'orders/:id', component: OrderDetailsComponent },
+            { path: 'profile', component: ProfileComponent },
             { path: '', redirectTo: 'orders', pathMatch: 'full' }
         ]
     },
@@ -68,4 +70,3 @@ export const routes: Routes = [
     },
     { path: "**", redirectTo: '' }
 ];
-

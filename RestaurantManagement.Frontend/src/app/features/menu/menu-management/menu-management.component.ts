@@ -17,7 +17,8 @@ import { MenuItemCreateRequest } from '../../../models/menu.model';
     MatButtonModule, MatInputModule, MatCheckboxModule,
     TitleCasePipe, CurrencyPipe, SearchBoxComponent
   ],
-  templateUrl: './menu-management.component.html'
+  templateUrl: './menu-management.component.html',
+  styleUrl: './menu-management.component.css'
 })
 export class MenuManagementComponent implements OnInit {
   private service = inject(MenuService);

@@ -6,7 +6,8 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-profile',
   imports: [CommonModule, MatCardModule],
-  templateUrl: './profile.component.html'
+  templateUrl: './profile.component.html',
+  styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit {
 
@@ -14,7 +15,7 @@ export class ProfileComponent implements OnInit {
   user: any;
 
   ngOnInit() {
-    const id = localStorage.getItem('userId'); 
+    const id = localStorage.getItem('userId');
     console.log(id);
     this.http.get(`https://localhost:7095/api/users/${id}`)
       .subscribe(res => this.user = res);

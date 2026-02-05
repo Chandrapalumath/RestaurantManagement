@@ -1,5 +1,62 @@
+/* ===== PAGE TITLE ===== */
+h2 {
+    font-weight: 600;
+    color: #5d4037;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #d7a86e;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+/* ===== GRID LAYOUT ===== */
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 16px;
+}
+
+/* ===== TABLE CARD ===== */
+mat-card {
+    border-radius: 14px !important;
+    background: linear-gradient(145deg, #ffffff, #f8f3ed);
+    border: 1px solid rgba(121, 85, 72, 0.15);
+    box-shadow: 6px 6px 14px rgba(0, 0, 0, 0.06),
+        -6px -6px 14px rgba(255, 255, 255, 0.9);
+    transition: 0.3s ease;
+}
+
+mat-card:hover {
+    transform: translateY(-4px);
+}
+
+/* Table name */
+mat-card h3 {
+    color: #4e342e;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+/* Size text */
+mat-card p {
+    color: #6d4c41;
+    margin-bottom: 10px;
+}
+
+/* Badge */
+.badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.bg-warning {
+    background: linear-gradient(90deg, #ffb74d, #ffa726) !important;
+}
+
+/* No tables alert */
+.no-tables {
+    border-radius: 12px;
+    background: #fff8e1;
+    color: #6d4c41;
+    border: 1px solid #ffe0b2;
 }

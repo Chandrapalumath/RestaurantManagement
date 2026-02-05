@@ -5,16 +5,18 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { AdminCustomerService } from '../../../services/userService/user.service';
 import { SearchBoxComponent } from "../../../shared/components/search/search.component";
+import { CustomerResponse } from '../../../models/review.model';
 
 @Component({
   selector: 'app-admin-customer',
   imports: [CommonModule, FormsModule, MatCardModule, MatButtonModule, SearchBoxComponent],
-  templateUrl: './admin-customer.component.html'
+  templateUrl: './admin-customer.component.html',
+  styleUrl: './admin-customer.component.css'
 })
 export class AdminCustomerComponent implements OnInit {
   private service = inject(AdminCustomerService);
 
-  customers = signal<any[]>([]);
+  customers = signal<CustomerResponse[]>([]);
   searchText = signal<string>('');
   page = signal<number>(1);
   pageSize = signal<number>(5);
@@ -22,7 +24,7 @@ export class AdminCustomerComponent implements OnInit {
   filteredCustomers = computed(() => {
     const text = this.searchText().toLowerCase().trim();
     return text
-      ? this.customers().filter(c => c.name.toLowerCase().includes(text))
+      ? this.customers()?.filter(c => c.name.toLowerCase().includes(text))
       : this.customers();
   });
 

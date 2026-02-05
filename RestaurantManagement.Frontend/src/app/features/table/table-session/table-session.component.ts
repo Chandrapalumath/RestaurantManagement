@@ -10,7 +10,8 @@ import { BillService } from '../../../services/billingService/billing.service';
 @Component({
   selector: 'app-table-session',
   imports: [CommonModule, MatCardModule, MatButtonModule, RouterModule],
-  templateUrl: './table-session.component.html'
+  templateUrl: './table-session.component.html',
+  styleUrl: './table-session.component.css'
 })
 export class TableSessionComponent implements OnInit {
   private tableService = inject(TableService);
@@ -38,9 +39,9 @@ export class TableSessionComponent implements OnInit {
   loadOrders() {
     this.tableService.getOrdersByTable(this.tableId()).subscribe(data => {
       this.orders.set(data.map(o => ({
-        id: o.orderId ?? o.OrderId,
-        status: o.status ?? o.Status,
-        items: (o.items ?? o.Items ?? []).map((i: any) => ({
+        id: o.orderId ?? o.orderId,
+        status: o.status ?? o.status,
+        items: (o.items ?? o.items ?? []).map((i: any) => ({
           name: i.menuItemName ?? i.MenuItemName,
           quantity: i.quantity ?? i.Quantity
         }))

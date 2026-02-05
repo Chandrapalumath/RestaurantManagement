@@ -1,0 +1,62 @@
+/* ===== PAGE TITLE ===== */
+h2 {
+    font-weight: 600;
+    color: #5d4037;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #d7a86e;
+    display: inline-block;
+    padding-bottom: 4px;
+}
+
+/* Spacing section */
+.mt-4 {
+    margin-top: 25px !important;
+}
+
+/* ===== BUTTON GROUP ===== */
+.d-flex {
+    flex-wrap: wrap;
+}
+
+/* ===== BUTTON BASE ===== */
+button[mat-raised-button] {
+    border-radius: 10px !important;
+    font-weight: 600;
+    padding: 10px 22px !important;
+    transition: all 0.3s ease;
+}
+
+/* Proceed to billing */
+button[color="primary"] {
+    background: linear-gradient(90deg, #6d4c41, #8d6e63) !important;
+    color: white !important;
+}
+
+/* Back button */
+button[color="accent"] {
+    background: linear-gradient(90deg, #00897b, #26a69a) !important;
+    color: white !important;
+}
+
+/* Hover */
+button[mat-raised-button]:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+}
+
+/* Disabled */
+button[disabled] {
+    opacity: 0.6;
+    box-shadow: none !important;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+    .d-flex {
+        flex-direction: column !important;
+    }
+
+    button {
+        width: 100%;
+    }
+}

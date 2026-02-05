@@ -6,6 +6,7 @@ import { BillResponse } from '../../../models/billing.model';
 @Component({
   selector: 'app-bill-dialog',
   templateUrl: './bill-dialog.component.html',
+  styleUrl: './bill-dialog.component.css',
   imports: [MatDialogContent]
 })
 export class BillDialogComponent {

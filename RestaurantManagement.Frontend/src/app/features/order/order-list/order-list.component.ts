@@ -9,7 +9,8 @@ import { OrderResponse } from '../../../models/order.model';
 @Component({
   selector: 'app-order-list',
   imports: [CommonModule, MatCardModule],
-  templateUrl: './order-list.component.html'
+  templateUrl: './order-list.component.html',
+  styleUrl: './order-list.component.css'
 })
 export class OrderListComponent implements OnInit {
   private service = inject(OrderService);

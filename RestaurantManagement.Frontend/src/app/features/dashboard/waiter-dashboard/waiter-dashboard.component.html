@@ -1,0 +1,31 @@
+<div class="container mt-4">
+
+    <app-search-box placeholderText="Search tables" (textChanged)="onSearch($event)">
+    </app-search-box>
+
+    <div class="row g-4">
+        @for (table of filteredTables(); track table.id) {
+        <div class="col-md-3">
+            <mat-card class="shadow text-center p-3 h-100">
+                <h5>{{ table.tableName }}</h5>
+                <p>Capacity: {{ table.size }}</p>
+
+                <span class="badge" [ngClass]="table.isOccupied ? 'bg-warning text-dark' : 'bg-success'">
+                    {{ table.isOccupied ? 'Occupied' : 'Free' }}
+                </span>
+
+                <div class="mt-3">
+                    <button mat-raised-button color="primary" [routerLink]="['/table-session', table.id]">
+                        Open Table
+                    </button>
+                </div>
+            </mat-card>
+        </div>
+        } @empty {
+        <div class="col-12 text-center text-muted">
+            No tables found
+        </div>
+        }
+    </div>
+
+</div>

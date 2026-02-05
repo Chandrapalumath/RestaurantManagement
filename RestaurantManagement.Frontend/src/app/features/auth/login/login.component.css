@@ -1,0 +1,95 @@
+/* ===== FULL PAGE LAYOUT ===== */
+.login-page {
+    height: 100vh;
+    display: flex;
+    background: linear-gradient(135deg, #fdf8f3, #f3e9dc);
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ===== LEFT IMAGE SIDE ===== */
+.login-image {
+    flex: 1;
+    overflow: hidden;
+}
+
+.login-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ===== RIGHT FORM SIDE ===== */
+.login-form-side {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+/* ===== LOGIN CARD ===== */
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 30px !important;
+    border-radius: 20px !important;
+    background: linear-gradient(145deg, #ffffff, #f8f3ed);
+    border: 1px solid rgba(121, 85, 72, 0.15);
+    box-shadow: 12px 12px 30px rgba(0, 0, 0, 0.08),
+        -8px -8px 18px rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Title */
+.login-card h2 {
+    text-align: center;
+    font-weight: 600;
+    color: #5d4037;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #d7a86e;
+    padding-bottom: 6px;
+}
+
+/* ===== FORM FIELDS ===== */
+.mat-mdc-form-field {
+    --mdc-outlined-text-field-container-shape: 12px;
+}
+
+.mat-mdc-text-field-wrapper {
+    background: #fffdf9;
+}
+
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+    border-color: #d7a86e !important;
+}
+
+/* ===== BUTTON ===== */
+.login-btn {
+    border-radius: 12px !important;
+    font-weight: 600;
+    padding: 10px 0 !important;
+    background: linear-gradient(90deg, #6d4c41, #8d6e63) !important;
+    color: white !important;
+    transition: 0.3s ease;
+}
+
+.login-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+    .login-page {
+        flex-direction: column;
+    }
+
+    .login-image {
+        height: 35%;
+    }
+
+    .login-form-side {
+        height: 65%;
+    }
+}

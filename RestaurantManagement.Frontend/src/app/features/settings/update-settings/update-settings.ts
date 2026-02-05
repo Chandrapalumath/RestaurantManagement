@@ -18,13 +18,13 @@ import { SettingsResponse, SettingsUpdateRequest } from '../../../models/setting
     MatInputModule,
     MatFormFieldModule
   ],
-  templateUrl: './update-settings.html'
+  templateUrl: './update-settings.html',
+  styleUrl: './update-settings.css'
 })
 export class UpdateSettingsComponent implements OnInit {
   private fb = inject(FormBuilder);
   private service = inject(SettingsService);
 
-  // Signal for current settings
   currentSettings = signal<SettingsResponse | null>(null);
 
   form = this.fb.group({

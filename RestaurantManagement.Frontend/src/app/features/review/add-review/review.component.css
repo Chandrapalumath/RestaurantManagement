@@ -1,0 +1,108 @@
+/* ===== PAGE CONTAINER ===== */
+.container {
+    max-width: 850px;
+}
+
+/* ===== TITLE ===== */
+h2 {
+    font-weight: 600;
+    color: #5d4037;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #d7a86e;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+/* ===== ITEM REVIEW CARD ===== */
+.card {
+    border-radius: 14px !important;
+    background: linear-gradient(145deg, #ffffff, #f8f3ed);
+    border: 1px solid rgba(121, 85, 72, 0.15);
+    box-shadow: 6px 6px 14px rgba(0, 0, 0, 0.06),
+        -6px -6px 14px rgba(255, 255, 255, 0.9);
+    transition: 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+}
+
+/* Item name */
+.card h5 {
+    color: #4e342e;
+    font-weight: 600;
+}
+
+/* Label */
+label {
+    font-weight: 500;
+    color: #6d4c41;
+    margin-bottom: 6px;
+    display: block;
+}
+
+/* ===== SELECT DROPDOWN ===== */
+.form-select {
+    border-radius: 10px;
+    border: 1px solid rgba(121, 85, 72, 0.2);
+    padding: 6px 10px;
+    background: #fffdf9;
+    color: #4e342e;
+    transition: 0.3s ease;
+}
+
+.form-select:focus {
+    border-color: #d7a86e;
+    box-shadow: 0 0 0 3px rgba(215, 168, 110, 0.25);
+}
+
+/* ===== TEXTAREA ===== */
+textarea.form-control {
+    border-radius: 12px;
+    background: #fffdf9;
+    border: 1px solid rgba(121, 85, 72, 0.2);
+    color: #4e342e;
+    padding: 10px 12px;
+}
+
+textarea.form-control:focus {
+    border-color: #d7a86e;
+    box-shadow: 0 0 0 3px rgba(215, 168, 110, 0.25);
+}
+
+/* ===== SUBMIT BUTTON ===== */
+.btn-primary {
+    background: linear-gradient(90deg, #6d4c41, #8d6e63);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+}
+
+/* ===== HR LINE ===== */
+hr {
+    border-top: 2px solid #d7a86e;
+    opacity: 0.4;
+    margin: 25px 0;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+    .w-25 {
+        width: 100% !important;
+    }
+
+    .container {
+        padding: 0 12px;
+    }
+
+    .btn-primary {
+        width: 100%;
+    }
+}

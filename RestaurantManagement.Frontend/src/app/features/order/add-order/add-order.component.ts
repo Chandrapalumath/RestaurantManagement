@@ -12,7 +12,8 @@ import { OrderCreateRequest, OrderMenuItem } from '../../../models/order.model';
 @Component({
   selector: 'app-add-order',
   imports: [CommonModule, MatCardModule, MatButtonModule, MatIconModule, FormsModule, TitleCasePipe, CurrencyPipe, SearchBoxComponent],
-  templateUrl: './add-order.component.html'
+  templateUrl: './add-order.component.html',
+  styleUrl: './add-order.component.css'
 })
 export class AddOrderComponent implements OnInit {
   private orderService = inject(OrderService);
@@ -75,8 +76,6 @@ export class AddOrderComponent implements OnInit {
     };
 
     this.orderService.createOrder(payload).subscribe(() => {
-      alert("Order placed successfully!");
-      alert("navifated to" + ['/waiter/table-session/' + this.tableId()])
       this.router.navigate(['/table-session', this.tableId()]).then(() => {
 
       });

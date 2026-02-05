@@ -1,0 +1,44 @@
+/* Wrapper spacing */
+.mb-3 {
+    margin-bottom: 18px !important;
+}
+
+/* ===== SEARCH INPUT ===== */
+.form-control {
+    height: 48px;
+    border-radius: 30px;
+    border: 1px solid rgba(121, 85, 72, 0.2);
+    padding: 0 20px;
+    font-size: 15px;
+    background: linear-gradient(145deg, #ffffff, #f7f2ec);
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.05),
+        -4px -4px 10px rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+}
+
+/* Placeholder */
+.form-control::placeholder {
+    color: #a1887f;
+    font-weight: 500;
+}
+
+/* Focus Effect */
+.form-control:focus {
+    outline: none;
+    border: 1px solid #d7a86e;
+    box-shadow: 0 0 0 3px rgba(215, 168, 110, 0.25);
+    background: #fffdf9;
+}
+
+/* Hover */
+.form-control:hover {
+    border-color: #c48a4e;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .form-control {
+        height: 44px;
+        font-size: 14px;
+    }
+}

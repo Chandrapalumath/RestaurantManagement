@@ -22,7 +22,8 @@ import { TableCreateRequest, TableResponse } from '../../../models/table.model';
     TitleCasePipe,
     SearchBoxComponent
   ],
-  templateUrl: './table-management.component.html'
+  templateUrl: './table-management.component.html',
+  styleUrl: './table-management.component.css'
 })
 export class TableManagementComponent implements OnInit {
   private service = inject(TableService);

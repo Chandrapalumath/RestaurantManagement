@@ -25,8 +25,8 @@
 
   @if (foundCustomer()) {
   <div class="mt-3">
-    <p><strong>Name:</strong> {{ foundCustomer().name }}</p>
-    <p><strong>Mobile:</strong> {{ foundCustomer().mobileNumber }}</p>
+    <p><strong>Name:</strong> {{ foundCustomer()?.name }}</p>
+    <p><strong>Mobile:</strong> {{ foundCustomer()?.mobileNumber }}</p>
     <button mat-button color="warn" (click)="clear()">Clear Selection</button>
   </div>
   }

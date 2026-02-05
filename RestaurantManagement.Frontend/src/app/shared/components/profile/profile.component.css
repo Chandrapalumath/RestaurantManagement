@@ -1,0 +1,55 @@
+/* ===== PROFILE CARD ===== */
+mat-card {
+    border-radius: 18px !important;
+    background: linear-gradient(145deg, #ffffff, #f7f2ec);
+    box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08),
+        -6px -6px 16px rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(121, 85, 72, 0.15);
+    transition: all 0.3s ease;
+}
+
+/* Hover lift effect */
+mat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== TITLE ===== */
+mat-card h3 {
+    font-weight: 600;
+    font-size: 22px;
+    color: #5d4037;
+    border-bottom: 2px solid #d7a86e;
+    padding-bottom: 8px;
+    margin-bottom: 16px !important;
+}
+
+/* ===== TEXT STYLE ===== */
+mat-card p {
+    font-size: 15px;
+    margin-bottom: 10px;
+    color: #4e342e;
+}
+
+/* Labels */
+mat-card strong {
+    color: #6d4c41;
+}
+
+/* Status colors (override bootstrap) */
+.text-success {
+    color: #2e7d32 !important;
+    font-weight: 600;
+}
+
+.text-danger {
+    color: #c62828 !important;
+    font-weight: 600;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    mat-card {
+        width: 90% !important;
+    }
+}

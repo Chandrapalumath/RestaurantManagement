@@ -33,3 +33,12 @@ export interface OrderUpdateRequest {
 export interface OrderMenuItem extends MenuItemResponse {
     quantity: number;
 }
+
+export interface OrderResponse {
+    orderId: string;
+    tableId: string;
+    waiterId: string;
+    status: string;
+    createdAt: string;
+    items: OrderItemResponse[];
+}

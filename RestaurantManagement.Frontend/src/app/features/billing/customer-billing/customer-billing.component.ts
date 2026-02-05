@@ -12,7 +12,8 @@ import { BillGenerateRequest } from '../../../models/billing.model';
 @Component({
   selector: 'app-customer-billing',
   imports: [CommonModule, MatButtonModule, CustomerComponent],
-  templateUrl: './customer-billing.component.html'
+  templateUrl: './customer-billing.component.html',
+  styleUrl: './customer-billing.component.css'
 })
 export class CustomerBillingComponent {
 

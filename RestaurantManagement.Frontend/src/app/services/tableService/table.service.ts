@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TableCreateRequest, TableResponse } from '../../models/table.model';
+import { OrderResponse } from '../../models/order.model';
 
 @Injectable({ providedIn: 'root' })
 export class TableService {
@@ -13,11 +14,11 @@ export class TableService {
     return this.http.get<TableResponse[]>(this.tableUrl);
   }
 
-  getOrdersByTable(tableId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.ordersForTable}/${tableId}`);
+  getOrdersByTable(tableId: string): Observable<OrderResponse[]> {
+    return this.http.get<OrderResponse[]>(`${this.ordersForTable}/${tableId}`);
   }
 
-  create(table: TableCreateRequest): Observable<any> {
+  create(table: TableCreateRequest) {
     return this.http.post(this.tableUrl, table);
   }
 

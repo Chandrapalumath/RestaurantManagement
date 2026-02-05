@@ -21,7 +21,8 @@ import { UserCredentials } from '../../../models/auth.model';
     MatInputModule,
     MatButtonModule
   ],
-  templateUrl: './login.component.html'
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css'
 })
 
 export class LoginComponent {
@@ -51,7 +52,7 @@ export class LoginComponent {
         const role = this.authService.getRole();
         console.log("DECODED ROLE:", role);
 
-        if (role === 'Waiter') this.router.navigate(['/waiter/dashboard']);
+        if (role === 'Waiter') this.router.navigate(['/waiter']);
         else if (role === 'Admin') this.router.navigate(['/admin']);
         else if (role === 'Chef') this.router.navigate(['/chef']);
         else console.error("ROLE NOT MATCHING");

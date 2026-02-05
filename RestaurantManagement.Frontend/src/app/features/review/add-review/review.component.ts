@@ -9,7 +9,8 @@ import { ReviewService } from '../../../services/reviewService/review.service';
 @Component({
   selector: 'app-review',
   imports: [CommonModule, FormsModule],
-  templateUrl: './review.component.html'
+  templateUrl: './review.component.html',
+  styleUrl: './review.component.css'
 })
 export class ReviewComponent implements OnInit {
   private route = inject(ActivatedRoute);

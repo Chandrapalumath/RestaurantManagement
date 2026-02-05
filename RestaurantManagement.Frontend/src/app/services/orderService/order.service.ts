@@ -6,6 +6,7 @@ import { OrderCreateRequest, OrderResponse, OrderUpdateRequest } from '../../mod
 
 @Injectable({ providedIn: 'root' })
 export class OrderService {
+
   private http = inject(HttpClient);
   private readonly menuUrl = 'https://localhost:7095/api/menu';
   private readonly orderUrl = 'https://localhost:7095/api/orders';

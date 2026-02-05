@@ -4,15 +4,16 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-search-box',
   templateUrl: './search.component.html',
+  styleUrl: './search.component.css',
   imports: [FormsModule]
 })
 export class SearchBoxComponent {
-  @Input() placeholderText: string = 'Search...'; // Bahar se aayega
-  @Input() value: string = ''; // Initial value agar chahiye toh
+  @Input() placeholderText: string = 'Search...';
+  @Input() value: string = '';
 
-  @Output() textChanged = new EventEmitter<string>(); // Parent ko batane ke liye
+  @Output() textChanged = new EventEmitter<string>();
 
   onSearchChange(newValue: string) {
-    this.textChanged.emit(newValue); // Parent ke pass data jayega
+    this.textChanged.emit(newValue);
   }
 }

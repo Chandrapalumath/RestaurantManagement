@@ -50,7 +50,8 @@ namespace RestaurantManagement.Backend.Services
             var isValid = PasswordHasher.Verify(dto.CurrentPassword, user.Password);
             if (!isValid)
                 throw new BadRequestException("Current password is incorrect.");
-
+            Console.WriteLine(isValid);
+            Console.WriteLine(dto.CurrentPassword);
             if (dto.CurrentPassword == dto.NewPassword)
                 throw new BadRequestException("New password cannot be same as current password.");
 

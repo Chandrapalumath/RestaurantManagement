@@ -1,0 +1,127 @@
+/* ===== MAIN FORM CARD ===== */
+mat-card {
+    max-width: 600px;
+    margin: 25px auto;
+    border-radius: 18px !important;
+    background: linear-gradient(145deg, #ffffff, #f8f3ed);
+    border: 1px solid rgba(121, 85, 72, 0.15);
+    box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.08),
+        -6px -6px 16px rgba(255, 255, 255, 0.9) !important;
+    padding: 22px !important;
+    transition: 0.3s ease;
+}
+
+mat-card:hover {
+    transform: translateY(-3px);
+}
+
+/* ===== HEADINGS ===== */
+h2,
+h3 {
+    font-weight: 600;
+    color: #5d4037;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #d7a86e;
+    padding-bottom: 5px;
+}
+
+/* ===== FORM FIELDS ===== */
+.mat-mdc-form-field {
+    --mdc-outlined-text-field-container-shape: 12px;
+    margin-bottom: 12px;
+}
+
+.mat-mdc-text-field-wrapper {
+    background: #fffdf9;
+}
+
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+    border-color: #d7a86e !important;
+}
+
+.mat-mdc-floating-label {
+    color: #6d4c41 !important;
+    font-weight: 500;
+}
+
+/* Checkbox */
+mat-checkbox {
+    color: #6d4c41;
+    font-weight: 500;
+}
+
+/* ===== BUTTONS ===== */
+button[mat-raised-button] {
+    border-radius: 10px !important;
+    font-weight: 600;
+    padding: 10px 22px !important;
+    background: linear-gradient(90deg, #6d4c41, #8d6e63) !important;
+    color: white !important;
+    transition: 0.3s ease;
+}
+
+button[mat-raised-button]:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+}
+
+/* Cancel button */
+button[color="warn"] {
+    color: #c62828 !important;
+}
+
+/* ===== MENU LIST CARD ===== */
+.mt-4 {
+    max-width: 800px;
+}
+
+/* Menu row */
+.d-flex.border {
+    border-radius: 12px;
+    background: #fffdf9;
+    border: 1px solid rgba(121, 85, 72, 0.15) !important;
+    transition: 0.2s ease;
+}
+
+.d-flex.border:hover {
+    transform: translateX(5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Item name */
+strong {
+    color: #4e342e;
+}
+
+/* Price text */
+.d-flex.border div {
+    color: #6d4c41;
+}
+
+/* Unavailable */
+.text-danger {
+    color: #c62828 !important;
+    font-weight: 600;
+}
+
+/* Pagination */
+.mt-3 span {
+    color: #6d4c41;
+    font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    mat-card {
+        margin: 15px;
+        padding: 18px !important;
+    }
+
+    .d-flex.border {
+        flex-direction: column;
+        align-items: flex-start !important;
+        gap: 8px;
+    }
+}

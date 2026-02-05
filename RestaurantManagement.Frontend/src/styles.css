@@ -1,2 +1,90 @@
 /* You can add global styles to this file, and also import other style files */
 @import "@angular/material/prebuilt-themes/indigo-pink.css";
+
+.error-snackbar {
+    background: #d32f2f;
+    color: white;
+    font-weight: 500;
+    border-radius: 8px;
+}
+
+.sidebar {
+    background: linear-gradient(180deg, #2b1d17, #3e2723, #4e342e) !important;
+}
+
+.sidebar {
+    background: linear-gradient(180deg, #2b1d17, #3e2723, #4e342e);
+    padding: 25px 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* ===== SIDEBAR LINKS ===== */
+.sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    color: #f5f5f5;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+/* Icons */
+.sidebar a mat-icon {
+    font-size: 22px;
+    color: #ffcc80;
+    transition: 0.3s ease;
+}
+
+/* ===== HOVER EFFECT ===== */
+.sidebar a:hover {
+    background: linear-gradient(90deg, rgba(255, 204, 128, 0.18), rgba(255, 152, 0, 0.12));
+    transform: translateX(6px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+}
+
+/* Icon glow on hover */
+.sidebar a:hover mat-icon {
+    color: #ffd180;
+}
+
+/* ===== ACTIVE LINK ===== */
+.sidebar a.active,
+.sidebar a.router-link-active {
+    background: linear-gradient(90deg, #ffcc80, #ffb74d);
+    color: #3e2723;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* Active icon */
+.sidebar a.active mat-icon,
+.sidebar a.router-link-active mat-icon {
+    color: #3e2723;
+}
+
+/* ===== SMOOTH TEXT TRANSITION ===== */
+.sidebar a span {
+    transition: color 0.3s ease;
+}
+
+/* ===== RESPONSIVE COLLAPSE ===== */
+@media (max-width: 900px) {
+    .sidebar {
+        width: 70px;
+        align-items: center;
+    }
+
+    .sidebar a {
+        justify-content: center;
+    }
+
+    .sidebar a span {
+        display: none;
+    }
+}

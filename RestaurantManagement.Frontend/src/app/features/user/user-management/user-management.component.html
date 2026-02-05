@@ -15,16 +15,26 @@
     <mat-form-field appearance="outline" class="w-100 mb-2">
       <mat-label>Full Name</mat-label>
       <input matInput formControlName="fullName">
+      @if (form.get('fullName')?.invalid && form.get('fullName')?.touched) {
+      <mat-error>Valid Name is required must be greater than 2</mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="w-100 mb-2">
       <mat-label>Mobile Number</mat-label>
       <input matInput formControlName="mobileNumber" type="tel">
+      @if (form.get('mobileNumber')?.invalid && form.get('mobileNumber')?.touched) {
+      <mat-error>Must be a 10 digit number</mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="w-100 mb-2">
       <mat-label>Password</mat-label>
       <input matInput type="password" formControlName="password">
+      @if (form.get('password')?.invalid && form.get('password')?.touched) {
+      <mat-error>Contain at least one lowercase letter, one uppercase letter, one digit, one special character and
+        greater than 11</mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="w-100 mb-3">

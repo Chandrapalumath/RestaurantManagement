@@ -5,11 +5,13 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { CustomerService } from './customer.service';
+import { CustomerResponse } from '../../../models/review.model';
 
 @Component({
   selector: 'app-customer',
   imports: [CommonModule, FormsModule, MatCardModule, MatButtonModule, MatInputModule],
-  templateUrl: './customer.component.html'
+  templateUrl: './customer.component.html',
+  styleUrl: './customer.component.css'
 })
 export class CustomerComponent {
   private service = inject(CustomerService);
@@ -17,7 +19,7 @@ export class CustomerComponent {
 
   mobileNumber = signal<string>('');
   customerName = signal<string>('');
-  foundCustomer = signal<any>(null);
+  foundCustomer = signal<CustomerResponse | null>(null);
   searchPerformed = signal<boolean>(false);
 
   searchCustomer() {

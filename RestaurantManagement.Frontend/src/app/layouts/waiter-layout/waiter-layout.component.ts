@@ -8,7 +8,6 @@ import { NavbarComponent } from "../../shared/components/navbar/navbar.component
 
 @Component({
   selector: 'app-waiter-layout',
-  standalone: true,
   imports: [
     CommonModule,
     RouterModule,

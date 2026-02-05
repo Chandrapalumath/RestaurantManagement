@@ -1,0 +1,89 @@
+/* Page spacing */
+.container {
+    max-width: 1200px;
+}
+
+/* ===== TABLE CARD ===== */
+mat-card {
+    border-radius: 16px !important;
+    background: linear-gradient(145deg, #ffffff, #f8f3ed);
+    border: 1px solid rgba(121, 85, 72, 0.15);
+    transition: all 0.3s ease;
+    box-shadow: 6px 6px 14px rgba(0, 0, 0, 0.06),
+        -6px -6px 14px rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Hover Lift */
+mat-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Table Name */
+mat-card h5 {
+    font-weight: 600;
+    font-size: 18px;
+    color: #5d4037;
+    margin-bottom: 6px;
+}
+
+/* Capacity text */
+mat-card p {
+    font-size: 14px;
+    color: #795548;
+    margin-bottom: 10px;
+}
+
+/* ===== STATUS BADGE ===== */
+.badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Free = green */
+.bg-success {
+    background: linear-gradient(90deg, #43a047, #66bb6a) !important;
+    color: white !important;
+}
+
+/* Occupied = warm amber */
+.bg-warning {
+    background: linear-gradient(90deg, #ffb74d, #ffa726) !important;
+}
+
+/* ===== BUTTON ===== */
+button[mat-raised-button] {
+    border-radius: 10px !important;
+    font-weight: 600;
+    background: linear-gradient(90deg, #6d4c41, #8d6e63) !important;
+    color: white !important;
+    transition: all 0.3s ease;
+}
+
+button[mat-raised-button]:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(109, 76, 65, 0.4);
+}
+
+/* ===== EMPTY TEXT ===== */
+.text-muted {
+    font-size: 16px;
+    color: #8d6e63 !important;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 992px) {
+    .col-md-3 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+@media (max-width: 600px) {
+    .col-md-3 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}

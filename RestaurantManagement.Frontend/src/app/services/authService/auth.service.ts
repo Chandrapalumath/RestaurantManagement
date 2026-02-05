@@ -1,9 +1,8 @@
-
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
 import { Injectable, inject, signal } from '@angular/core';
-import { LoginResponse } from '../../models/auth.model';
+import { ChangePasswordCredentials, LoginResponse, UserCredentials } from '../../models/auth.model';
 
 export interface AuthUser {
   userId: string;
@@ -17,11 +16,17 @@ export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private apiUrl = 'https://localhost:7095/api/auth/login';
+  private changePasswordUrl = 'https://localhost:7095/api/auth/change-password';
 
   currentUser = signal<AuthUser | null>(this.getUserFromStorage());
 
-  login(data: any) {
+  login(data: UserCredentials) {
     return this.http.post<LoginResponse>(this.apiUrl, data);
+  }
+
+  changePassword(data: ChangePasswordCredentials) {
+    alert('Password Change Triggered')
+    return this.http.patch<LoginResponse>(this.changePasswordUrl, data);
   }
 
   saveToken(token: string) {

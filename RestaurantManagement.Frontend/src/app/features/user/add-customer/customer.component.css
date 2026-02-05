@@ -1,0 +1,96 @@
+/* ===== MAIN CARD ===== */
+mat-card {
+    border-radius: 16px !important;
+    background: linear-gradient(145deg, #ffffff, #f8f3ed);
+    border: 1px solid rgba(121, 85, 72, 0.15);
+    box-shadow: 6px 6px 14px rgba(0, 0, 0, 0.06),
+        -6px -6px 14px rgba(255, 255, 255, 0.9) !important;
+    transition: 0.3s ease;
+}
+
+mat-card:hover {
+    transform: translateY(-4px);
+}
+
+/* ===== TITLE ===== */
+h5 {
+    font-weight: 600;
+    color: #5d4037;
+    margin-bottom: 15px;
+}
+
+/* ===== MATERIAL FORM FIELD ===== */
+.mat-mdc-form-field {
+    --mdc-outlined-text-field-container-shape: 12px;
+}
+
+/* Outline border color */
+.mat-mdc-text-field-wrapper {
+    background: #fffdf9;
+}
+
+/* Focus color */
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
+.mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
+    border-color: #d7a86e !important;
+}
+
+/* Label */
+.mat-mdc-floating-label {
+    color: #6d4c41 !important;
+    font-weight: 500;
+}
+
+/* Input text */
+.mat-mdc-input-element {
+    color: #4e342e !important;
+}
+
+/* ===== BUTTONS ===== */
+button[mat-raised-button] {
+    border-radius: 10px !important;
+    font-weight: 600;
+    padding: 8px 18px !important;
+    transition: all 0.3s ease;
+}
+
+/* Search button */
+button[color="primary"] {
+    background: linear-gradient(90deg, #6d4c41, #8d6e63) !important;
+    color: white !important;
+}
+
+/* Add customer */
+button[color="accent"] {
+    background: linear-gradient(90deg, #00897b, #26a69a) !important;
+    color: white !important;
+}
+
+/* Clear button */
+button[color="warn"] {
+    color: #c62828 !important;
+}
+
+/* Hover */
+button[mat-raised-button]:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
+}
+
+/* ===== TEXT STYLES ===== */
+p strong {
+    color: #6d4c41;
+}
+
+.text-danger {
+    color: #c62828 !important;
+    font-weight: 600;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+    mat-card {
+        padding: 15px !important;
+    }
+}

@@ -23,4 +23,7 @@ export class NavbarComponent {
     localStorage.removeItem('token');
     this.router.navigate(['/login']);
   }
+  changePassword() {
+    this.router.navigate(['/change-password']);
+  }
 }
