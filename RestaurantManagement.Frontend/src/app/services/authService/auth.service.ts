@@ -13,6 +13,7 @@ export interface AuthUser {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+
   private http = inject(HttpClient);
   private router = inject(Router);
   private apiUrl = 'https://localhost:7095/api/auth/login';
@@ -27,6 +28,11 @@ export class AuthService {
   changePassword(data: ChangePasswordCredentials) {
     alert('Password Change Triggered')
     return this.http.patch<LoginResponse>(this.changePasswordUrl, data);
+  }
+
+  isLoggedIn(): boolean {
+    if (this.currentUser()?.role) return true;
+    return false;
   }
 
   saveToken(token: string) {

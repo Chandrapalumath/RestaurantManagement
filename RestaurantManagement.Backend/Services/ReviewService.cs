@@ -2,6 +2,7 @@
 using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.DataAccess.Models;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
+using RestaurantManagement.Dtos.Pagination;
 using RestaurantManagement.Dtos.Reviews;
 
 namespace RestaurantManagement.Backend.Services
@@ -38,10 +39,41 @@ namespace RestaurantManagement.Backend.Services
             return MapReviewToDto(review);
         }
 
-        public async Task<List<ReviewResponseDto>> GetAllAsync()
+        public async Task<PagedResult<ReviewResponseDto>> GetAllAsync(int page, int pageSize, string? search)
         {
             var reviews = await _reviewRepo.GetAllAsync();
-            return reviews.Select(MapReviewToDto).ToList();
+            var customers = await _customerRepo.GetAllAsync();
+
+            var customerMap = customers.ToDictionary(c => c.Id, c => c.Name);
+
+            var mapped = reviews.Select(r => new ReviewResponseDto
+            {
+                ReviewId = r.Id,
+                CustomerId = r.CustomerId,
+                CustomerName = customerMap.ContainsKey(r.CustomerId) ? customerMap[r.CustomerId] : "Unknown",
+                Rating = r.Rating,
+                Comment = r.Comment,
+                CreatedAt = r.CreatedAt
+            }).ToList();
+
+            if (!string.IsNullOrWhiteSpace(search))
+                mapped = mapped.Where(r =>
+                    r.CustomerName.ToLower().Contains(search.ToLower()) ||
+                    (r.Comment != null && r.Comment.ToLower().Contains(search.ToLower()))
+                ).ToList();
+
+            var total = mapped.Count;
+
+            var paged = mapped
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new PagedResult<ReviewResponseDto>
+            {
+                Items = paged,
+                TotalCount = total
+            };
         }
 
         public async Task<ReviewResponseDto> GetByIdAsync(Guid id)

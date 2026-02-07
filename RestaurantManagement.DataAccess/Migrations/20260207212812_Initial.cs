@@ -43,29 +43,16 @@ namespace RestaurantManagement.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tables",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TableName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Capacity = table.Column<int>(type: "int", nullable: false),
-                    IsOccupied = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tables", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    MobileNumber = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    MobileNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    AadharNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Role = table.Column<int>(type: "int", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -151,6 +138,27 @@ namespace RestaurantManagement.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Tables",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TableName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Capacity = table.Column<int>(type: "int", nullable: false),
+                    IsOccupied = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    OccupiedByWaiterId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tables", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tables_Users_OccupiedByWaiterId",
+                        column: x => x.OccupiedByWaiterId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Orders",
                 columns: table => new
                 {
@@ -161,8 +169,7 @@ namespace RestaurantManagement.DataAccess.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsBilled = table.Column<bool>(type: "bit", nullable: false),
                     BillingId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -171,11 +178,6 @@ namespace RestaurantManagement.DataAccess.Migrations
                         name: "FK_Orders_Bills_BillingId",
                         column: x => x.BillingId,
                         principalTable: "Bills",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Orders_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Orders_Tables_TableId",
@@ -220,13 +222,13 @@ namespace RestaurantManagement.DataAccess.Migrations
 
             migrationBuilder.InsertData(
                 table: "Users",
-                columns: new[] { "Id", "CreatedAt", "Email", "IsActive", "MobileNumber", "Name", "Password", "Role" },
-                values: new object[] { new Guid("0ea73211-b510-43ec-938c-1189cc472bfc"), new DateTime(2026, 1, 20, 18, 37, 9, 974, DateTimeKind.Utc).AddTicks(4024), "admin@gmail.com", true, "9999999999", "Admin", "$2a$11$wt0K5CokK82EvXbfLA/kgOpwc5vt83mNsu2rZv0d.tDoDNZHyF70K", 1 });
+                columns: new[] { "Id", "AadharNumber", "CreatedAt", "DateOfBirth", "Email", "IsActive", "MobileNumber", "Name", "Password", "Role" },
+                values: new object[] { new Guid("16bbe678-9418-480f-8ec0-42bad6977ac5"), "", new DateTime(2026, 2, 7, 21, 28, 8, 807, DateTimeKind.Utc).AddTicks(1871), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "admin@gmail.com", true, "9999999999", "Admin", "$2a$11$XrJBTZwbCIUZEN1KQg8.yutLip1AfBvmgSNvhyFor5NdnROW7xZyi", 1 });
 
             migrationBuilder.InsertData(
                 table: "RestaurantSettings",
                 columns: new[] { "Id", "DiscountPercent", "TaxPercent", "UpdatedAt", "UpdatedByAdminId" },
-                values: new object[] { new Guid("2f516c87-e573-4513-8eb0-9435ae6f0348"), 10m, 10m, new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("0ea73211-b510-43ec-938c-1189cc472bfc") });
+                values: new object[] { new Guid("d5013c46-d6a2-4ca1-ba0b-3698a2543f2d"), 10m, 10m, new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new Guid("16bbe678-9418-480f-8ec0-42bad6977ac5") });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bills_CustomerId",
@@ -266,11 +268,6 @@ namespace RestaurantManagement.DataAccess.Migrations
                 column: "BillingId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_CustomerId",
-                table: "Orders",
-                column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Orders_TableId",
                 table: "Orders",
                 column: "TableId");
@@ -289,6 +286,11 @@ namespace RestaurantManagement.DataAccess.Migrations
                 name: "IX_Reviews_CustomerId",
                 table: "Reviews",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tables_OccupiedByWaiterId",
+                table: "Tables",
+                column: "OccupiedByWaiterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",

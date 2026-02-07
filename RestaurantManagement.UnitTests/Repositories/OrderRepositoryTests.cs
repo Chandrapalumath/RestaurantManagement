@@ -226,4 +226,41 @@ public class OrderRepositoryTests
         Assert.AreEqual(2, result.Count);
         Assert.IsTrue(result.All(o => o.Status == OrderStatus.Pending || o.Status == OrderStatus.Preparing));
     }
+    [TestMethod]
+    public async Task GetOrdersByBillId_ReturnsOrders()
+    {
+        var billId = Guid.NewGuid();
+
+        _context.Orders.Add(new Order
+        {
+            Id = Guid.NewGuid(),
+            BillingId = billId
+        });
+
+        await _context.SaveChangesAsync();
+
+        var result = await _repo.GetOrdersByBillIdAsync(billId);
+
+        Assert.AreEqual(1, result.Count);
+    }
+    [TestMethod]
+    public async Task GetOrderWithWaiterId_ReturnsFilteredOrders()
+    {
+        var waiterId = Guid.NewGuid();
+
+        _context.Orders.Add(new Order
+        {
+            Id = Guid.NewGuid(),
+            WaiterId = waiterId,
+            IsBilled = false,
+            Status = OrderStatus.Pending
+        });
+
+        await _context.SaveChangesAsync();
+
+        var result = await _repo.GetOrderWithWaiterIdAsync(waiterId);
+
+        Assert.AreEqual(1, result.Count);
+    }
+
 }

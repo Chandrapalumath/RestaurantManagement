@@ -6,6 +6,7 @@ export interface TableResponse {
 }
 
 export interface TableCreateRequest {
+
     tableName: string;
     size: number;
 }

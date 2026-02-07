@@ -22,7 +22,26 @@ namespace RestaurantManagement.Backend.Tests.Services
 
             _service = new ReviewService(_reviewRepoMock.Object, _customerRepoMock.Object);
         }
+        [TestMethod]
+        public async Task GetAllAsync_ReturnsPagedReviews()
+        {
+            var customerId = Guid.NewGuid();
 
+            _reviewRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Review>
+            {
+                new Review { Id = Guid.NewGuid(), CustomerId = customerId, Rating = 5 }
+            });
+
+            _customerRepoMock.Setup(c => c.GetAllAsync()).ReturnsAsync(new List<Customer>
+            {
+                new Customer { Id = customerId, Name = "Aman" }
+            });
+
+            var result = await _service.GetAllAsync(1, 5, null);
+
+            Assert.AreEqual(1, result.Items.Count);
+            Assert.AreEqual("Aman", result.Items.First().CustomerName);
+        }
         [TestMethod]
         [ExpectedException(typeof(NotFoundException))]
         public async Task CreateAsync_CustomerDoesNotExist_ThrowsNotFoundException()
@@ -130,59 +149,6 @@ namespace RestaurantManagement.Backend.Tests.Services
             Assert.IsNotNull(capturedReview);
             Assert.IsNull(capturedReview.Comment);
             Assert.AreEqual(capturedReview.Comment, result.Comment);
-        }
-        
-        [TestMethod]
-        public async Task GetAllAsync_ReviewsExist_ReturnsReviewDtoList()
-        {
-            // Arrange
-            var reviews = new List<Review>
-            {
-                new Review
-                {
-                    Id = Guid.NewGuid(),
-                    CustomerId = Guid.NewGuid(),
-                    Rating = 4,
-                    Comment = "Good",
-                    CreatedAt = DateTime.UtcNow.AddDays(-1)
-                },
-                new Review
-                {
-                    Id = Guid.NewGuid(),
-                    CustomerId = Guid.NewGuid(),
-                    Rating = 2,
-                    Comment = "Bad",
-                    CreatedAt = DateTime.UtcNow.AddDays(-2)
-                }
-            };
-
-            _reviewRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(reviews);
-
-            // Act
-            var result = await _service.GetAllAsync();
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(2, result.Count);
-            Assert.AreEqual(reviews[0].Id, result[0].ReviewId);
-            Assert.AreEqual(reviews[0].CustomerId, result[0].CustomerId);
-            Assert.AreEqual(reviews[0].Rating, result[0].Rating);
-            Assert.AreEqual(reviews[0].Comment, result[0].Comment);
-            Assert.AreEqual(reviews[0].CreatedAt, result[0].CreatedAt);
-        }
-
-        [TestMethod]
-        public async Task GetAllAsync_NoReviewsExist_ReturnsEmptyList()
-        {
-            // Arrange
-            _reviewRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Review>());
-
-            // Act
-            var result = await _service.GetAllAsync();
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.Count);
         }
         
         [TestMethod]

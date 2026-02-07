@@ -16,12 +16,24 @@ namespace RestaurantManagement.Backend.Services
         {
             _userRepo = userRepo;
         }
+        private bool IsAdult(DateTime dob)
+        {
+            var today = DateTime.Today;
+            int age = today.Year - dob.Year;
+            if (dob.Date > today.AddYears(-age))
+                age--;
+
+            return age >= 18 && age<150;
+        }
 
         public async Task<UserResponseDto> CreateUserAsync(CreateUserRequestDto dto)
         {
             var exists = await _userRepo.GetByEmailAsync(dto.Email.Trim().ToLower());
             if (exists is not null)
                 throw new ConflictException("Email already exists.");
+
+            if (!IsAdult(dto.DateOfBirth))
+                throw new BadRequestException("User must be at least 18 years old and less than 150.");
 
             var user = new User
             {
@@ -31,7 +43,9 @@ namespace RestaurantManagement.Backend.Services
                 MobileNumber = dto.MobileNumber.Trim(),
                 Role = dto.Role,
                 IsActive = true,
-                Password = PasswordHasher.Hash(dto.Password)
+                Password = PasswordHasher.Hash(dto.Password),
+                AadharNumber = dto.AadharNumber,
+                DateOfBirth = dto.DateOfBirth
             };
 
             await _userRepo.AddAsync(user);
@@ -58,7 +72,9 @@ namespace RestaurantManagement.Backend.Services
                 MobileNumber = u.MobileNumber,
                 Email = u.Email,
                 Role = u.Role,
-                IsActive = u.IsActive
+                IsActive = u.IsActive,
+                DateOfBirth = u.DateOfBirth,
+                AadharNumber=u.AadharNumber,
             }).ToList();
         }
 
@@ -80,7 +96,9 @@ namespace RestaurantManagement.Backend.Services
                 MobileNumber = user.MobileNumber,
                 Email = user.Email,
                 Role = user.Role,
-                IsActive = user.IsActive
+                IsActive = user.IsActive,
+                AadharNumber = user.AadharNumber,
+                DateOfBirth = user.DateOfBirth
             };
         }
 

@@ -12,11 +12,19 @@ export class ReviewService {
     return this.http.post(this.reviewApi, data);
   }
 
-  getReviews() {
-    return this.http.get<ReviewResponse[]>(this.reviewApi);
+  getReviews(page: number, pageSize: number, search: string) {
+    return this.http.get<PagedResult<ReviewResponse>>(
+      `${this.reviewApi}?page=${page}&pageSize=${pageSize}&search=${search}`
+    );
   }
 
   getCustomers() {
     return this.http.get<CustomerResponse[]>(this.customerApi);
   }
 }
+
+export interface PagedResult<T> {
+  items: T[];
+  totalCount: number;
+}
+

@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { RouterModule, ActivatedRoute } from '@angular/router';
+import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { TableService } from '../../../services/tableService/table.service';
 import { BillService } from '../../../services/billingService/billing.service';
@@ -18,8 +18,10 @@ export class TableSessionComponent implements OnInit {
   private billService = inject(BillService);
   private route = inject(ActivatedRoute);
   private dialog = inject(MatDialog);
+  private router = inject(Router);
 
   tableId = signal<string>('');
+  tableName = signal<string>('');
   orders = signal<any[]>([]);
   isBillGenerated = signal<boolean>(false);
 
@@ -28,12 +30,21 @@ export class TableSessionComponent implements OnInit {
     return currentOrders.length > 0 && currentOrders.every(o => o.status === 'Completed');
   });
 
+
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.tableId.set(id);
+      console.log("dsadasdasdasdasdasd" + id);
       this.loadOrders();
+      this.loadTableDetails();
     }
+  }
+
+  loadTableDetails() {
+    this.tableService.getTableById(this.tableId()).subscribe(table => {
+      this.tableName.set(table.tableName ?? `Table ${table.tableNumber}`);
+    });
   }
 
   loadOrders() {
@@ -51,5 +62,9 @@ export class TableSessionComponent implements OnInit {
 
   generateBill() {
     this.isBillGenerated.set(true);
+  }
+
+  goBack() {
+    this.router.navigate(['/waiter']);
   }
 }

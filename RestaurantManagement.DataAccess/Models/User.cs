@@ -21,6 +21,12 @@ namespace RestaurantManagement.DataAccess.Models
         [Required]
         public string Password { get; set; }
         [Required]
+        [DataType(DataType.Date)]
+        public DateTime DateOfBirth { get; set; }
+        [Required]
+        [RegularExpression(@"^\d{12}$", ErrorMessage = "Aadhar number must contain exactly 12 digits")]
+        public string AadharNumber { get; set; } = string.Empty;
+        [Required]
         public UserRole Role { get; set; } 
         public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

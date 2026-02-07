@@ -96,6 +96,7 @@ namespace RestaurantManagement.Api
             builder.Services.AddScoped<IMenuService, MenuService>();
             builder.Services.AddScoped<ICustomerService, CustomerService>();
             builder.Services.AddScoped<IOrderService, OrderService>();
+            builder.Services.AddScoped<IAdminDashboardService, AdminDashboardService>();
             builder.Services.AddScoped<IBillingService, BillingService>();
             builder.Services.AddScoped<IReviewService, ReviewService>();
             builder.Services.AddScoped<ISettingsService, SettingsService>();
@@ -156,7 +157,6 @@ namespace RestaurantManagement.Api
             var app = builder.Build();
             app.UseCors("AllowAngular");
             app.UseCors("AllowFrontend");
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

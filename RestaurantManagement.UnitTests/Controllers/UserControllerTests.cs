@@ -4,6 +4,7 @@ using Moq;
 using RestaurantManagement.Api.Controllers;
 using RestaurantManagement.Backend.Exceptions;
 using RestaurantManagement.Backend.Services.Interfaces;
+using RestaurantManagement.Dtos.Authentication;
 using RestaurantManagement.Dtos.Settings;
 using RestaurantManagement.Dtos.Users;
 using RestaurantManagement.Models.Common.Enums;
@@ -15,13 +16,70 @@ namespace RestaurantManagement.Api.Tests;
 public class UserControllerTests
 {
     private Mock<IUserService> _userServiceMock = null!;
+    private Mock<IAdminDashboardService> _dashboardServiceMock = null!;
     private UserController _controller = null!;
 
     [TestInitialize]
     public void Setup()
     {
         _userServiceMock = new Mock<IUserService>();
-        _controller = new UserController(_userServiceMock.Object);
+        _dashboardServiceMock = new Mock<IAdminDashboardService>();
+        _controller = new UserController(_userServiceMock.Object, _dashboardServiceMock.Object);
+    }
+
+    [TestMethod]
+    public async Task GetDashboard_DataExists_ReturnsOk()
+    {
+        var dto = new AdminDashboardDto
+        {
+            TotalTables = 10,
+            OccupiedTables = 5,
+            TotalSales = 1000,
+            TaxPercent = 5,
+            DiscountPercent = 10,
+            AverageRating = 4.5,
+            TopWaiters = new List<TopWaiterDto>
+            {
+                new TopWaiterDto { WaiterId = Guid.NewGuid(), WaiterName = "Ankit", OrdersServed = 10 }
+            }
+        };
+
+        _dashboardServiceMock
+            .Setup(s => s.GetDashboardDataAsync())
+            .ReturnsAsync(dto);
+
+        var result = await _controller.GetDashboard();
+
+        var ok = result as OkObjectResult;
+        Assert.IsNotNull(ok);
+
+        var data = ok.Value as AdminDashboardDto;
+        Assert.IsNotNull(data);
+        Assert.AreEqual(10, data.TotalTables);
+        Assert.AreEqual(1000, data.TotalSales);
+    }
+
+    [TestMethod]
+    public async Task GetDashboard_ServiceCalledOnce()
+    {
+        _dashboardServiceMock
+            .Setup(s => s.GetDashboardDataAsync())
+            .ReturnsAsync(new AdminDashboardDto());
+
+        await _controller.GetDashboard();
+
+        _dashboardServiceMock.Verify(s => s.GetDashboardDataAsync(), Times.Once);
+    }
+    [TestMethod]
+    public async Task GetDashboard_ReturnTypeIsOkObjectResult()
+    {
+        _dashboardServiceMock
+            .Setup(s => s.GetDashboardDataAsync())
+            .ReturnsAsync(new AdminDashboardDto());
+
+        var result = await _controller.GetDashboard();
+
+        Assert.IsInstanceOfType(result, typeof(OkObjectResult));
     }
 
     [TestMethod]

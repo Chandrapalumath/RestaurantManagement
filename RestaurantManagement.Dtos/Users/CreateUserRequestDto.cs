@@ -24,7 +24,12 @@ namespace RestaurantManagement.Dtos.Users
             ErrorMessage = "Password must contain uppercase, lowercase, number and special character."
         )]
         public string Password { get; set; } = string.Empty;
-
+        [Required]
+        [DataType(DataType.Date)]
+        public DateTime DateOfBirth { get; set; }
+        [Required]
+        [RegularExpression(@"^\d{12}$", ErrorMessage = "Aadhar number must contain exactly 12 digits")]
+        public string AadharNumber { get; set; } = string.Empty;
         [Required]
         public UserRole Role { get; set; }
     }

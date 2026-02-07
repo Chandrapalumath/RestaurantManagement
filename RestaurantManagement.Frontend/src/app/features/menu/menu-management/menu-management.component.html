@@ -2,30 +2,43 @@
   <h2>{{ editId() ? 'Update Menu Item' : 'Add Menu Item' }}</h2>
 
   <form [formGroup]="form">
-    <mat-form-field appearance="outline" class="w-100">
+
+    <!-- NAME -->
+    <mat-form-field appearance="outline" class="w-100 mb-3">
       <mat-label>Name</mat-label>
-      <input matInput formControlName="name">
+      <input matInput formControlName="name" (keypress)="allowMenuNameInput($event)">
+      <mat-error *ngIf="form.get('name')?.hasError('required')">Name required</mat-error>
+      <mat-error *ngIf="form.get('name')?.hasError('minlength')">Min 2 characters</mat-error>
+      <mat-error *ngIf="form.get('name')?.hasError('maxlength')">Max 50 characters</mat-error>
+      <mat-error *ngIf="form.get('name')?.hasError('pattern')">Only letters allowed</mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="w-100">
+    <!-- PRICE -->
+    <mat-form-field appearance="outline" class="w-100 mb-3">
       <mat-label>Price</mat-label>
-      <input matInput type="number" formControlName="price">
+      <input matInput type="text" formControlName="price" (keypress)="allowOnlyPriceInput($event)">
+      <mat-error *ngIf="form.get('price')?.hasError('required')">Price required</mat-error>
+      <mat-error *ngIf="form.get('price')?.hasError('min')">Must be greater than 0</mat-error>
+      <mat-error *ngIf="form.get('price')?.hasError('max')">Cannot exceed 999999</mat-error>
+      <mat-error *ngIf="form.get('price')?.hasError('pattern')">Invalid price format</mat-error>
     </mat-form-field>
 
     <mat-checkbox formControlName="isAvailable">Available</mat-checkbox>
 
     <br><br>
 
-    <button mat-raised-button color="primary" (click)="submit()">
+    <button mat-raised-button color="primary" (click)="submit()" [disabled]="form.invalid">
       {{ editId() ? 'Update' : 'Add' }}
     </button>
 
     @if (editId()) {
     <button mat-button color="warn" (click)="reset()">Cancel</button>
     }
+
   </form>
 </mat-card>
 
+<!-- MENU LIST -->
 <mat-card class="mt-4 p-3 shadow">
   <h3>Menu Items</h3>
 
@@ -37,12 +50,9 @@
     <div>
       <strong>{{ item.name | titlecase }}</strong>
       — {{ item.price | currency:'INR':'symbol':'1.0-0' }}
-
       @if (!item.isAvailable) {
       <span class="text-danger">(Unavailable)</span>
       }
-
-      ⭐ {{ item.rating }}
     </div>
 
     <div>

@@ -66,3 +66,18 @@ button[mat-raised-button]:hover {
     transform: scale(1.05);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);
 }
+
+/* Remove page scroll when dialog open */
+.cdk-overlay-pane {
+    overflow: hidden !important;
+}
+
+/* Prevent dialog inner scroll from triggering page scroll */
+.bill-dialog-panel .mat-mdc-dialog-content {
+    overflow: hidden !important;
+}
+
+/* Ensure content fits */
+.bill-dialog-panel .mat-mdc-dialog-container {
+    overflow: hidden !important;
+}

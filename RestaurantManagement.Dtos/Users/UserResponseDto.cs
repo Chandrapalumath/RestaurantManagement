@@ -10,5 +10,7 @@ namespace RestaurantManagement.Dtos.Users
         public string Email { get; set; } = string.Empty;
         public UserRole Role { get; set; }
         public bool IsActive { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public string AadharNumber { get; set; } = string.Empty;
     }
 }

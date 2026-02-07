@@ -21,4 +21,8 @@ export class BillDialogComponent {
     this.dialogRef.close();
     this.router.navigate(['/review', this.bill.billId]);
   }
+  goToWaiterDashboard() {
+    this.dialogRef.close();
+    this.router.navigate(['/waiter']);
+  }
 }

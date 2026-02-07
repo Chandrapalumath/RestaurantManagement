@@ -1,23 +1,23 @@
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { AdminService } from './admin.service';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AdminService, AdminDashboardDto } from './admin.service';
 
 @Component({
   selector: 'app-admin-dashboard',
+  standalone: true,
   imports: [CommonModule],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']
 })
 export class AdminDashboardComponent implements OnInit {
 
-  dashboard: any;
-  cdr = inject(ChangeDetectorRef);
-  constructor(private adminService: AdminService) { }
+  private adminService = inject(AdminService);
+
+  dashboard = signal<AdminDashboardDto | null>(null);
 
   ngOnInit() {
     this.adminService.getDashboardData().subscribe(res => {
-      this.dashboard = res;
-      this.cdr.detectChanges();
+      this.dashboard.set(res);
       console.log(res);
     });
   }

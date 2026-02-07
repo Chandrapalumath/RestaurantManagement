@@ -12,8 +12,8 @@ using RestaurantManagement.DataAccess;
 namespace RestaurantManagement.DataAccess.Migrations
 {
     [DbContext(typeof(RestaurantDbContext))]
-    [Migration("20260125201713_AddingValidations")]
-    partial class AddingValidations
+    [Migration("20260207212812_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -223,11 +223,11 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c4a2b86a-9087-494b-89c0-f1fd2da06236"),
+                            Id = new Guid("d5013c46-d6a2-4ca1-ba0b-3698a2543f2d"),
                             DiscountPercent = 10m,
                             TaxPercent = 10m,
                             UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UpdatedByAdminId = new Guid("5c8ad58d-be6f-4a15-92b2-677481db4d1c")
+                            UpdatedByAdminId = new Guid("16bbe678-9418-480f-8ec0-42bad6977ac5")
                         });
                 });
 
@@ -272,12 +272,17 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.Property<bool>("IsOccupied")
                         .HasColumnType("bit");
 
+                    b.Property<Guid?>("OccupiedByWaiterId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("TableName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OccupiedByWaiterId");
 
                     b.ToTable("Tables");
                 });
@@ -288,7 +293,14 @@ namespace RestaurantManagement.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("AadharNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
@@ -324,13 +336,15 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5c8ad58d-be6f-4a15-92b2-677481db4d1c"),
-                            CreatedAt = new DateTime(2026, 1, 25, 20, 17, 12, 637, DateTimeKind.Utc).AddTicks(4505),
+                            Id = new Guid("16bbe678-9418-480f-8ec0-42bad6977ac5"),
+                            AadharNumber = "",
+                            CreatedAt = new DateTime(2026, 2, 7, 21, 28, 8, 807, DateTimeKind.Utc).AddTicks(1871),
+                            DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             IsActive = true,
                             MobileNumber = "9999999999",
                             Name = "Admin",
-                            Password = "$2a$11$YtrlF83W1L3LQTvETD3HoeOPdNwWW3kGYE9ynzoCh2L7O9RBSG5RC",
+                            Password = "$2a$11$XrJBTZwbCIUZEN1KQg8.yutLip1AfBvmgSNvhyFor5NdnROW7xZyi",
                             Role = 1
                         });
                 });
@@ -418,6 +432,15 @@ namespace RestaurantManagement.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("RestaurantManagement.DataAccess.Models.Table", b =>
+                {
+                    b.HasOne("RestaurantManagement.DataAccess.Models.User", "OccupiedByWaiter")
+                        .WithMany()
+                        .HasForeignKey("OccupiedByWaiterId");
+
+                    b.Navigation("OccupiedByWaiter");
                 });
 
             modelBuilder.Entity("RestaurantManagement.DataAccess.Models.Bill", b =>

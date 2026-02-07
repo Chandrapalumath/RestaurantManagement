@@ -134,7 +134,5 @@ namespace RestaurantManagement.Backend.Services
             if (!Orders.Any()) throw new NotFoundException("No Orders found for the table");
             return Orders.Select(MapOrderToDto).ToList();
         }
-
-        
     }
 }

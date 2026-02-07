@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RestaurantManagement.Api.Controllers;
 using RestaurantManagement.Backend.Services.Interfaces;
+using RestaurantManagement.Dtos.Pagination;
 using RestaurantManagement.Dtos.Reviews;
 
 namespace RestaurantManagement.Api.Tests;
@@ -17,6 +18,16 @@ public class ReviewControllerTests
     {
         _reviewServiceMock = new Mock<IReviewService>();
         _controller = new ReviewController(_reviewServiceMock.Object);
+    }
+    [TestMethod]
+    public async Task GetAllReviews_ReturnsOk()
+    {
+        _reviewServiceMock.Setup(s => s.GetAllAsync(1, 5, null))
+            .ReturnsAsync(new PagedResult<ReviewResponseDto>());
+
+        var result = await _controller.GetAllReviewsAsync(1, 5, null);
+
+        Assert.IsInstanceOfType(result, typeof(OkObjectResult));
     }
     [TestMethod]
     public async Task CreateReviewAsync_ValidReview_ReturnsCreatedAtRoute()
@@ -52,31 +63,6 @@ public class ReviewControllerTests
         Assert.AreEqual("GetReviewById", created.RouteName);
         Assert.IsNotNull(created.RouteValues);
         Assert.AreEqual(createdReview.ReviewId, created.RouteValues["id"]);
-    }
-    [TestMethod]
-    public async Task GetAllReviewsAsync_ReviewsExist_ReturnsOkWithReviews()
-    {
-        // Arrange
-        var reviews = new List<ReviewResponseDto>
-        {
-            new ReviewResponseDto { ReviewId = Guid.NewGuid(), CustomerId = Guid.NewGuid(), Rating = 5 },
-            new ReviewResponseDto { ReviewId = Guid.NewGuid(), CustomerId = Guid.NewGuid(), Rating = 3 }
-        };
-
-        _reviewServiceMock
-            .Setup(s => s.GetAllAsync())
-            .ReturnsAsync(reviews);
-
-        // Act
-        var result = await _controller.GetAllReviewsAsync();
-
-        // Assert
-        var ok = result as OkObjectResult;
-        Assert.IsNotNull(ok);
-
-        var data = ok.Value as List<ReviewResponseDto>;
-        Assert.IsNotNull(data);
-        Assert.AreEqual(2, data.Count);
     }
     [TestMethod]
     public async Task GetReviewByIdAsync_ReviewExists_ReturnsOk()

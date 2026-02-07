@@ -6,15 +6,20 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { CustomerService } from './customer.service';
 import { CustomerResponse } from '../../../models/review.model';
+import { DialogService } from '../../../services/dialogService/dialog.service';
 
 @Component({
   selector: 'app-customer',
+  standalone: true,
   imports: [CommonModule, FormsModule, MatCardModule, MatButtonModule, MatInputModule],
   templateUrl: './customer.component.html',
-  styleUrl: './customer.component.css'
+  styleUrls: ['./customer.component.css']
 })
 export class CustomerComponent {
+
   private service = inject(CustomerService);
+  private dialog = inject(DialogService);
+
   @Output() customerSelected = new EventEmitter<string>();
 
   mobileNumber = signal<string>('');
@@ -22,14 +27,22 @@ export class CustomerComponent {
   foundCustomer = signal<CustomerResponse | null>(null);
   searchPerformed = signal<boolean>(false);
 
+  allowOnlyNumbers(event: KeyboardEvent) {
+    if (!/^\d$/.test(event.key) && event.key !== 'Backspace') {
+      event.preventDefault();
+    }
+  }
+
   searchCustomer() {
-    const mobile = this.mobileNumber();
-    if (mobile.length !== 10) {
-      alert("Enter valid 10 digit number");
+    const mobile = this.mobileNumber().trim();
+
+    if (!/^\d{10}$/.test(mobile)) {
+      this.dialog.open('Mobile number must be exactly 10 digits');
       return;
     }
 
     this.searchPerformed.set(true);
+
     this.service.searchByMobile(mobile).subscribe({
       next: (res) => {
         if (!res || res.length === 0) {
@@ -41,16 +54,21 @@ export class CustomerComponent {
         this.customerName.set(customer.name);
         this.customerSelected.emit(customer.id);
       },
-      error: () => alert("Server error")
+      error: () => this.dialog.open('Server error')
     });
   }
 
   createCustomer() {
-    const name = this.customerName();
-    const mobile = this.mobileNumber();
+    const name = this.customerName().trim();
+    const mobile = this.mobileNumber().trim();
 
-    if (!name) {
-      alert("Enter customer name");
+    if (!/^\d{10}$/.test(mobile)) {
+      this.dialog.open('Mobile number must be 10 digits');
+      return;
+    }
+
+    if (name.length < 3) {
+      this.dialog.open('Customer name must be at least 3 characters');
       return;
     }
 
@@ -59,12 +77,11 @@ export class CustomerComponent {
     this.service.createCustomer(payload).subscribe({
       next: (res) => {
         const location = res.headers.get('Location');
-        const id = location?.split('/').pop();
-
+        const id = location?.split('/').pop()!;
         this.foundCustomer.set({ id, name, mobileNumber: mobile });
-        this.customerSelected.emit(id!);
+        this.customerSelected.emit(id);
       },
-      error: () => alert("Backend error while creating customer")
+      error: () => this.dialog.open('Backend error while creating customer')
     });
   }
 

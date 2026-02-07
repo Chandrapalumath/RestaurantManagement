@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { SettingsService } from '../../../services/settingsService/settings.service';
 import { SettingsResponse, SettingsUpdateRequest } from '../../../models/setting.model';
+import { DialogService } from '../../../services/dialogService/dialog.service';
 
 @Component({
   selector: 'app-update-settings',
@@ -24,6 +25,7 @@ import { SettingsResponse, SettingsUpdateRequest } from '../../../models/setting
 export class UpdateSettingsComponent implements OnInit {
   private fb = inject(FormBuilder);
   private service = inject(SettingsService);
+  private dialog = inject(DialogService)
 
   currentSettings = signal<SettingsResponse | null>(null);
 
@@ -53,7 +55,7 @@ export class UpdateSettingsComponent implements OnInit {
 
     this.service.updateSettings(payload).subscribe({
       next: () => {
-        alert("Settings updated successfully");
+        this.dialog.open('Settings updated successfully')
         this.loadSettings();
       },
       error: (err) => console.error("Update failed", err)

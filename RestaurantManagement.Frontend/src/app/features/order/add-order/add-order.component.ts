@@ -8,6 +8,9 @@ import { FormsModule } from '@angular/forms';
 import { OrderService } from '../../../services/orderService/order.service';
 import { SearchBoxComponent } from "../../../shared/components/search/search.component";
 import { OrderCreateRequest, OrderMenuItem } from '../../../models/order.model';
+import { DialogService } from '../../../services/dialogService/dialog.service';
+import { Location } from '@angular/common';
+
 
 @Component({
   selector: 'app-add-order',
@@ -19,7 +22,8 @@ export class AddOrderComponent implements OnInit {
   private orderService = inject(OrderService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-
+  private dialog = inject(DialogService)
+  private location = inject(Location);
   tableId = signal<string>('');
   menuItems = signal<OrderMenuItem[]>([]);
   searchText = signal<string>('');
@@ -66,7 +70,11 @@ export class AddOrderComponent implements OnInit {
   placeOrder() {
     const selectedItems = this.menuItems().filter(i => i.quantity > 0);
     if (selectedItems.length === 0) {
-      alert("Select at least one item");
+      this.dialog.open('Select atleast one item')
+        .afterClosed()
+        .subscribe(() => {
+          return;
+        });
       return;
     }
 
@@ -76,9 +84,17 @@ export class AddOrderComponent implements OnInit {
     };
 
     this.orderService.createOrder(payload).subscribe(() => {
-      this.router.navigate(['/table-session', this.tableId()]).then(() => {
+      this.dialog.open('Order Placed Successfully')
+        .afterClosed()
+        .subscribe(() => {
+          this.router.navigate(['/table-session', this.tableId()]).then(() => {
 
-      });
+          });
+        });
     });
+  }
+
+  goBack() {
+    this.location.back();
   }
 }

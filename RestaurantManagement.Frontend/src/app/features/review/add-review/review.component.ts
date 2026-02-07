@@ -3,8 +3,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { BillService } from '../../../services/billingService/billing.service';
-import { MenuService } from '../../../services/menuService/menu.service';
+import { MenuService } from '../../../routes/menuService/menu.service';
 import { ReviewService } from '../../../services/reviewService/review.service';
+import { DialogService } from '../../../services/dialogService/dialog.service';
 
 @Component({
   selector: 'app-review',
@@ -18,6 +19,7 @@ export class ReviewComponent implements OnInit {
   private menuService = inject(MenuService);
   private reviewService = inject(ReviewService);
   private router = inject(Router);
+  private dialog = inject(DialogService)
 
   billId = signal<string>('');
   items = signal<any[]>([]);
@@ -56,7 +58,9 @@ export class ReviewComponent implements OnInit {
 
       this.reviewService.createRestaurantReview(restaurantReview).subscribe(() => {
         alert('Review Added Successfully!');
-        this.router.navigate(['/waiter/dashboard']);
+        this.dialog.open('Item Deleted!')
+          .afterClosed()
+          .subscribe(() => this.router.navigate(['/waiter/dashboard']));
       });
     });
   }

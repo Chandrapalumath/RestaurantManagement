@@ -4,6 +4,7 @@ using RestaurantManagement.Api.Middlewares;
 using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.Dtos.Billing;
 using RestaurantManagement.Dtos.Customers;
+using RestaurantManagement.Dtos.Pagination;
 
 namespace RestaurantManagement.Api.Controllers
 {
@@ -39,18 +40,17 @@ namespace RestaurantManagement.Api.Controllers
         {
             return Ok(await _customerService.GetByIdAsync(id)); ;
         }
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(typeof(List<CustomerResponseDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PagedResult<CustomerResponseDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetAllCustomersAsync()
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllCustomersAsync(int page = 1, int pageSize = 5, string? search = null)
         {
-            return Ok(await _customerService.GetAllAsync()); ;
+            var result = await _customerService.GetAllAsync(page, pageSize, search);
+            return Ok(result);
         }
-
         [Authorize(Roles = "Admin,Waiter")]
         [HttpGet("mobile/{number}")]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]

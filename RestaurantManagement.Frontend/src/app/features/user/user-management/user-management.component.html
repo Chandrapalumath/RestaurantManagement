@@ -1,57 +1,125 @@
 <mat-card class="user-card p-4 shadow">
-
   <h2>Create User</h2>
 
   <form [formGroup]="form" (ngSubmit)="submit()">
 
-    <mat-form-field appearance="outline" class="w-100 mb-2">
+    <mat-form-field appearance="outline" class="w-100 mb-3">
       <mat-label>Email</mat-label>
-      <input matInput formControlName="email" type="email">
-      @if (form.get('email')?.invalid && form.get('email')?.touched) {
-      <mat-error>Valid email is required</mat-error>
-      }
+      <input matInput formControlName="email">
+      <mat-error *ngIf="form.get('email')?.hasError('required')">Email required</mat-error>
+      <mat-error *ngIf="form.get('email')?.hasError('pattern')">Enter valid email</mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="w-100 mb-2">
+    <mat-form-field appearance="outline" class="w-100 mb-3">
       <mat-label>Full Name</mat-label>
       <input matInput formControlName="fullName">
-      @if (form.get('fullName')?.invalid && form.get('fullName')?.touched) {
-      <mat-error>Valid Name is required must be greater than 2</mat-error>
-      }
+      <mat-error *ngIf="form.get('fullName')?.hasError('required')">Atleast 3 letters required</mat-error>
+      <mat-error *ngIf="form.get('fullName')?.hasError('firstThreeLetters')">
+        First 3 characters must be letters
+      </mat-error>
+      <mat-error *ngIf="form.get('fullName')?.hasError('invalidChars')">
+        Only letters & numbers allowed after first 3
+      </mat-error>
+      <mat-error *ngIf="form.get('fullName')?.hasError('maxlength')">
+        Max 50 characters
+      </mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="w-100 mb-2">
+    <mat-form-field appearance="outline" class="w-100 mb-3">
       <mat-label>Mobile Number</mat-label>
-      <input matInput formControlName="mobileNumber" type="tel">
-      @if (form.get('mobileNumber')?.invalid && form.get('mobileNumber')?.touched) {
-      <mat-error>Must be a 10 digit number</mat-error>
-      }
+      <input matInput formControlName="mobileNumber" maxlength="10" (keypress)="allowOnlyNumbers($event)">
+      <mat-error *ngIf="form.get('mobileNumber')?.invalid">
+        Must be 10 digits
+      </mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="w-100 mb-2">
-      <mat-label>Password</mat-label>
-      <input matInput type="password" formControlName="password">
-      @if (form.get('password')?.invalid && form.get('password')?.touched) {
-      <mat-error>Contain at least one lowercase letter, one uppercase letter, one digit, one special character and
-        greater than 11</mat-error>
+    <mat-form-field appearance="outline" class="w-100 mb-3" subscriptSizing="dynamic">
+      <mat-label>Date of Birth</mat-label>
+
+      <input matInput [matDatepicker]="picker" formControlName="dateOfBirth" [max]="maxDate" placeholder="MM/DD/YYYY">
+
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+
+      @if (form.get('dateOfBirth')?.touched && form.get('dateOfBirth')?.invalid) {
+      <mat-error class="inside-error">
+        @if (form.get('dateOfBirth')?.hasError('required')) {
+        DOB is required
+        } @else if (form.get('dateOfBirth')?.hasError('underAge')) {
+        Must be at least 18 years old
+        } @else if (form.get('dateOfBirth')?.hasError('tooOld')) {
+        Age cannot exceed 150 years
+        } @else if (form.get('dateOfBirth')?.hasError('invalidDate')) {
+        Enter a valid date
+        }
+      </mat-error>
       }
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="w-100 mb-3">
-      <mat-label>Role</mat-label>
-      <mat-select formControlName="role">
-        @for (r of roles; track r) {
-        <mat-option [value]="r">{{ r }}</mat-option>
-        } @empty {
-        <mat-option disabled>No roles available</mat-option>
-        }
-      </mat-select>
+      <mat-label>Aadhar Number</mat-label>
+      <input matInput formControlName="aadharNumber" maxlength="12" (keypress)="allowOnlyNumbers($event)">
+      <mat-error *ngIf="form.get('aadharNumber')?.hasError('required')">
+        Aadhar number required
+      </mat-error>
+      <mat-error *ngIf="form.get('aadharNumber')?.hasError('pattern')">
+        Must be exactly 12 digits
+      </mat-error>
     </mat-form-field>
 
-    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+    <mat-form-field appearance="outline" class="w-100 mb-3">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" formControlName="password" maxlength="20">
+      <mat-error *ngIf="form.get('password')?.hasError('required')">Password required</mat-error>
+      <mat-error *ngIf="form.get('password')?.hasError('minlength') || form.get('password')?.hasError('maxlength')">Min
+        12 characters, Must include uppercase, lowercase, number & special character</mat-error>
+      <mat-error *ngIf="form.get('password')?.hasError('maxlength')">
+        Maximum 20 characters allowed
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100 mb-2">
+      <mat-label>Confirm Password</mat-label>
+      <input matInput type="password" formControlName="confirmPassword">
+      @if (form.get('confirmPassword')?.hasError('required') &&
+      form.get('confirmPassword')?.touched) {
+      <mat-error>Confirm password is required</mat-error>
+      }
+
+      @if (form.get('confirmPassword')?.hasError('minlength') &&
+      form.get('confirmPassword')?.touched) {
+      <mat-error>Minimum 12 characters required</mat-error>
+      }
+
+      @if (form.get('confirmPassword')?.hasError('maxlength') &&
+      form.get('confirmPassword')?.touched) {
+      <mat-error>Maximum 20 characters allowed</mat-error>
+      }
+      @if (form.get('confirmPassword')?.hasError('pattern') &&
+      form.get('confirmPassword')?.touched) {
+      <mat-error>
+        Must contain uppercase, lowercase, digit & special character
+      </mat-error>
+      }
+
+      @if (form.get('confirmPassword')?.errors?.['mismatch'] &&
+      (form.get('confirmPassword')?.touched || form.get('confirmPassword')?.dirty)) {
+      <mat-error>Passwords do not match</mat-error>
+      }
+
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100 mb-4">
+      <mat-label>Role</mat-label>
+      <mat-select formControlName="role">
+        <mat-option *ngFor="let r of roles" [value]="r">{{ r }}</mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('role')?.invalid">Role required</mat-error>
+    </mat-form-field>
+
+    <button mat-raised-button type="submit" [disabled]="form.invalid">
       Create User
     </button>
 
   </form>
-
 </mat-card>

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Api.Middlewares;
 using RestaurantManagement.Backend.Services.Interfaces;
+using RestaurantManagement.Dtos.Pagination;
 using RestaurantManagement.Dtos.Reviews;
 
 namespace RestaurantManagement.Api.Controllers
@@ -34,10 +35,11 @@ namespace RestaurantManagement.Api.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(typeof(List<ReviewResponseDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllReviewsAsync()
+        [ProducesResponseType(typeof(PagedResult<ReviewResponseDto>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllReviewsAsync(int page = 1, int pageSize = 5, string? search = null)
         {
-            return Ok(await _reviewService.GetAllAsync());
+            var result = await _reviewService.GetAllAsync(page, pageSize, search);
+            return Ok(result);
         }
 
         [Authorize(Roles = "Admin")]

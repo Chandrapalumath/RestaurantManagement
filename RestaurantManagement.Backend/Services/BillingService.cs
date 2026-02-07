@@ -109,21 +109,6 @@ namespace RestaurantManagement.Backend.Services
             return MapBillToDto(bill);
         }
 
-        public async Task<List<BillResponseDto>> GetBillsByCustomerIdAsync(Guid customerId, Guid? waiterId, bool isAdmin)
-        {
-            var bills = await _billingRepo.GetBillsByCustomerIdAsync(customerId);
-
-            if (isAdmin)
-                return bills.Select(MapBillToDto).ToList();
-
-            if (waiterId.HasValue)
-                bills = bills.Where(b => b.GeneratedByWaiterId == waiterId.Value).ToList();
-            else
-                throw new ForbiddenException("No Access to the data");
-
-            return bills.Select(MapBillToDto).ToList();
-        }
-
         public async Task<List<BillResponseDto>> GetAllBillsAsync()
         {
             var bills = await _billingRepo.GetAllBillsAsync();

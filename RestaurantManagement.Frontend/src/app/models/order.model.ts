@@ -42,3 +42,7 @@ export interface OrderResponse {
     createdAt: string;
     items: OrderItemResponse[];
 }
+
+export interface OrderUI extends OrderResponse {
+    tableName: string;
+}

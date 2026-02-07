@@ -5,11 +5,8 @@
 </mat-card>
 
 <mat-card class="mt-3 p-3 shadow">
-  @if (pagedData().length === 0) {
-  <div class="text-center text-muted">No reviews found</div>
-  }
 
-  @for (r of pagedData(); track r.reviewId) {
+  @for (r of reviews(); track r.reviewId) {
   <div class="border p-3 mb-2">
     <div class="d-flex justify-content-between">
       <strong>{{ r.customerName }}</strong>
@@ -20,11 +17,13 @@
     <div class="mt-2 italic">"{{ r.comment }}"</div>
     }
   </div>
+  }@empty {
+  <div class="text-center text-muted">No reviews found</div>
   }
 
   <div class="d-flex justify-content-between mt-3">
     <button mat-button (click)="prev()" [disabled]="page() === 1">Prev</button>
-    <span>Page {{ page() }} of {{ totalPages() }}</span>
-    <button mat-button (click)="next()" [disabled]="page() === totalPages()">Next</button>
+    <span>Page {{ page() }}</span>
+    <button mat-button (click)="next()" [disabled]="page() * pageSize() >= totalCount()">Next</button>
   </div>
 </mat-card>

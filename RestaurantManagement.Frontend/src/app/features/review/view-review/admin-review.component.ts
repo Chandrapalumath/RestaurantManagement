@@ -5,8 +5,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { ReviewService } from '../../../services/reviewService/review.service';
 import { SearchBoxComponent } from "../../../shared/components/search/search.component";
-import { forkJoin } from 'rxjs';
 import { ReviewResponse } from '../../../models/review.model';
+import { debounceTime, distinctUntilChanged, filter, Subject, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-admin-review',
@@ -17,51 +17,52 @@ export class AdminReviewComponent implements OnInit {
   private service = inject(ReviewService);
 
   reviews = signal<ReviewResponse[]>([]);
-  searchText = signal<string>('');
-  page = signal<number>(1);
-  pageSize = signal<number>(5);
+  page = signal(1);
+  pageSize = signal(5);
+  totalCount = signal(0);
 
-  filteredReviews = computed(() => {
-    const text = this.searchText().toLowerCase().trim();
-    if (!text) return this.reviews();
-    return this.reviews().filter(r =>
-      r.customerName?.toLowerCase().includes(text) ||
-      r.comment?.toLowerCase().includes(text)
-    );
-  });
-
-  pagedData = computed(() => {
-    const start = (this.page() - 1) * this.pageSize();
-    return this.filteredReviews().slice(start, start + this.pageSize());
-  });
-
-  totalPages = computed(() => Math.ceil(this.filteredReviews().length / this.pageSize()) || 1);
+  private searchSubject = new Subject<string>();
 
   ngOnInit() {
-    this.loadData();
-  }
+    this.load('');
 
-  loadData() {
-    forkJoin({
-      customers: this.service.getCustomers(),
-      reviews: this.service.getReviews()
-    }).subscribe(({ customers, reviews }) => {
-      const customerMap = new Map(customers.map(c => [c.id, c.name]));
-
-      const mappedReviews = reviews.map(r => ({
-        ...r,
-        customerName: customerMap.get(r.customerId) || 'Unknown'
-      }));
-
-      this.reviews.set(mappedReviews);
+    this.searchSubject.pipe(
+      debounceTime(400),
+      distinctUntilChanged(),
+      filter(text => text.length === 0 || text.length >= 2),
+      switchMap(text =>
+        this.service.getReviews(this.page(), this.pageSize(), text)
+      )
+    ).subscribe(res => {
+      this.reviews.set(res.items);
+      this.totalCount.set(res.totalCount);
     });
   }
 
-  onSearch(val: string) {
-    this.searchText.set(val);
-    this.page.set(1);
+  load(search: string) {
+    this.service.getReviews(this.page(), this.pageSize(), search)
+      .subscribe(res => {
+        this.reviews.set(res.items);
+        this.totalCount.set(res.totalCount);
+      });
   }
 
-  next() { if (this.page() < this.totalPages()) this.page.update(p => p + 1); }
-  prev() { if (this.page() > 1) this.page.update(p => p - 1); }
+  onSearch(val: string) {
+    this.page.set(1);
+    this.searchSubject.next(val);
+  }
+
+  next() {
+    if (this.page() * this.pageSize() < this.totalCount()) {
+      this.page.update(p => p + 1);
+      this.load('');
+    }
+  }
+
+  prev() {
+    if (this.page() > 1) {
+      this.page.update(p => p - 1);
+      this.load('');
+    }
+  }
 }

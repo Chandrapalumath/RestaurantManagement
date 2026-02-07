@@ -3,6 +3,7 @@ using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.DataAccess.Models;
 using RestaurantManagement.DataAccess.Repositories.Interfaces;
 using RestaurantManagement.Dtos.Customers;
+using RestaurantManagement.Dtos.Pagination;
 
 namespace RestaurantManagement.Backend.Services
 {
@@ -46,21 +47,36 @@ namespace RestaurantManagement.Backend.Services
             };
         }
 
-        public async Task<List<CustomerResponseDto>> GetAllAsync()
+        public async Task<PagedResult<CustomerResponseDto>> GetAllAsync(int page, int pageSize, string? search)
         {
             var list = await _customerRepo.GetAllAsync();
-            return list.Select(c => new CustomerResponseDto
+
+            if (!string.IsNullOrWhiteSpace(search))
+                list = list.Where(c => c.Name.ToLower().Contains(search.ToLower())).ToList();
+
+            var total = list.Count;
+
+            var paged = list
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(c => new CustomerResponseDto
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    MobileNumber = c.MobileNumber
+                }).ToList();
+
+            return new PagedResult<CustomerResponseDto>
             {
-                Id = c.Id,
-                Name = c.Name,
-                MobileNumber = c.MobileNumber
-            }).ToList();
+                Items = paged,
+                TotalCount = total
+            };
         }
-        
+
+
         public async Task<List<CustomerResponseDto>> GetByMobileNumberAsync(string mobile)
         {
             var customers = await _customerRepo.GetByMobileAsync(mobile.Trim());
-            //if (!customers.Any()) throw new NotFoundException("No user found with this mobile number");
             return customers.Select(c => new CustomerResponseDto
             {
                 Id = c.Id,

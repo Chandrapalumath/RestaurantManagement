@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RestaurantManagement.Api.Middlewares;
 using RestaurantManagement.Backend.Services.Interfaces;
+using RestaurantManagement.Dtos.Authentication;
 using RestaurantManagement.Dtos.Settings;
 using RestaurantManagement.Dtos.Users;
 using System.Security.Claims;
@@ -14,10 +15,12 @@ namespace RestaurantManagement.Api.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IAdminDashboardService _dashboardService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IAdminDashboardService dashboardService)
         {
             _userService = userService;
+            _dashboardService = dashboardService;
         }
 
         [Authorize(Roles = "Admin")]
@@ -64,6 +67,17 @@ namespace RestaurantManagement.Api.Controllers
             Guid? userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
             bool isAdmin = User.IsInRole("Admin");
             return Ok(await _userService.GetUserByIdAsync(id, isAdmin, userId));
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpGet("dashboard")]
+        [ProducesResponseType(typeof(AdminDashboardDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetDashboard()
+        {
+            var data = await _dashboardService.GetDashboardDataAsync();
+            return Ok(data);
         }
     }
 }

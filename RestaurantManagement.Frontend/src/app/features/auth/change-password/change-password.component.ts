@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 import { ChangePasswordCredentials } from '../../../models/auth.model';
 import { AuthService } from '../../../services/authService/auth.service';
 import { Router } from '@angular/router';
+import { DialogService } from '../../../services/dialogService/dialog.service';
 
 @Component({
   selector: 'app-change-password',
@@ -24,6 +25,7 @@ import { Router } from '@angular/router';
 export class ChangePasswordComponent {
   router = inject(Router);
   fb = inject(FormBuilder)
+  dialog = inject(DialogService)
   authService = inject(AuthService)
   passwordPattern =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).*$/;
@@ -68,7 +70,11 @@ export class ChangePasswordComponent {
             console.log("DECODED ROLE:", role);
 
             console.log('Change Password Data:', this.changePasswordForm.value);
-            this.router.navigate(['/login']);
+            this.dialog.open('Password Changed Successfully! Login to continue')
+              .afterClosed()
+              .subscribe(() => {
+                this.router.navigate(['/login']);
+              });
           },
           error: (err) => {
             console.error("API ERROR:", err);

@@ -4,7 +4,8 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { OrderService } from '../../../services/orderService/order.service';
 import { forkJoin } from 'rxjs';
-import { OrderResponse } from '../../../models/order.model';
+import { OrderResponse, OrderUI } from '../../../models/order.model';
+import { TableService } from '../../../services/tableService/table.service';
 
 @Component({
   selector: 'app-order-list',
@@ -16,8 +17,9 @@ export class OrderListComponent implements OnInit {
   private service = inject(OrderService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private tableService = inject(TableService);
+  orders = signal<OrderUI[]>([]);
 
-  orders = signal<OrderResponse[]>([]);
   title = signal<string>("All Orders");
 
   ngOnInit() {
@@ -36,14 +38,41 @@ export class OrderListComponent implements OnInit {
   loadActiveOrders() {
     forkJoin({
       pending: this.service.getOrdersByStatus('Pending'),
-      preparing: this.service.getOrdersByStatus('Preparing')
+      preparing: this.service.getOrdersByStatus('Preparing'),
+      tables: this.tableService.getAllTables()
     }).subscribe(res => {
-      this.orders.set([...res.pending, ...res.preparing]);
+
+      const tableMap = new Map<string, string>();
+      res.tables.forEach(t => tableMap.set(t.id, t.tableName));
+
+      const combinedOrders = [...res.pending, ...res.preparing];
+
+      const mapped: OrderUI[] = combinedOrders.map(o => ({
+        ...o,
+        tableName: tableMap.get(o.tableId) ?? 'Unknown Table'
+      }));
+
+      this.orders.set(mapped);
     });
   }
 
+
   loadByStatus(status: string) {
-    this.service.getOrdersByStatus(status).subscribe(data => this.orders.set(data));
+    forkJoin({
+      orders: this.service.getOrdersByStatus(status),
+      tables: this.tableService.getAllTables()
+    }).subscribe(res => {
+
+      const tableMap = new Map<string, string>();
+      res.tables.forEach(t => tableMap.set(t.id, t.tableName));
+
+      const mapped: OrderUI[] = res.orders.map(o => ({
+        ...o,
+        tableName: tableMap.get(o.tableId) ?? 'Unknown Table'
+      }));
+
+      this.orders.set(mapped);
+    });
   }
 
   viewOrder(id: string) {

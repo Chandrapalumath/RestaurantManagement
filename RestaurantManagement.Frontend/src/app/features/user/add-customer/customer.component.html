@@ -3,7 +3,8 @@
 
   <mat-form-field appearance="outline" class="w-100 mb-3">
     <mat-label>Mobile Number</mat-label>
-    <input matInput [ngModel]="mobileNumber()" (ngModelChange)="mobileNumber.set($event)">
+    <input matInput maxlength="10" [ngModel]="mobileNumber()" (ngModelChange)="mobileNumber.set($event)"
+      (keypress)="allowOnlyNumbers($event)">
   </mat-form-field>
 
   <button mat-raised-button color="primary" (click)="searchCustomer()">
@@ -13,10 +14,12 @@
   @if (searchPerformed() && !foundCustomer()) {
   <div class="mt-3">
     <p class="text-danger">Customer not found. Create new one:</p>
+
     <mat-form-field appearance="outline" class="w-100 mb-3">
       <mat-label>Customer Name</mat-label>
-      <input matInput [ngModel]="customerName()" (ngModelChange)="customerName.set($event)">
+      <input matInput maxlength="50" [ngModel]="customerName()" (ngModelChange)="customerName.set($event)">
     </mat-form-field>
+
     <button mat-raised-button color="accent" (click)="createCustomer()">
       Add Customer
     </button>

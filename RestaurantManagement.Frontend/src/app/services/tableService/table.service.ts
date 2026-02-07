@@ -13,7 +13,9 @@ export class TableService {
   getAllTables(): Observable<TableResponse[]> {
     return this.http.get<TableResponse[]>(this.tableUrl);
   }
-
+  getTableById(id: string) {
+    return this.http.get<any>(`${this.tableUrl}/${id}`);
+  }
   getOrdersByTable(tableId: string): Observable<OrderResponse[]> {
     return this.http.get<OrderResponse[]>(`${this.ordersForTable}/${tableId}`);
   }

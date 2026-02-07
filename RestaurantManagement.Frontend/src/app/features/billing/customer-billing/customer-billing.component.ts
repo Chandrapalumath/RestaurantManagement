@@ -61,6 +61,8 @@ export class CustomerBillingComponent {
 
         const dialogRef = this.dialog.open(BillDialogComponent, {
           width: '450px',
+          maxWidth: '99vw',
+          panelClass: 'bill-dialog-panel',
           data: bill
         });
       });

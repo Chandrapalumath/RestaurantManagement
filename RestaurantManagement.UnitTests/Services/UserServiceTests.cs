@@ -58,7 +58,9 @@ namespace RestaurantManagement.Backend.Tests.Services
                 FullName = "  Chandrapal Singh  ",
                 MobileNumber = "  9876543210  ",
                 Password = "Pass@123",
-                Role = UserRole.Chef
+                Role = UserRole.Chef,
+                AadharNumber = "123412341234",
+                DateOfBirth= new DateTime(2003,8,18)
             };
 
             _userRepoMock

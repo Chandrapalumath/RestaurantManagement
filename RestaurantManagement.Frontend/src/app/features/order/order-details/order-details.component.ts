@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { OrderService } from '../../../services/orderService/order.service';
 import { OrderResponse } from '../../../models/order.model';
+import { DialogService } from '../../../services/dialogService/dialog.service';
 
 @Component({
   selector: 'app-order-details',
@@ -17,6 +18,7 @@ export class OrderDetailsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private service = inject(OrderService);
+  private dialog = inject(DialogService);
 
   order = signal<OrderResponse | null>(null);
   selectedStatus = signal<string>('');
@@ -41,8 +43,11 @@ export class OrderDetailsComponent implements OnInit {
 
     this.service.updateStatus(currentOrder.orderId, this.selectedStatus())
       .subscribe(() => {
-        alert("Status Updated!");
-        this.router.navigate(['/chef/orders']);
+        this.dialog.open('Status Updated!')
+          .afterClosed()
+          .subscribe(() => {
+            this.router.navigate(['/chef/orders']);
+          });
       });
   }
 

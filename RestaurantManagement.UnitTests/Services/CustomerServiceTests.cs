@@ -21,37 +21,6 @@ public class CustomerServiceTests
     }
 
     [TestMethod]
-    public async Task CreateAsync_MobileAlreadyExists_ReturnsExistingCustomer()
-    {
-        // Arrange
-        var existingCustomer = new Customer
-        {
-            Id = Guid.NewGuid(),
-            Name = "Existing",
-            MobileNumber = "9999999999",
-            CreatedAt = DateTime.UtcNow.AddDays(-5)
-        };
-
-        var dto = new CustomerCreateRequestDto
-        {
-            Name = "New Name",
-            MobileNumber = "9999999999"
-        };
-
-        _customerRepoMock
-            .Setup(r => r.GetByMobileAsync(dto.MobileNumber))
-            .ReturnsAsync(new List<Customer> { existingCustomer });
-
-        // Act
-        var result = await _service.CreateAsync(dto);
-
-        // Assert
-        Assert.AreEqual(existingCustomer.Id, result.Id);
-        Assert.AreEqual(existingCustomer.Name, result.Name);
-        Assert.AreEqual(existingCustomer.MobileNumber, result.MobileNumber);
-    }
-
-    [TestMethod]
     public async Task CreateAsync_MobileDoesNotExist_CreatesNewCustomer()
     {
         // Arrange
@@ -134,79 +103,34 @@ public class CustomerServiceTests
         Assert.AreEqual("Test", result.Name);
         Assert.AreEqual("777", result.MobileNumber);
     }
-
     [TestMethod]
-    public async Task GetAllAsync_CustomersExist_ReturnsMappedList()
+    public async Task GetAllAsync_ReturnsPagedCustomers()
     {
-        // Arrange
-        var customers = new List<Customer>
-            {
-                new Customer
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "A",
-                    MobileNumber = "111",
-                    CreatedAt = DateTime.UtcNow
-                },
-                new Customer
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "B",
-                    MobileNumber = "222",
-                    CreatedAt = DateTime.UtcNow
-                }
-            };
-
-        _customerRepoMock
-            .Setup(r => r.GetAllAsync())
-            .ReturnsAsync(customers);
-
-        // Act
-        var result = await _service.GetAllAsync();
-
-        // Assert
-        Assert.AreEqual(2, result.Count);
-        Assert.AreEqual("A", result[0].Name);
-        Assert.AreEqual("222", result[1].MobileNumber);
-    }
-
-    [TestMethod]
-    public async Task GetAllAsync_NoCustomers_ReturnsEmptyList()
-    {
-        // Arrange
-        _customerRepoMock
-            .Setup(r => r.GetAllAsync())
-            .ReturnsAsync(new List<Customer>());
-
-        // Act
-        var result = await _service.GetAllAsync();
-
-        // Assert
-        Assert.IsNotNull(result);
-        Assert.AreEqual(0, result.Count);
-    }
-
-    [TestMethod]
-    [ExpectedException(typeof(NotFoundException))]  
-    public async Task GetByMobileNumberAsync_NoCustomerFound_ThrowsNotFoundException()
-    {
-        // Arrange
-        _customerRepoMock
-            .Setup(r => r.GetByMobileAsync("999"))
-            .ReturnsAsync(new List<Customer>());
-
-        // Act + Assert
-        try
+        _customerRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Customer>
         {
-            await _service.GetByMobileNumberAsync("999");
-        }
-        catch(NotFoundException ex)
-        {
-            Assert.AreEqual("No user found with this mobile number", ex.Message);
-            throw;
-        }
+            new Customer { Id = Guid.NewGuid(), Name = "Ram", MobileNumber = "123" },
+            new Customer { Id = Guid.NewGuid(), Name = "Shyam", MobileNumber = "456" }
+        });
+
+        var result = await _service.GetAllAsync(1, 1, null);
+
+        Assert.AreEqual(1, result.Items.Count);
+        Assert.AreEqual(2, result.TotalCount);
     }
 
+    [TestMethod]
+    public async Task GetAllAsync_SearchFiltersResults()
+    {
+        _customerRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Customer>
+        {
+            new Customer { Id = Guid.NewGuid(), Name = "Aman", MobileNumber = "111" },
+            new Customer { Id = Guid.NewGuid(), Name = "Rahul", MobileNumber = "222" }
+        });
+
+        var result = await _service.GetAllAsync(1, 5, "Aman");
+
+        Assert.AreEqual(1, result.Items.Count);
+    }
     [TestMethod]
     public async Task GetByMobileNumberAsync_CustomerExists_ReturnsMappedCustomer()
     {

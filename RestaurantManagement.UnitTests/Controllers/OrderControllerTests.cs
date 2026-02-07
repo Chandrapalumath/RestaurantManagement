@@ -40,6 +40,29 @@ public class OrderControllerTests
         };
     }
     [TestMethod]
+    public async Task GetOrdersByWaiter_ReturnsOk()
+    {
+        var waiterId = Guid.NewGuid();
+
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, waiterId.ToString())
+                }))
+            }
+        };
+
+        _orderServiceMock.Setup(s => s.GetOrdersByWaiterIdAsync(waiterId))
+            .ReturnsAsync(new List<OrderResponseDto>());
+
+        var result = await _controller.GetPendingAndProgressOrdersByWaiterIdAsync();
+
+        Assert.IsInstanceOfType(result, typeof(OkObjectResult));
+    }
+    [TestMethod]
     public async Task CreateOrderAsync_ValidOrder_ReturnsCreatedAtRoute()
     {
         // Arrange

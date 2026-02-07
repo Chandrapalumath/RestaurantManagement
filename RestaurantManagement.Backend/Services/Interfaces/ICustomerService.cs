@@ -1,4 +1,5 @@
 ﻿using RestaurantManagement.Dtos.Customers;
+using RestaurantManagement.Dtos.Pagination;
 
 namespace RestaurantManagement.Backend.Services.Interfaces
 {
@@ -6,7 +7,7 @@ namespace RestaurantManagement.Backend.Services.Interfaces
     {
         Task<CustomerResponseDto> CreateAsync(CustomerCreateRequestDto dto);
         Task<CustomerResponseDto> GetByIdAsync(Guid id);
-        Task<List<CustomerResponseDto>> GetAllAsync();
+        Task<PagedResult<CustomerResponseDto>> GetAllAsync(int page, int pageSize, string? search);
         Task<List<CustomerResponseDto>> GetByMobileNumberAsync(string mobile);
     }
 }

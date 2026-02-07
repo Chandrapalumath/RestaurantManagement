@@ -68,6 +68,16 @@ button[mat-raised-button] {
   transition: 0.3s ease;
 }
 
+.mat-mdc-form-field-subscript-wrapper {
+  min-height: 48px !important;
+}
+
+.mat-mdc-form-field-error {
+  line-height: 18px;
+  margin-top: 3px;
+  display: block;
+}
+
 button[mat-raised-button]:hover:not([disabled]) {
   transform: scale(1.03);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.25);

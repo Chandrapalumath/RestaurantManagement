@@ -57,3 +57,50 @@
     grid-template-columns: 1fr;
   }
 }
+
+.waiters {
+  margin-top: 25px;
+}
+
+.waiters h2 {
+  color: #5d4037;
+  margin-bottom: 15px;
+}
+
+.waiter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+}
+
+.waiter-card {
+  background: linear-gradient(145deg, #ffffff, #f8f3ed);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  transition: 0.2s ease;
+}
+
+.waiter-card:hover {
+  transform: translateY(-4px);
+}
+
+.rank {
+  font-size: 20px;
+  font-weight: 700;
+  color: #8d6e63;
+}
+
+.info h4 {
+  margin: 0;
+  color: #4e342e;
+}
+
+.info p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: #6d4c41;
+}

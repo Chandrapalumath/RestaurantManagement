@@ -1,18 +1,30 @@
 <mat-card class="p-4 shadow">
   <h2>Add Table</h2>
+
   <form [formGroup]="form">
-    <mat-form-field appearance="outline" class="w-100">
+
+    <!-- TABLE NAME -->
+    <mat-form-field appearance="outline" class="w-100 mb-3">
       <mat-label>Table Name</mat-label>
-      <input matInput formControlName="tableName" placeholder="e.g. table 1">
+      <input matInput formControlName="tableName" placeholder="e.g. Table 1" (keypress)="allowTableNameInput($event)">
+
+      <mat-error *ngIf="form.get('tableName')?.hasError('required')">Table name required</mat-error>
+      <mat-error *ngIf="form.get('tableName')?.hasError('maxlength')">Max 50 characters</mat-error>
+      <mat-error *ngIf="form.get('tableName')?.hasError('pattern')">Only letters & numbers allowed</mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="w-100">
+    <!-- SIZE -->
+    <mat-form-field appearance="outline" class="w-100 mb-3">
       <mat-label>Capacity (Seats)</mat-label>
-      <input matInput type="number" formControlName="size">
+      <input matInput type="number" formControlName="size" (keypress)="allowOnlyNumbers($event)">
+
+      <mat-error *ngIf="form.get('size')?.hasError('required')">Size required</mat-error>
+      <mat-error *ngIf="form.get('size')?.hasError('min')">Minimum 1 seat</mat-error>
+      <mat-error *ngIf="form.get('size')?.hasError('max')">Maximum 50 seats</mat-error>
     </mat-form-field>
 
     <button mat-raised-button color="primary" (click)="add()" [disabled]="form.invalid">
-      Add Table
+      Add Tables
     </button>
   </form>
 </mat-card>

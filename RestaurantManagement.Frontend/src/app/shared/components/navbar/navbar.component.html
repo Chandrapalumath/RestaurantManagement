@@ -1,7 +1,11 @@
 <header class="header d-flex justify-content-between align-items-center px-4">
-    <h2>Restaurant Management</h2>
 
-    <button class="d-flex justify-content-center align-items-center" mat-icon-button [matMenuTriggerFor]="menu">
+    <div class="brand d-flex align-items-center">
+        <img src="icon.jpeg" class="profile-pic me-2">
+        <h2>Restaurant Management</h2>
+    </div>
+
+    <button mat-icon-button class="d-flex justify-content-center align-items-center" [matMenuTriggerFor]="menu">
         <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="profile-pic">
     </button>
 
@@ -11,7 +15,7 @@
             View Profile
         </button>
         <button mat-menu-item (click)="changePassword()">
-            <mat-icon>logout</mat-icon>
+            <mat-icon>lock</mat-icon>
             Change Password
         </button>
         <button mat-menu-item (click)="logout()">
@@ -19,4 +23,5 @@
             Sign Out
         </button>
     </mat-menu>
+
 </header>

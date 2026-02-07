@@ -32,6 +32,22 @@ namespace RestaurantManagement.Backend.Tests.Services
                 _tableRepoMock.Object);
         }
         [TestMethod]
+        public async Task ReturnsOnlyPendingAndPreparingOrders()
+        {
+            var waiterId = Guid.NewGuid();
+
+            _orderRepoMock.Setup(r => r.GetOrderWithWaiterIdAsync(waiterId))
+                .ReturnsAsync(new List<Order>
+                {
+                new Order { Id = Guid.NewGuid(), WaiterId = waiterId }
+                });
+
+            var result = await _service.GetOrdersByWaiterIdAsync(waiterId);
+
+            Assert.AreEqual(1, result.Count);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(NotFoundException))]
         public async Task CreateOrderAsync_TableNotFound_ThrowsNotFoundException()
         {

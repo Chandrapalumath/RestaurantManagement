@@ -1,7 +1,7 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
-import { ErrorToastService } from '../services/error-toast.service';
+import { ErrorToastService } from '../services/errorDialogService/error-toast.service';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toast = inject(ErrorToastService);
@@ -9,17 +9,16 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
 
-      let message = 'Something went wrong';
-
-      if (error.error?.Message) {
-        message = error.error.Message;
-      } else if (error.status === 0) {
-        message = 'Cannot connect to server';
-      } else {
-        message = `Error ${error.status}: ${error.statusText}`;
+      // Ignore system errors
+      if (error.status === 0 || error.status >= 500) {
+        console.error('System error:', error);
+        return throwError(() => error);
       }
 
-      toast.showError(message);
+      if ([400, 401, 404, 409].includes(error.status)) {
+        const message = error.error?.Message || 'Operation failed';
+        toast.showError(message);
+      }
 
       return throwError(() => error);
     })

@@ -10,13 +10,15 @@ namespace RestaurantManagement.Api.Tests;
 public class MenuControllerTests
 {
     private Mock<IMenuService> _menuServiceMock = null!;
+    private Mock<IBillingService> _billServiceMock = null!;
     private MenuController _controller = null!;
 
     [TestInitialize]
     public void Setup()
     {
         _menuServiceMock = new Mock<IMenuService>();
-        _controller = new MenuController(_menuServiceMock.Object);
+        _billServiceMock = new Mock<IBillingService>();
+        _controller = new MenuController(_menuServiceMock.Object, _billServiceMock.Object);
     }
 
     [TestMethod]
@@ -25,8 +27,8 @@ public class MenuControllerTests
         // Arrange
         var menu = new List<MenuItemResponseDto>
             {
-                new MenuItemResponseDto { Id = Guid.NewGuid(), Name = "Burger", Price = 120, IsAvailable = true, Rating = 5 },
-                new MenuItemResponseDto { Id = Guid.NewGuid(), Name = "Pizza", Price = 250, IsAvailable = true, Rating = 5 }
+                new MenuItemResponseDto { Id = Guid.NewGuid(), Name = "Burger", Price = 120, IsAvailable = true, Rating = 5, CustomerId= Guid.NewGuid() },
+                new MenuItemResponseDto { Id = Guid.NewGuid(), Name = "Pizza", Price = 250, IsAvailable = true, Rating = 5, CustomerId= Guid.NewGuid()  }
             };
 
         _menuServiceMock
@@ -55,7 +57,8 @@ public class MenuControllerTests
             Name = "Burger",
             Price = 150,
             IsAvailable = true,
-            Rating = 5
+            Rating = 5,
+            CustomerId = Guid.NewGuid()
         };
 
         _menuServiceMock
@@ -90,7 +93,8 @@ public class MenuControllerTests
             Name = dto.Name,
             Price = dto.Price,
             IsAvailable = true,
-            Rating = 4
+            Rating = 4,
+            CustomerId = Guid.NewGuid()
         };
 
         _menuServiceMock
@@ -103,10 +107,28 @@ public class MenuControllerTests
         // Assert
         var createdAt = result as CreatedAtRouteResult;
         Assert.IsNotNull(createdAt);
-
+        Assert.IsNull(createdAt.Value);
         Assert.AreEqual("GetMenuItemById", createdAt.RouteName);
         Assert.IsNotNull(createdAt.RouteValues);
         Assert.AreEqual(created.Id, createdAt.RouteValues["id"]);
+    }
+    [TestMethod]
+    public async Task GetMenuItemByBillIdAsync_ReturnsOk()
+    {
+        var billId = Guid.NewGuid();
+        var list = new List<MenuItemResponseDto>
+    {
+        new MenuItemResponseDto { Id = Guid.NewGuid(), Name = "Burger", Price = 120 }
+    };
+
+        _billServiceMock
+            .Setup(b => b.GetMenuItemByBillIdAsync(billId))
+            .ReturnsAsync(list);
+
+        var result = await _controller.GetMenuItemByBillIdAsync(billId);
+
+        var ok = result as OkObjectResult;
+        Assert.IsNotNull(ok);
     }
     [TestMethod]
     public async Task UpdateMenuItemAsync_ValidUpdate_ReturnsNoContent()

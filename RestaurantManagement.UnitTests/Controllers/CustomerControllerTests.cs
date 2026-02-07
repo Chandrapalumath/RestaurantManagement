@@ -3,6 +3,7 @@ using Moq;
 using RestaurantManagement.Api.Controllers;
 using RestaurantManagement.Backend.Services.Interfaces;
 using RestaurantManagement.Dtos.Customers;
+using RestaurantManagement.Dtos.Pagination;
 
 namespace RestaurantManagement.Api.Tests;
 
@@ -79,31 +80,7 @@ public class CustomerControllerTests
         Assert.IsNotNull(data);
         Assert.AreEqual(customerId, data.Id);
     }
-    [TestMethod]
-    public async Task GetAllCustomersAsync_CustomersExist_ReturnsOkWithCustomers()
-    {
-        // Arrange
-        var customers = new List<CustomerResponseDto>
-        {
-            new CustomerResponseDto { Id = Guid.NewGuid(), Name = "Tom", MobileNumber = "8888888888" },
-            new CustomerResponseDto { Id = Guid.NewGuid(), Name = "Pam", MobileNumber = "7777777777" }
-        };
-
-        _customerServiceMock
-            .Setup(s => s.GetAllAsync())
-            .ReturnsAsync(customers);
-
-        // Act
-        var result = await _controller.GetAllCustomersAsync();
-
-        // Assert
-        var ok = result as OkObjectResult;
-        Assert.IsNotNull(ok);
-
-        var data = ok.Value as List<CustomerResponseDto>;
-        Assert.IsNotNull(data);
-        Assert.AreEqual(2, data.Count);
-    }
+    
     [TestMethod]
     public async Task GetCustomerByMobilePartialSearch_MatchingMobileExists_ReturnsOkWithMatchingCustomers()
     {
@@ -130,5 +107,15 @@ public class CustomerControllerTests
         var data = ok.Value as List<CustomerResponseDto>;
         Assert.IsNotNull(data);
         Assert.AreEqual(2, data.Count);
+    }
+    [TestMethod]
+    public async Task GetAllCustomers_ReturnsOk()
+    {
+        _customerServiceMock.Setup(s => s.GetAllAsync(1, 5, null))
+            .ReturnsAsync(new PagedResult<CustomerResponseDto>());
+
+        var result = await _controller.GetAllCustomersAsync(1, 5, null);
+
+        Assert.IsInstanceOfType(result, typeof(OkObjectResult));
     }
 }

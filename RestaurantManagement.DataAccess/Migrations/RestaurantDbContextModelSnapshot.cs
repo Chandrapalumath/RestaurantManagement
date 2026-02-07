@@ -220,11 +220,11 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("4f6a6598-8ccf-47f8-a548-2d19fe19960f"),
+                            Id = new Guid("d5013c46-d6a2-4ca1-ba0b-3698a2543f2d"),
                             DiscountPercent = 10m,
                             TaxPercent = 10m,
                             UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            UpdatedByAdminId = new Guid("f52175ae-2fd3-47c2-9cdb-938ba799bc70")
+                            UpdatedByAdminId = new Guid("16bbe678-9418-480f-8ec0-42bad6977ac5")
                         });
                 });
 
@@ -290,7 +290,14 @@ namespace RestaurantManagement.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("AadharNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateOfBirth")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
@@ -326,13 +333,15 @@ namespace RestaurantManagement.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("f52175ae-2fd3-47c2-9cdb-938ba799bc70"),
-                            CreatedAt = new DateTime(2026, 2, 1, 10, 10, 41, 195, DateTimeKind.Utc).AddTicks(9216),
+                            Id = new Guid("16bbe678-9418-480f-8ec0-42bad6977ac5"),
+                            AadharNumber = "",
+                            CreatedAt = new DateTime(2026, 2, 7, 21, 28, 8, 807, DateTimeKind.Utc).AddTicks(1871),
+                            DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Email = "admin@gmail.com",
                             IsActive = true,
                             MobileNumber = "9999999999",
                             Name = "Admin",
-                            Password = "$2a$11$NMnQ3GC/R3MMX8OjnIv.Be3aRoL8ULT.uKE7OLRfITe9kdkP3Td0m",
+                            Password = "$2a$11$XrJBTZwbCIUZEN1KQg8.yutLip1AfBvmgSNvhyFor5NdnROW7xZyi",
                             Role = 1
                         });
                 });
